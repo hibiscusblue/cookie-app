@@ -32,6 +32,15 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+      body: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        itemCount: 4,
+        itemBuilder: (context, int 1) {
+          return Container(color: Colors.red);
+        },
+      ),
     );
   }
 }
