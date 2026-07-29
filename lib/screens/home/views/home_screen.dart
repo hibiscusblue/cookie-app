@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisCount: 2,
         ),
         itemCount: 4,
-        itemBuilder: (context, int 1) {
+        itemBuilder: (context, int i) {
           return Container(color: Colors.red);
         },
       ),
