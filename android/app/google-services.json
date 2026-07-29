@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "336761803850",
+    "project_id": "naim-cookies",
+    "storage_bucket": "naim-cookies.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336761803850:android:556e67e973f217680b82b3",
+        "android_client_info": {
+          "package_name": "com.example.flutterApplication1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5xEpORsSFJAo7La5cZtub_AJwcbcON78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

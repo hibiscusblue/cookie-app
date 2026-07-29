@@ -1,0 +1,49 @@
+import 'dart:developer';
+
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:user_repository/user_repository.dart';
+
+part 'sign_in_event.dart';
+part 'sign_in_state.dart';
+
+class SignInBloc extends Bloc<SignInEvent, SignInState> {
+  final UserRepository _userRepository;
+
+  SignInBloc(this._userRepository) : super(SignInInitial()) {
+    on<SignInRequired>((event, emit) async {
+      emit(SignInLoading());
+
+      try {
+        await _userRepository.signIn(
+          event.email.trim(),
+          event.password,
+        );
+
+        log('Sign-in completed successfully.');
+
+        emit(SignInSuccess());
+      } catch (error, stackTrace) {
+        log(
+          'Sign-in failed.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+
+        emit(SignInFailure());
+      }
+    });
+
+    on<SignOutRequired>((event, emit) async {
+      try {
+        await _userRepository.logOut();
+      } catch (error, stackTrace) {
+        log(
+          'Sign-out failed.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+    });
+  }
+}
