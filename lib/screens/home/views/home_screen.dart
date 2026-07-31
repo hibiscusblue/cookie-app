@@ -10,39 +10,57 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
+
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         title: Row(
           children: [
-            Image.asset('assets/blueberry-vanilla.png', scale: 20),
-            SizedBox(width: 8),
-            Text(
+            Image.asset(
+              'assets/blueberry-vanilla.png',
+              width: 58,
+              height: 58,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            const Text(
               'COOKIES',
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 30,
+              ),
             ),
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.cart)),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(CupertinoIcons.cart),
+          ),
           IconButton(
             onPressed: () {
-              context.read<SignInBloc>().add(SignOutRequired());
+              context.read<SignInBloc>().add(
+                    SignOutRequired(),
+                  );
             },
-            icon: Icon(CupertinoIcons.arrow_left_to_line),
+            icon: const Icon(
+              CupertinoIcons.arrow_left_to_line,
+            ),
           ),
         ],
       ),
+
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          itemCount: 4,
+          gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
             childAspectRatio: 0.58,
           ),
-          itemCount: 4,
-          itemBuilder: (context, int i) {
+          itemBuilder: (context, index) {
             return Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -51,103 +69,135 @@ class HomeScreen extends StatelessWidget {
                   BoxShadow(
                     color: Colors.grey.shade300,
                     blurRadius: 5,
-                    offset: Offset(3, 3),
+                    offset: const Offset(3, 3),
                   ),
                 ],
               ),
+
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    'assets/blueberry-vanilla.png',
-                    width: double.infinity,
-                    fit: BoxFit.contain,
+                  // COOKIE IMAGE
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Image.asset(
+                        'assets/blueberry-vanilla.png',
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurpleAccent.shade700,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 4,
-                              horizontal: 8,
-                            ),
-                            child: Text(
-                              "FRUITY",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
 
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(
-                              0xFFEAD2C5,
-                            ).withValues(alpha: 0.45),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 4,
-                              horizontal: 8,
-                            ),
-                            child: Text(
-                              "🫐 BALANCE",
-                              style: TextStyle(
-                                color: Color(0xFFB86A3C),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 10,
+                  // COOKIE INFORMATION
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      12,
+                      0,
+                      12,
+                      12,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        // LABELS
+                        Row(
+                          children: [
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(
+                                vertical: 4,
+                                horizontal: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors
+                                    .deepPurpleAccent.shade700,
+                                borderRadius:
+                                    BorderRadius.circular(30),
+                              ),
+                              child: const Text(
+                                'FRUITY',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
                               ),
                             ),
+
+                            const SizedBox(width: 8),
+
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(
+                                vertical: 4,
+                                horizontal: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEAD2C5)
+                                    .withValues(alpha: 0.45),
+                                borderRadius:
+                                    BorderRadius.circular(30),
+                              ),
+                              child: const Text(
+                                '🫐 BALANCE',
+                                style: TextStyle(
+                                  color: Color(0xFFB86A3C),
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        // COOKIE NAME
+                        const Text(
+                          'Blueberry Vanilla',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      "Blueberry Vanilla",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      "Your moment of bliss.",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey.shade700,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Row(
-                      children: [
+
+                        const SizedBox(height: 2),
+
+                        // COOKIE DESCRIPTION
                         Text(
-                          "2.99 €",
+                          'Your moment of bliss.',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 10,
-                            color: Colors.grey.shade700,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        // COOKIE PRICE
+                        Text(
+                          '2.99 €',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Text(
+                          '3.99 €',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey.shade500,
                           ),
                         ),
                       ],
