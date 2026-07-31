@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
-            childAspectRatio: 9 / 16,
+            childAspectRatio: 0.58,
           ),
           itemCount: 4,
           itemBuilder: (context, int i) {
@@ -56,8 +56,13 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset('assets/blueberry-vanilla.png'),
+                  Image.asset(
+                    'assets/blueberry-vanilla.png',
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
@@ -73,7 +78,7 @@ class HomeScreen extends StatelessWidget {
                               horizontal: 8,
                             ),
                             child: Text(
-                              "NON-FRUIT",
+                              "FRUITY",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -82,11 +87,13 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                      const SizedBox(width: 8),
+                        const SizedBox(width: 8),
 
                         Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEAD2C5).withValues(alpha: 0.45),
+                            color: const Color(
+                              0xFFEAD2C5,
+                            ).withValues(alpha: 0.45),
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: const Padding(
@@ -95,13 +102,52 @@ class HomeScreen extends StatelessWidget {
                               horizontal: 8,
                             ),
                             child: Text(
-                              "BALANCE",
+                              "🫐 BALANCE",
                               style: TextStyle(
                                 color: Color(0xFFB86A3C),
                                 fontWeight: FontWeight.w800,
                                 fontSize: 10,
                               ),
                             ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      "Blueberry Vanilla",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      "Your moment of bliss.",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        Text(
+                          "2.99 €",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey.shade700,
                           ),
                         ),
                       ],
