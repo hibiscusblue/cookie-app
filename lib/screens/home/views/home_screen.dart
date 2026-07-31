@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
-            childAspectRatio: 9/16,
+            childAspectRatio: 9 / 16,
           ),
           itemCount: 4,
           itemBuilder: (context, int i) {
@@ -51,13 +51,62 @@ class HomeScreen extends StatelessWidget {
                   BoxShadow(
                     color: Colors.grey.shade300,
                     blurRadius: 5,
-                    offset: Offset(3, 3)
-                  )
-                ]
+                    offset: Offset(3, 3),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
-                  Image.asset('assets/blueberry-vanilla.png')
+                  Image.asset('assets/blueberry-vanilla.png'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurpleAccent.shade700,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 8,
+                            ),
+                            child: Text(
+                              "NON-FRUIT",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                      const SizedBox(width: 8),
+
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEAD2C5).withValues(alpha: 0.45),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 8,
+                            ),
+                            child: Text(
+                              "BALANCE",
+                              style: TextStyle(
+                                color: Color(0xFFB86A3C),
+                                fontWeight: FontWeight.w800,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
