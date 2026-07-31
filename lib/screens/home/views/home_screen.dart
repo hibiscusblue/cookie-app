@@ -24,27 +24,17 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(width: 8),
             const Text(
               'COOKIES',
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 30,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),
             ),
           ],
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(CupertinoIcons.cart),
-          ),
+          IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.cart)),
           IconButton(
             onPressed: () {
-              context.read<SignInBloc>().add(
-                    SignOutRequired(),
-                  );
+              context.read<SignInBloc>().add(SignOutRequired());
             },
-            icon: const Icon(
-              CupertinoIcons.arrow_left_to_line,
-            ),
+            icon: const Icon(CupertinoIcons.arrow_left_to_line),
           ),
         ],
       ),
@@ -53,8 +43,7 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: GridView.builder(
           itemCount: 4,
-          gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
@@ -92,31 +81,22 @@ class HomeScreen extends StatelessWidget {
 
                   // COOKIE INFORMATION
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      12,
-                      0,
-                      12,
-                      12,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // LABELS
                         Row(
                           children: [
                             Container(
-                              padding:
-                                  const EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 vertical: 4,
                                 horizontal: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors
-                                    .deepPurpleAccent.shade700,
-                                borderRadius:
-                                    BorderRadius.circular(30),
+                                color: Colors.deepPurpleAccent.shade700,
+                                borderRadius: BorderRadius.circular(30),
                               ),
                               child: const Text(
                                 'FRUITY',
@@ -131,16 +111,15 @@ class HomeScreen extends StatelessWidget {
                             const SizedBox(width: 8),
 
                             Container(
-                              padding:
-                                  const EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 vertical: 4,
                                 horizontal: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEAD2C5)
-                                    .withValues(alpha: 0.45),
-                                borderRadius:
-                                    BorderRadius.circular(30),
+                                color: const Color(
+                                  0xFFEAD2C5,
+                                ).withValues(alpha: 0.45),
+                                borderRadius: BorderRadius.circular(30),
                               ),
                               child: const Text(
                                 '🫐 BALANCE',
@@ -183,21 +162,35 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(height: 4),
 
                         // COOKIE PRICE
-                        Text(
-                          '2.99 €',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        SizedBox(width: 5,),
-                        Text(
-                          '3.99 €',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.grey.shade500,
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    '2.99 €',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    '3.99 €',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  ),
+                                  
+                                ],
+                              ),
+                              IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.add_circled_solid))
+                            ],
                           ),
                         ),
                       ],
