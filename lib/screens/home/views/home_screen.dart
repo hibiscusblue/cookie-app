@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/auth/blocs/sign_in_bloc/sign_in_bloc.dart';
+import 'package:flutter_application_1/screens/home/views/details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -54,12 +55,17 @@ class HomeScreen extends StatelessWidget {
               elevation: 3,
               color: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20)
+                borderRadius: BorderRadius.circular(20),
               ),
               child: InkWell(
                 borderRadius: BorderRadius.circular(20),
                 onTap: () {
-                  
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => const DetailsScreen(),
+                    ),
+                  );
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                                
+
                     // COOKIE INFORMATION
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
@@ -105,9 +111,9 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                                
+
                               const SizedBox(width: 8),
-                                
+
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 4,
@@ -130,9 +136,9 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                                
+
                           const SizedBox(height: 8),
-                                
+
                           // COOKIE NAME
                           const Text(
                             'Blueberry Vanilla',
@@ -143,9 +149,9 @@ class HomeScreen extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                                
+
                           const SizedBox(height: 2),
-                                
+
                           // COOKIE DESCRIPTION
                           Text(
                             'Your moment of bliss.',
@@ -156,9 +162,9 @@ class HomeScreen extends StatelessWidget {
                               color: Colors.grey.shade500,
                             ),
                           ),
-                                
+
                           const SizedBox(height: 4),
-                                
+
                           // COOKIE PRICE
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
