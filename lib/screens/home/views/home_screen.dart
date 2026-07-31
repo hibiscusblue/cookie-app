@@ -55,6 +55,11 @@ class HomeScreen extends StatelessWidget {
                   )
                 ]
               ),
+              child: Column(
+                children: [
+                  Image.asset('assets/blueberry-vanilla.png')
+                ],
+              ),
             );
           },
         ),
