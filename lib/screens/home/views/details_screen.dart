@@ -56,7 +56,7 @@ class DetailsScreen extends StatelessWidget {
                         Expanded(
                           flex: 2,
                           child: Text(
-                            "Blueberry Satisfaction",
+                            "Blueberry Bliss",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -124,22 +124,26 @@ class DetailsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 40),
                     SizedBox(
+                      width: MediaQuery.of(context).size.width,
                       height: 50,
                       child: TextButton(
                         onPressed: () {},
                         style: TextButton.styleFrom(
                           elevation: 3.0,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primary,
+                          backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(60),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        child: Text('Buy Now'),
+                        child: const Text('Buy Now',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),),
                       ),
                     ),
                   ],
