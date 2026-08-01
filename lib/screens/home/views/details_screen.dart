@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_application_1/components/macro.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
@@ -45,7 +46,7 @@ class DetailsScreen extends StatelessWidget {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
                     Row(
@@ -53,27 +54,63 @@ class DetailsScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           flex: 2,
-                          child: Text("Blueberry Satisfaction",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold
-                          ),
+                          child: Text(
+                            "Blueberry Satisfaction",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 10),
                         Expanded(
                           flex: 1,
                           child: Align(
                             alignment: Alignment.centerRight,
-                            child: Text("2.99 €",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold
-                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "2.99 €",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                                const Text(
+                                  "3.99 €",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ],
-                    )
+                    ),
+                    const SizedBox(height: 12),
+                    const Row(
+                      children:  [
+                        MyMacroWidget(title: "Calories",
+                        value: 244,),
+                         SizedBox(width: 10),
+                         MyMacroWidget(title: "Protein",
+                        value: 7,),
+                         SizedBox(width: 10),
+                         MyMacroWidget(title: "Fat",
+                        value: 18,),
+                         SizedBox(width: 10),
+                         MyMacroWidget(title: "Carbs",
+                        value: 14,),
+                      ],
+                    ),
                   ],
                 ),
               ),
