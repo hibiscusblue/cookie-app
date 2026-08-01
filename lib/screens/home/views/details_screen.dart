@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_application_1/components/macro.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
@@ -97,19 +98,49 @@ class DetailsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     const Row(
-                      children:  [
-                        MyMacroWidget(title: "Calories",
-                        value: 244,),
-                         SizedBox(width: 10),
-                         MyMacroWidget(title: "Protein",
-                        value: 7,),
-                         SizedBox(width: 10),
-                         MyMacroWidget(title: "Fat",
-                        value: 18,),
-                         SizedBox(width: 10),
-                         MyMacroWidget(title: "Carbs",
-                        value: 14,),
+                      children: [
+                        MyMacroWidget(
+                          title: "Calories",
+                          value: 244,
+                          icon: FontAwesomeIcons.fireFlameCurved,
+                        ),
+                        SizedBox(width: 10),
+                        MyMacroWidget(
+                          title: "Protein",
+                          value: 7,
+                          icon: FontAwesomeIcons.dumbbell,
+                        ),
+                        SizedBox(width: 10),
+                        MyMacroWidget(
+                          title: "Fat",
+                          value: 18,
+                          icon: FontAwesomeIcons.droplet,
+                        ),
+                        SizedBox(width: 10),
+                        MyMacroWidget(
+                          title: "Carbs",
+                          value: 14,
+                          icon: FontAwesomeIcons.wheatAwn,
+                        ),
                       ],
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 50,
+                      child: TextButton(
+                        onPressed: () {},
+                        style: TextButton.styleFrom(
+                          elevation: 3.0,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(60),
+                          ),
+                        ),
+                        child: Text('Buy Now'),
+                      ),
                     ),
                   ],
                 ),
