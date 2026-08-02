@@ -1,3 +1,6 @@
+import 'package:cookie_repository/src/entities/entities.dart';
+import 'package:cookie_repository/src/models/models.dart';
+
 class Cookie {
   String cookieId;
   String picture;
@@ -7,18 +10,19 @@ class Cookie {
   String description;
   double price;
   double discount;
-  List<Macros> macros;
+  Macros macros;
 
-  Cookie(
-    this.cookieId,
-    this.picture,
-    this.isFru,
-    this.sweet,
-    this.name,
-    this.description,
-    this.price,
-    this.discount,
-    this.macros,
+  Cookie({
+    required this.cookieId,
+    required this.picture,
+    required this.isFru,
+    required this.sweet,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.discount,
+    required this.macros,
+  }
   );
 
   CookieEntity toEntity() {

@@ -1,5 +1,8 @@
-class CookieEntity{
-    String cookieId;
+import 'package:cookie_repository/src/entities/macros_entity.dart';
+import 'package:cookie_repository/src/models/macros.dart';
+
+class CookieEntity {
+  String cookieId;
   String picture;
   bool isFru;
   int sweet;
@@ -7,7 +10,7 @@ class CookieEntity{
   String description;
   double price;
   double discount;
-  List<Macros> macros;
+  Macros macros;
 
   CookieEntity({
     required this.cookieId,
@@ -19,10 +22,9 @@ class CookieEntity{
     required this.price,
     required this.discount,
     required this.macros,
-  }
-  );
+  });
 
-    Map<String, Object?> toDocument() {
+  Map<String, Object?> toDocument() {
     return {
       'cookieId': cookieId,
       'picture': picture,
@@ -32,21 +34,22 @@ class CookieEntity{
       'description': description,
       'price': price,
       'discount': discount,
-      'macros': macros,
+      'macros': macros.toEntity().toDocument(),
     };
   }
 
   static CookieEntity fromDocument(Map<String, dynamic> doc) {
     return CookieEntity(
- cookieId: doc['cookieId'],
- picture: doc['picture'],
- isFru: doc['isFru'],
- sweet: doc['sweet'],
- name: doc['name'],
- description: doc['description'],
- price: doc['price'],
- discount: doc['discount'],
- macros: doc['macros'],
+      cookieId: doc['cookieId'],
+      picture: doc['picture'],
+      isFru: doc['isFru'],
+      sweet: doc['sweet'],
+      name: doc['name'],
+      description: doc['description'],
+      price: doc['price'],
+      discount: doc['discount'],
+      macros: 
+          Macros.fromEntity(MacrosEntity.fromDocument(doc['macros'],)),
     );
   }
 }
