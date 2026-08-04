@@ -27,9 +27,18 @@ class AppView extends StatelessWidget {
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state.status == AuthenticationStatus.authenticated) {
-            return BlocProvider<SignInBloc>(
-              create: (context) =>
-                  SignInBloc(context.read<AuthenticationBloc>().userRepository),
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<SignInBloc>(
+                  create: (context) => SignInBloc(
+                    context.read<AuthenticationBloc>().userRepository,
+                  ),
+                ),
+                BlocProvider(
+                  create: (context) => GetCookieBloc(FirebaseCookieRepo()
+                )..add(GetCookie()),
+                ),
+              ],
               child: const HomeScreen(),
             );
           }

@@ -42,162 +42,173 @@ class HomeScreen extends StatelessWidget {
 
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: GridView.builder(
-          itemCount: 4,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.58,
-          ),
-          itemBuilder: (context, index) {
-            return Material(
-              elevation: 3,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => const DetailsScreen(),
+        child: BlocBuilder<GetCookieBloc, GetCookieState>(
+          builder: (context, state) {
+            if (state is GetCookieSuccess) {
+              return GridView.builder(
+                itemCount: state.cookies.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.58,
+                ),
+                itemBuilder: (context, index) {
+                  return Material(
+                    elevation: 3,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                  );
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // COOKIE IMAGE
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Image.asset(
-                          'assets/blueberry-vanilla.png',
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-
-                    // COOKIE INFORMATION
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const DetailsScreen(),
+                          ),
+                        );
+                      },
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // LABELS
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.deepPurpleAccent.shade700,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: const Text(
-                                  'FRUITY',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10,
-                                  ),
-                                ),
+                          // COOKIE IMAGE
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Image.asset(
+                                'assets/blueberry-vanilla.png',
+                                width: double.infinity,
+                                height: double.infinity,
+                                fit: BoxFit.contain,
                               ),
-
-                              const SizedBox(width: 8),
-
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFFEAD2C5,
-                                  ).withValues(alpha: 0.45),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: const Text(
-                                  '🫐 BALANCE',
-                                  style: TextStyle(
-                                    color: Color(0xFFB86A3C),
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          // COOKIE NAME
-                          const Text(
-                            'Blueberry Vanilla',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
 
-                          const SizedBox(height: 2),
-
-                          // COOKIE DESCRIPTION
-                          Text(
-                            'Your moment of bliss.',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.grey.shade500,
-                            ),
-                          ),
-
-                          const SizedBox(height: 4),
-
-                          // COOKIE PRICE
+                          // COOKIE INFORMATION
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // LABELS
                                 Row(
                                   children: [
-                                    Text(
-                                      '2.99 €',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                        horizontal: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.deepPurpleAccent.shade700,
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: const Text(
+                                        'FRUITY',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10,
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      '3.99 €',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.grey.shade500,
-                                        decoration: TextDecoration.lineThrough,
+
+                                    const SizedBox(width: 8),
+
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                        horizontal: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(
+                                          0xFFEAD2C5,
+                                        ).withValues(alpha: 0.45),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: const Text(
+                                        '🫐 BALANCE',
+                                        style: TextStyle(
+                                          color: Color(0xFFB86A3C),
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 10,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(CupertinoIcons.add_circled_solid),
+
+                                const SizedBox(height: 8),
+
+                                // COOKIE NAME
+                                const Text(
+                                  'Blueberry Vanilla',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 2),
+
+                                // COOKIE DESCRIPTION
+                                Text(
+                                  'Your moment of bliss.',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 4),
+
+                                // COOKIE PRICE
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '2.99 €',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.primary,
+                                            ),
+                                          ),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            '3.99 €',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.grey.shade500,
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(
+                                          CupertinoIcons.add_circled_solid,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -205,10 +216,14 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            );
+                  );
+                },
+              );
+            } else if (state is GetCookieLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return Center(child: Text("An error has occured..."));
+            }
           },
         ),
       ),
