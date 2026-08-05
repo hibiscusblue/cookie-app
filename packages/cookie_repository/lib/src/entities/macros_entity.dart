@@ -22,10 +22,16 @@ class MacrosEntity {
 
   static MacrosEntity fromDocument(Map<String, dynamic> doc) {
     return MacrosEntity(
-      calories: doc['calories'],
-      proteins: doc['proteins'],
-      fat: doc['fat'],
-      carbs: doc['carbs'],
+      calories: _intValue(doc['calories'], 'macros.calories'),
+      proteins: _intValue(doc['proteins'], 'macros.proteins'),
+      fat: _intValue(doc['fat'], 'macros.fat'),
+      carbs: _intValue(doc['carbs'], 'macros.carbs'),
     );
+  }
+
+  static int _intValue(Object? value, String field) {
+    if (value == null) return 0;
+    if (value is num) return value.toInt();
+    throw FormatException('Cookie field "$field" must be a number.');
   }
 }

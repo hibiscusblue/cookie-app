@@ -1,6 +1,8 @@
+import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:flutter_application_1/screens/auth/blocs/sign_in_bloc/sign_in_bloc.dart';
+import 'package:flutter_application_1/screens/home/blocs/get_cookie_bloc/get_cookie_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'screens/auth/views/welcome_screen.dart';

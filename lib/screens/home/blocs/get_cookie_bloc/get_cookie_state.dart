@@ -11,7 +11,14 @@ sealed class GetCookieState extends Equatable {
 
 final class GetCookieInitial extends GetCookieState {}
 
-final class GetCookieFailure extends GetCookieState {} 
+final class GetCookieFailure extends GetCookieState {
+  const GetCookieFailure(this.message);
+
+  final String message;
+
+  @override
+  List<Object> get props => [message];
+}
 final class GetCookieLoading extends GetCookieState {} 
 final class GetCookieSuccess extends GetCookieState { 
   final List<Cookie> cookies;
