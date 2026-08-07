@@ -8,8 +8,8 @@ class CookieEntity {
   int sweet;
   String name;
   String description;
-  int price;
-  int discount;
+  double price;
+  double discount;
   Macros macros;
 
   CookieEntity({
@@ -57,8 +57,8 @@ class CookieEntity {
         'description',
         fallback: '',
       ),
-      price: _intValue(doc['price'], 'price', fallback: 0),
-      discount: _intValue(doc['discount'], 'discount', fallback: 0),
+      price: _doubleValue(doc['price'], 'price', fallback: 0),
+      discount: _doubleValue(doc['discount'], 'discount', fallback: 0),
       macros: Macros.fromEntity(
         MacrosEntity.fromDocument(
           _mapValue(doc['macros'], 'macros', fallback: const {}),
@@ -94,6 +94,16 @@ class CookieEntity {
   }) {
     if (value == null) return fallback;
     if (value is num) return value.toInt();
+    throw FormatException('Cookie field "$field" must be a number.');
+  }
+
+  static double _doubleValue(
+    Object? value,
+    String field, {
+    required double fallback,
+  }) {
+    if (value == null) return fallback;
+    if (value is num) return value.toDouble();
     throw FormatException('Cookie field "$field" must be a number.');
   }
 

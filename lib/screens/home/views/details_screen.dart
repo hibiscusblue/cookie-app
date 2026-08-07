@@ -64,7 +64,7 @@ class DetailsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            '${cookie.price - cookie.discount}.00 €',
+                            '${cookie.discount.toStringAsFixed(2)} €',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class DetailsScreen extends StatelessWidget {
                           ),
                           if (cookie.discount > 0)
                             Text(
-                              '${cookie.price}.00 €',
+                              '${cookie.price.toStringAsFixed(2)} €',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

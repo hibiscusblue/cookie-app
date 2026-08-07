@@ -8,8 +8,8 @@ class Cookie {
   int sweet;
   String name;
   String description;
-  int price;
-  int discount;
+  double price;
+  double discount;
   Macros macros;
 
   Cookie({
