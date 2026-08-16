@@ -111,9 +111,7 @@ class _CookieCard extends StatelessWidget {
     return Material(
       elevation: 3,
       color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: () {
@@ -143,20 +141,19 @@ class _CookieCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // FRUITY + BALANCE
                   Wrap(
                     spacing: 8,
                     runSpacing: 4,
                     children: [
                       _Badge(
-                        label: cookie.isFru ? 'FRUITY' : 'CLASSIC',
+                        label: cookie.label1,
                         color: Colors.deepPurpleAccent.shade700,
                       ),
-                      const _Badge(
-                        label: '🍇 BALANCE',
-                        color: Color(0xFFB86A3C),
-                        background: Color(0xFFF5E8E1),
+                      _Badge(
+                        label: cookie.label2,
+                        color: const Color(0xFFB86A3C),
+                        background: const Color(0xFFF5E8E1),
                       ),
                     ],
                   ),
@@ -179,10 +176,7 @@ class _CookieCard extends StatelessWidget {
                     cookie.description,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey.shade500,
-                    ),
+                    style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
                   ),
 
                   const SizedBox(height: 6),
@@ -193,17 +187,14 @@ class _CookieCard extends StatelessWidget {
                       Expanded(
                         child: Wrap(
                           spacing: 5,
-                          crossAxisAlignment:
-                              WrapCrossAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             Text(
                               '${cookie.discount.toStringAsFixed(2)} €',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
 
@@ -214,8 +205,7 @@ class _CookieCard extends StatelessWidget {
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.grey.shade500,
-                                  decoration:
-                                      TextDecoration.lineThrough,
+                                  decoration: TextDecoration.lineThrough,
                                 ),
                               ),
                           ],
@@ -246,11 +236,7 @@ class _CookieCard extends StatelessWidget {
 }
 
 class _Badge extends StatelessWidget {
-  const _Badge({
-    required this.label,
-    required this.color,
-    this.background,
-  });
+  const _Badge({required this.label, required this.color, this.background});
 
   final String label;
   final Color color;

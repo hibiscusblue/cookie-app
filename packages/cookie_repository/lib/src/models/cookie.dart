@@ -4,8 +4,8 @@ import 'package:cookie_repository/src/models/models.dart';
 class Cookie {
   String cookieId;
   String picture;
-  bool isFru;
-  int sweet;
+  String label1;
+  String label2;
   String name;
   String description;
   double price;
@@ -15,22 +15,21 @@ class Cookie {
   Cookie({
     required this.cookieId,
     required this.picture,
-    required this.isFru,
-    required this.sweet,
+    required this.label1,
+    required this.label2,
     required this.name,
     required this.description,
     required this.price,
     required this.discount,
     required this.macros,
-  }
-  );
+  });
 
   CookieEntity toEntity() {
     return CookieEntity(
       cookieId: cookieId,
       picture: picture,
-      isFru: isFru,
-      sweet: sweet,
+      label1: label1,
+      label2: label2,
       name: name,
       description: description,
       price: price,
@@ -43,8 +42,8 @@ class Cookie {
     return Cookie(
       cookieId: entity.cookieId,
       picture: entity.picture,
-      isFru: entity.isFru,
-      sweet: entity.sweet,
+      label1: entity.label1,
+      label2: entity.label2,
       name: entity.name,
       description: entity.description,
       price: entity.price,

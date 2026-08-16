@@ -4,8 +4,8 @@ import 'package:cookie_repository/src/models/macros.dart';
 class CookieEntity {
   String cookieId;
   String picture;
-  bool isFru;
-  int sweet;
+  String label1;
+  String label2;
   String name;
   String description;
   double price;
@@ -15,8 +15,8 @@ class CookieEntity {
   CookieEntity({
     required this.cookieId,
     required this.picture,
-    required this.isFru,
-    required this.sweet,
+    required this.label1,
+    required this.label2,
     required this.name,
     required this.description,
     required this.price,
@@ -28,8 +28,8 @@ class CookieEntity {
     return {
       'cookieId': cookieId,
       'picture': picture,
-      'isFru': isFru,
-      'sweet': sweet,
+      'label1': label1,
+      'label2': label2,
       'name': name,
       'description': description,
       'price': price,
@@ -49,8 +49,8 @@ class CookieEntity {
         fallback: documentId ?? 'unknown-cookie',
       ),
       picture: _stringValue(doc['picture'], 'picture', fallback: ''),
-      isFru: _boolValue(doc['isFru'], 'isFru', fallback: false),
-      sweet: _intValue(doc['sweet'], 'sweet', fallback: 0),
+      label1: _stringValue(doc['label1'], 'label1', fallback: ''),
+      label2: _stringValue(doc['label2'], 'label2', fallback: ''),
       name: _stringValue(doc['name'], 'name', fallback: 'Unnamed cookie'),
       description: _stringValue(
         doc['description'],
