@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                             crossAxisCount: 2,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
-                            childAspectRatio: 0.58,
+                            childAspectRatio: 0.68,
                           ),
                       itemBuilder: (context, index) =>
                           _CookieCard(cookie: state.cookies[index]),
@@ -98,6 +98,32 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Color labelColor(String label) {
+  switch (label.toUpperCase()) {
+    case 'FRUITY':
+      return const Color(0xFFD94A64);
+
+    case 'VANILLA':
+      return const Color(0xFFE5B93F);
+
+    case 'SPICED':
+      return const Color(0xFFC66A2B);
+
+    case 'NUTTY':
+      return const Color(0xFF9A6540);
+
+    case 'COCOA':
+    case 'CHOCO':
+      return const Color(0xFF5D3427);
+
+    case 'CITRUS':
+      return const Color(0xFFF28C28);
+
+    default:
+      return Colors.grey;
   }
 }
 
@@ -137,7 +163,7 @@ class _CookieCard extends StatelessWidget {
             ),
 
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -148,12 +174,11 @@ class _CookieCard extends StatelessWidget {
                     children: [
                       _Badge(
                         label: cookie.label1,
-                        color: Colors.deepPurpleAccent.shade700,
+                        color: labelColor(cookie.label1),
                       ),
                       _Badge(
                         label: cookie.label2,
-                        color: const Color(0xFFB86A3C),
-                        background: const Color(0xFFF5E8E1),
+                        color: labelColor(cookie.label2),
                       ),
                     ],
                   ),
@@ -166,7 +191,7 @@ class _CookieCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -176,7 +201,7 @@ class _CookieCard extends StatelessWidget {
                     cookie.description,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
+                    style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
                   ),
 
                   const SizedBox(height: 6),
@@ -190,17 +215,17 @@ class _CookieCard extends StatelessWidget {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             Text(
-                              '${cookie.discount.toStringAsFixed(2)} €',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Theme.of(context).colorScheme.primary,
+                              '€${cookie.discount.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF2D160E),
                               ),
                             ),
 
                             if (cookie.discount > 0)
                               Text(
-                                '${cookie.price.toStringAsFixed(2)} €',
+                                '€${cookie.discount.toStringAsFixed(2)}',
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
