@@ -6,6 +6,8 @@ import 'package:flutter_application_1/screens/auth/blocs/sign_in_bloc/sign_in_bl
 import 'package:flutter_application_1/screens/home/blocs/get_cookie_bloc/get_cookie_bloc.dart';
 import 'package:flutter_application_1/screens/home/views/details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_application_1/cart.dart';
+import 'package:flutter_application_1/screens/cart/cart_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -27,12 +29,13 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.cart)),
           IconButton(
             onPressed: () {
-              context.read<SignInBloc>().add(SignOutRequired());
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
             },
-            icon: const Icon(CupertinoIcons.arrow_left_to_line),
+            icon: const Icon(CupertinoIcons.cart),
           ),
         ],
       ),
@@ -240,7 +243,14 @@ class _CookieCard extends StatelessWidget {
                       IconButton(
                         visualDensity: VisualDensity.compact,
                         onPressed: () {
-                          // We'll connect this to the cart later
+                          Cart.add(cookie);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${cookie.name} added to cart 🍪'),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
                         },
                         icon: const Icon(
                           CupertinoIcons.add_circled_solid,
