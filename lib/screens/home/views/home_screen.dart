@@ -31,14 +31,56 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
-            },
-            icon: const Icon(CupertinoIcons.cart),
+         ValueListenableBuilder<int>(
+  valueListenable: Cart.changes,
+  builder: (context, _, __) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const CartScreen(),
+              ),
+            );
+          },
+          icon: const Icon(
+            CupertinoIcons.cart,
           ),
+        ),
+
+        if (Cart.totalItems > 0)
+          Positioned(
+            right: 2,
+            top: 2,
+            child: Container(
+              constraints: const BoxConstraints(
+                minWidth: 18,
+                minHeight: 18,
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 5,
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '${Cart.totalItems}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  },
+),
 
           IconButton(
             onPressed: () {
@@ -249,7 +291,7 @@ class _DailyDropHero extends StatelessWidget {
                   const Spacer(),
 
                   Text(
-                    '$remaining / $stock LEFT',
+                    '$remaining LEFT',
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w900,
@@ -381,40 +423,10 @@ _DropCountdown(
 const SizedBox(height: 16),
 
               // ADD BUTTON
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: FilledButton(
-                  onPressed: soldOut
-                      ? null
-                      : () {
-                          Cart.add(cookie);
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('${cookie.name} added to cart 🍪'),
-                              duration: const Duration(seconds: 1),
-                            ),
-                          );
-                        },
-
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-
-                  child: Text(
-                    soldOut ? 'SOLD OUT' : 'ADD TO CART',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.7,
-                    ),
-                  ),
-                ),
-              ),
+            _DropPurchaseControls(
+  cookie: cookie,
+  remaining: remaining,
+),
             ],
           ),
         );
@@ -543,6 +555,187 @@ class _DropCountdownState
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DropPurchaseControls extends StatefulWidget {
+  const _DropPurchaseControls({
+    required this.cookie,
+    required this.remaining,
+  });
+
+  final Cookie cookie;
+  final int remaining;
+
+  @override
+  State<_DropPurchaseControls> createState() =>
+      _DropPurchaseControlsState();
+}
+
+class _DropPurchaseControlsState
+    extends State<_DropPurchaseControls> {
+  int quantity = 1;
+
+  void _increase() {
+    if (quantity < widget.remaining) {
+      setState(() {
+        quantity++;
+      });
+    }
+  }
+
+  void _decrease() {
+    if (quantity > 1) {
+      setState(() {
+        quantity--;
+      });
+    }
+  }
+
+  void _addToCart() {
+    for (int i = 0; i < quantity; i++) {
+      Cart.add(widget.cookie);
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '$quantity × ${widget.cookie.name} added to cart 🍪',
+        ),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final soldOut = widget.remaining == 0;
+
+    final total =
+        widget.cookie.discount * quantity;
+
+    if (soldOut) {
+      return SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: FilledButton(
+          onPressed: null,
+          child: const Text(
+            'SOLD OUT',
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            const Text(
+              'QUANTITY',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.8,
+              ),
+            ),
+
+            const Spacer(),
+
+            _DropQuantityButton(
+              icon: CupertinoIcons.minus,
+              enabled: quantity > 1,
+              onPressed: _decrease,
+            ),
+
+            SizedBox(
+              width: 48,
+              child: Text(
+                '$quantity',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF2D160E),
+                ),
+              ),
+            ),
+
+            _DropQuantityButton(
+              icon: CupertinoIcons.plus,
+              enabled: quantity < widget.remaining,
+              onPressed: _increase,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 14),
+
+        SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: FilledButton(
+            onPressed: _addToCart,
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(15),
+              ),
+            ),
+            child: Text(
+              'ADD $quantity TO CART  •  €${total.toStringAsFixed(2)}',
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DropQuantityButton extends StatelessWidget {
+  const _DropQuantityButton({
+    required this.icon,
+    required this.onPressed,
+    required this.enabled,
+  });
+
+  final IconData icon;
+  final VoidCallback onPressed;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: enabled ? onPressed : null,
+      borderRadius: BorderRadius.circular(100),
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: enabled
+              ? const Color(0xFFF2EEE9)
+              : Colors.grey.shade100,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          size: 17,
+          color: enabled
+              ? const Color(0xFF2D160E)
+              : Colors.grey.shade400,
+        ),
       ),
     );
   }
@@ -680,30 +873,94 @@ class _CookieCard extends StatelessWidget {
                         ),
                       ),
 
-                      IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () {
-                          Cart.add(cookie);
+               ValueListenableBuilder<int>(
+  valueListenable: Cart.changes,
+  builder: (context, _, __) {
+    final quantity = Cart.quantityFor(cookie);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('${cookie.name} added to cart 🍪'),
-                              duration: const Duration(seconds: 1),
-                            ),
-                          );
-                        },
-                        icon: const Icon(
-                          CupertinoIcons.add_circled_solid,
-                          size: 28,
-                          color: Colors.black,
-                        ),
-                      ),
+    if (quantity == 0) {
+      return IconButton(
+        visualDensity: VisualDensity.compact,
+        onPressed: () {
+          Cart.add(cookie);
+        },
+        icon: const Icon(
+          CupertinoIcons.add_circled_solid,
+          size: 28,
+          color: Colors.black,
+        ),
+      );
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _CollectionQuantityButton(
+          icon: CupertinoIcons.minus,
+          onPressed: () {
+            Cart.removeOne(cookie);
+          },
+        ),
+
+        SizedBox(
+          width: 26,
+          child: Text(
+            '$quantity',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 14,
+            ),
+          ),
+        ),
+
+        _CollectionQuantityButton(
+          icon: CupertinoIcons.plus,
+          onPressed: () {
+            Cart.add(cookie);
+          },
+        ),
+      ],
+    );
+  },
+),
                     ],
                   ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CollectionQuantityButton extends StatelessWidget {
+  const _CollectionQuantityButton({
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(100),
+      child: Container(
+        width: 27,
+        height: 27,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF2EEE9),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          size: 14,
+          color: const Color(0xFF2D160E),
         ),
       ),
     );
