@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,86 +50,43 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: ElevatedButton(
-            //     onPressed: () async {
-            //       try {
-            //         await SeedDatabase().addCookies();
+        child: BlocBuilder<GetCookieBloc, GetCookieState>(
+          builder: (context, state) {
+            return switch (state) {
+              GetCookieSuccess() when state.cookies.isEmpty => const Center(
+                child: Text('No cookies have been added yet.'),
+              ),
 
-            //         if (!context.mounted) return;
+              GetCookieSuccess() => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // DAILY DROP HERO
+                  _DailyDropHero(cookies: state.cookies),
 
-            //         ScaffoldMessenger.of(context).showSnackBar(
-            //           const SnackBar(
-            //             content: Text('Cookies added successfully! 🍪'),
-            //           ),
-            //         );
+                  const SizedBox(height: 24),
 
-            //         context.read<GetCookieBloc>().add(GetCookie());
-            //       } catch (error) {
-            //         if (!context.mounted) return;
-
-            //         ScaffoldMessenger.of(context).showSnackBar(
-            //           SnackBar(content: Text('Something went wrong: $error')),
-            //         );
-            //       }
-            //     },
-            //     child: const Text('Add cookies to Firebase'),
-            //   ),
-            // ),
-            const SizedBox(height: 16),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('dailyDrops')
-                  .where('active', isEqualTo: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Drop error: ${snapshot.error}');
-                }
-
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
-                }
-
-                if (snapshot.data!.docs.isEmpty) {
-                  return const Text('No active Daily Drop');
-                }
-
-                final drop = snapshot.data!.docs.first;
-                final data = drop.data() as Map<String, dynamic>;
-
-                return Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    '🍪 DAILY DROP FOUND!  ${data['stock'] - data['sold']} LEFT',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
+                  // COLLECTION TITLE
+                  const Text(
+                    'THE COLLECTION',
+                    style: TextStyle(
+                      fontSize: 22,
                       fontWeight: FontWeight.w900,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                );
-              },
-            ),
 
-            const SizedBox(height: 16),
-            Expanded(
-              child: BlocBuilder<GetCookieBloc, GetCookieState>(
-                builder: (context, state) {
-                  return switch (state) {
-                    GetCookieSuccess() when state.cookies.isEmpty =>
-                      const Center(
-                        child: Text('No cookies have been added yet.'),
-                      ),
-                    GetCookieSuccess() => GridView.builder(
+                  const SizedBox(height: 4),
+
+                  Text(
+                    'Our most-loved cookies',
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // EXISTING COOKIE GRID
+                  Expanded(
+                    child: GridView.builder(
                       itemCount: state.cookies.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -137,16 +95,19 @@ class HomeScreen extends StatelessWidget {
                             mainAxisSpacing: 16,
                             childAspectRatio: 0.68,
                           ),
-                      itemBuilder: (context, index) =>
-                          _CookieCard(cookie: state.cookies[index]),
+                      itemBuilder: (context, index) {
+                        return _CookieCard(cookie: state.cookies[index]);
+                      },
                     ),
-                    GetCookieFailure() => _FailureView(message: state.message),
-                    _ => const Center(child: CircularProgressIndicator()),
-                  };
-                },
+                  ),
+                ],
               ),
-            ),
-          ],
+
+              GetCookieFailure() => _FailureView(message: state.message),
+
+              _ => const Center(child: CircularProgressIndicator()),
+            };
+          },
         ),
       ),
     );
@@ -176,6 +137,437 @@ Color labelColor(String label) {
 
     default:
       return Colors.grey;
+  }
+}
+
+class _DailyDropHero extends StatelessWidget {
+  const _DailyDropHero({required this.cookies});
+
+  final List<Cookie> cookies;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('dailyDrops')
+          .where('active', isEqualTo: true)
+          .limit(1)
+          .snapshots(),
+
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return _DropMessage(message: 'Unable to load today\'s drop.');
+        }
+
+        if (!snapshot.hasData) {
+          return const SizedBox(
+            height: 280,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.data!.docs.isEmpty) {
+          return const _DropMessage(message: 'No Daily Drop today 🍪');
+        }
+
+        final dropDocument = snapshot.data!.docs.first;
+
+        final dropData = dropDocument.data() as Map<String, dynamic>;
+
+        final String cookieId = dropData['cookieId'] as String;
+
+        final int stock = (dropData['stock'] as num).toInt();
+
+        final int sold = (dropData['sold'] as num).toInt();
+
+        final int remaining = (stock - sold).clamp(0, stock);
+
+        final Timestamp endTimestamp = dropData['endTime'] as Timestamp;
+
+        final DateTime endTime = endTimestamp.toDate();
+
+        Cookie? dropCookie;
+
+        for (final cookie in cookies) {
+          if (cookie.cookieId == cookieId) {
+            dropCookie = cookie;
+            break;
+          }
+        }
+
+        if (dropCookie == null) {
+          return const _DropMessage(message: 'Daily Drop cookie not found.');
+        }
+
+        final cookie = dropCookie;
+
+        final double stockProgress = stock == 0 ? 0 : remaining / stock;
+
+        final bool soldOut = remaining == 0;
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 18,
+                offset: const Offset(0, 7),
+              ),
+            ],
+          ),
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // TOP LABEL
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: const Text(
+                      'TODAY\'S DROP',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  Text(
+                    '$remaining / $stock LEFT',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 14),
+
+              // IMAGE + DETAILS
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 130,
+                    height: 130,
+                    child: CookieImage(
+                      picture: cookie.picture,
+                      name: cookie.name,
+                    ),
+                  ),
+
+                  const SizedBox(width: 18),
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            _Badge(
+                              label: cookie.label1,
+                              color: labelColor(cookie.label1),
+                            ),
+
+                            _Badge(
+                              label: cookie.label2,
+                              color: labelColor(cookie.label2),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Text(
+                          cookie.name,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            height: 1.05,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF2D160E),
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Row(
+                          children: [
+                            Text(
+                              '€${cookie.discount.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF2D160E),
+                              ),
+                            ),
+
+                            const SizedBox(width: 7),
+
+                            if (cookie.discount > 0)
+                              Text(
+                                '€${cookie.price.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.grey.shade500,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              // STOCK BAR
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: LinearProgressIndicator(
+                  value: stockProgress,
+                  minHeight: 7,
+                  backgroundColor: Colors.grey.shade200,
+                  color: soldOut ? Colors.grey : Colors.black,
+                ),
+              ),
+
+              const SizedBox(height: 7),
+
+              Text(
+                soldOut
+                    ? 'SOLD OUT'
+                    : remaining <= 4
+                    ? 'Almost gone — only $remaining left'
+                    : '$remaining cookies available today',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: soldOut
+                      ? Colors.grey
+                      : remaining <= 4
+                      ? Colors.red.shade700
+                      : Colors.grey.shade700,
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+_DropCountdown(
+  endTime: endTime,
+),
+
+const SizedBox(height: 16),
+
+              // ADD BUTTON
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: FilledButton(
+                  onPressed: soldOut
+                      ? null
+                      : () {
+                          Cart.add(cookie);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${cookie.name} added to cart 🍪'),
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
+                        },
+
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+
+                  child: Text(
+                    soldOut ? 'SOLD OUT' : 'ADD TO CART',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.7,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+class _DropCountdown extends StatefulWidget {
+  const _DropCountdown({
+    required this.endTime,
+  });
+
+  final DateTime endTime;
+
+  @override
+  State<_DropCountdown> createState() =>
+      _DropCountdownState();
+}
+
+class _DropCountdownState
+    extends State<_DropCountdown> {
+  Timer? _timer;
+  Duration _remaining = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _updateRemaining();
+
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) {
+        _updateRemaining();
+      },
+    );
+  }
+
+  @override
+  void didUpdateWidget(
+    covariant _DropCountdown oldWidget,
+  ) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.endTime != widget.endTime) {
+      _updateRemaining();
+    }
+  }
+
+  void _updateRemaining() {
+    final difference =
+        widget.endTime.difference(DateTime.now());
+
+    if (!mounted) return;
+
+    setState(() {
+      _remaining = difference.isNegative
+          ? Duration.zero
+          : difference;
+    });
+  }
+
+  String _twoDigits(int value) {
+    return value.toString().padLeft(2, '0');
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hours =
+        _remaining.inHours;
+
+    final minutes =
+        _remaining.inMinutes.remainder(60);
+
+    final seconds =
+        _remaining.inSeconds.remainder(60);
+
+    final expired =
+        _remaining == Duration.zero;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 14,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F4F1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Text(
+            expired
+                ? 'DROP CLOSED'
+                : 'DROP CLOSES IN',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.2,
+              color: Colors.grey.shade700,
+            ),
+          ),
+
+          const SizedBox(height: 6),
+
+          Text(
+            expired
+                ? '00 : 00 : 00'
+                : '${_twoDigits(hours)} : '
+                    '${_twoDigits(minutes)} : '
+                    '${_twoDigits(seconds)}',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.5,
+              color: Color(0xFF2D160E),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DropMessage extends StatelessWidget {
+  const _DropMessage({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontWeight: FontWeight.w700),
+      ),
+    );
   }
 }
 
@@ -255,7 +647,6 @@ class _CookieCard extends StatelessWidget {
                   //   overflow: TextOverflow.ellipsis,
                   //   style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
                   // ),
-
                   const SizedBox(height: 6),
 
                   // PRICE + ADD BUTTON
