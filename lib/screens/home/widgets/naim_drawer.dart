@@ -12,7 +12,7 @@ class NaimDrawer extends StatelessWidget {
       backgroundColor: const Color(0xFFF8F8F8),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.horizontal(
-          right: Radius.circular(28),
+          left: Radius.circular(28),
         ),
       ),
       child: SafeArea(
@@ -248,7 +248,7 @@ class _DrawerItem extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 12,
       ),
-      minLeadingWidth: 24,
+      minLeadingWidth: 48,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
       ),

@@ -19,20 +19,45 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      drawer: const NaimDrawer(),
+      endDrawer: const NaimDrawer(),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).colorScheme.surface,
+        elevation: 0,
+        toolbarHeight: 68,
+
         title: Row(
           children: [
-            Image.asset('assets/blueberry-vanilla.png', width: 58, height: 58),
-            const SizedBox(width: 8),
+            Image.asset('assets/blueberry-vanilla.png', width: 42, height: 42),
+
+            const SizedBox(width: 2),
+
             const Text(
-              'COOKIES',
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),
+              'NAIM',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.5,
+              ),
             ),
           ],
         ),
+
         actions: [
+          IconButton(
+            onPressed: () {
+              // Search screen later
+            },
+            icon: const Icon(CupertinoIcons.search, size: 22),
+          ),
+
+          IconButton(
+            onPressed: () {
+              // Profile screen later
+            },
+            icon: const Icon(CupertinoIcons.person, size: 22),
+          ),
+
           ValueListenableBuilder<int>(
             valueListenable: Cart.changes,
             builder: (context, _, __) {
@@ -45,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => const CartScreen()),
                       );
                     },
-                    icon: const Icon(CupertinoIcons.cart),
+                    icon: const Icon(CupertinoIcons.cart, size: 23),
                   ),
 
                   if (Cart.totalItems > 0)
@@ -78,12 +103,29 @@ class HomeScreen extends StatelessWidget {
             },
           ),
 
-          // IconButton(
-          //   onPressed: () {
-          //     context.read<SignInBloc>().add(SignOutRequired());
-          //   },
-          //   icon: const Icon(CupertinoIcons.arrow_right_to_line),
-          // ),
+          Builder(
+            builder: (context) {
+              return TextButton(
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                ),
+                child: const Text(
+                  'MENU',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              );
+            },
+          ),
+
+          const SizedBox(width: 4),
         ],
       ),
       body: Padding(
