@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
             const Text(
               'NAIM',
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 26,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.5,
               ),
@@ -125,7 +125,7 @@ class HomeScreen extends StatelessWidget {
             },
           ),
 
-          const SizedBox(width: 4),
+          const SizedBox(width: 10),
         ],
       ),
       body: Padding(
