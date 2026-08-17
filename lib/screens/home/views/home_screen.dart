@@ -8,6 +8,7 @@ import 'package:flutter_application_1/screens/home/views/details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/screens/cart/cart_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -30,24 +31,20 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-  onPressed: () {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const CartScreen(),
-      ),
-    );
-  },
-  icon: const Icon(CupertinoIcons.cart),
-),
+            onPressed: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
+            },
+            icon: const Icon(CupertinoIcons.cart),
+          ),
 
-IconButton(
-  onPressed: () {
-    context.read<SignInBloc>().add(
-       SignOutRequired(),
-    );
-  },
-  icon: const Icon(CupertinoIcons.arrow_right_to_line),
-),
+          IconButton(
+            onPressed: () {
+              context.read<SignInBloc>().add(SignOutRequired());
+            },
+            icon: const Icon(CupertinoIcons.arrow_right_to_line),
+          ),
         ],
       ),
       body: Padding(
@@ -81,6 +78,47 @@ IconButton(
             //     child: const Text('Add cookies to Firebase'),
             //   ),
             // ),
+            const SizedBox(height: 16),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('dailyDrops')
+                  .where('active', isEqualTo: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Drop error: ${snapshot.error}');
+                }
+
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
+                }
+
+                if (snapshot.data!.docs.isEmpty) {
+                  return const Text('No active Daily Drop');
+                }
+
+                final drop = snapshot.data!.docs.first;
+                final data = drop.data() as Map<String, dynamic>;
+
+                return Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    '🍪 DAILY DROP FOUND!  ${data['stock'] - data['sold']} LEFT',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                );
+              },
+            ),
+
             const SizedBox(height: 16),
             Expanded(
               child: BlocBuilder<GetCookieBloc, GetCookieState>(
@@ -211,12 +249,12 @@ class _CookieCard extends StatelessWidget {
                   ),
 
                   // DESCRIPTION
-                  Text(
-                    cookie.description,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
-                  ),
+                  // Text(
+                  //   cookie.description,
+                  //   maxLines: 1,
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                  // ),
 
                   const SizedBox(height: 6),
 
@@ -239,7 +277,7 @@ class _CookieCard extends StatelessWidget {
 
                             if (cookie.discount > 0)
                               Text(
-                                '€${cookie.discount.toStringAsFixed(2)}',
+                                '€${cookie.price.toStringAsFixed(2)}',
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
