@@ -285,46 +285,57 @@ class _DailyDropHero extends StatelessWidget {
 
         final bool soldOut = remaining == 0;
 
-        return Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
-                blurRadius: 18,
-                offset: const Offset(0, 7),
+        return TweenAnimationBuilder<double>(
+  tween: Tween<double>(
+    begin: 0,
+    end: 1,
+  ),
+  duration: const Duration(milliseconds: 650),
+  curve: Curves.easeOutCubic,
+  builder: (context, value, child) {
+    return Opacity(
+      opacity: value,
+      child: Transform.translate(
+        offset: Offset(
+          0,
+          24 * (1 - value),
+        ),
+        child: child,
+      ),
+    );
+  },
+  child: Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(28),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // TOP LABEL
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 5,
               ),
-            ],
-          ),
-
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // TOP LABEL
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: const Text(
-                      'TODAY\'S DROP',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: const Text(
+                'TODAY\'S DROP',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
 
                   const Spacer(),
 
@@ -460,12 +471,13 @@ class _DailyDropHero extends StatelessWidget {
 
               // ADD BUTTON
               _DropPurchaseControls(cookie: cookie, remaining: remaining),
-            ],
-          ),
-        );
-      },
-    );
-  }
+             ],
+          ), // Column
+        ), // Container
+      ); // TweenAnimationBuilder
+    },
+  ); // StreamBuilder
+}
 }
 
 class _DropCountdown extends StatefulWidget {
