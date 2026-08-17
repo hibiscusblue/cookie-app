@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/screens/cart/cart_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,7 +19,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      drawer: const _NaimDrawer(),
+      drawer: const NaimDrawer(),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         title: Row(
@@ -32,56 +33,50 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
-         ValueListenableBuilder<int>(
-  valueListenable: Cart.changes,
-  builder: (context, _, __) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const CartScreen(),
-              ),
-            );
-          },
-          icon: const Icon(
-            CupertinoIcons.cart,
-          ),
-        ),
+          ValueListenableBuilder<int>(
+            valueListenable: Cart.changes,
+            builder: (context, _, __) {
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const CartScreen()),
+                      );
+                    },
+                    icon: const Icon(CupertinoIcons.cart),
+                  ),
 
-        if (Cart.totalItems > 0)
-          Positioned(
-            right: 2,
-            top: 2,
-            child: Container(
-              constraints: const BoxConstraints(
-                minWidth: 18,
-                minHeight: 18,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 5,
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                '${Cart.totalItems}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ),
+                  if (Cart.totalItems > 0)
+                    Positioned(
+                      right: 2,
+                      top: 2,
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        decoration: const BoxDecoration(
+                          color: Colors.black,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${Cart.totalItems}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
-      ],
-    );
-  },
-),
 
           // IconButton(
           //   onPressed: () {
@@ -417,17 +412,12 @@ class _DailyDropHero extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-_DropCountdown(
-  endTime: endTime,
-),
+              _DropCountdown(endTime: endTime),
 
-const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // ADD BUTTON
-            _DropPurchaseControls(
-  cookie: cookie,
-  remaining: remaining,
-),
+              _DropPurchaseControls(cookie: cookie, remaining: remaining),
             ],
           ),
         );
@@ -436,21 +426,16 @@ const SizedBox(height: 16),
   }
 }
 
-
 class _DropCountdown extends StatefulWidget {
-  const _DropCountdown({
-    required this.endTime,
-  });
+  const _DropCountdown({required this.endTime});
 
   final DateTime endTime;
 
   @override
-  State<_DropCountdown> createState() =>
-      _DropCountdownState();
+  State<_DropCountdown> createState() => _DropCountdownState();
 }
 
-class _DropCountdownState
-    extends State<_DropCountdown> {
+class _DropCountdownState extends State<_DropCountdown> {
   Timer? _timer;
   Duration _remaining = Duration.zero;
 
@@ -460,18 +445,13 @@ class _DropCountdownState
 
     _updateRemaining();
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (_) {
-        _updateRemaining();
-      },
-    );
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _updateRemaining();
+    });
   }
 
   @override
-  void didUpdateWidget(
-    covariant _DropCountdown oldWidget,
-  ) {
+  void didUpdateWidget(covariant _DropCountdown oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.endTime != widget.endTime) {
@@ -480,15 +460,12 @@ class _DropCountdownState
   }
 
   void _updateRemaining() {
-    final difference =
-        widget.endTime.difference(DateTime.now());
+    final difference = widget.endTime.difference(DateTime.now());
 
     if (!mounted) return;
 
     setState(() {
-      _remaining = difference.isNegative
-          ? Duration.zero
-          : difference;
+      _remaining = difference.isNegative ? Duration.zero : difference;
     });
   }
 
@@ -504,24 +481,17 @@ class _DropCountdownState
 
   @override
   Widget build(BuildContext context) {
-    final hours =
-        _remaining.inHours;
+    final hours = _remaining.inHours;
 
-    final minutes =
-        _remaining.inMinutes.remainder(60);
+    final minutes = _remaining.inMinutes.remainder(60);
 
-    final seconds =
-        _remaining.inSeconds.remainder(60);
+    final seconds = _remaining.inSeconds.remainder(60);
 
-    final expired =
-        _remaining == Duration.zero;
+    final expired = _remaining == Duration.zero;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 14,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: const Color(0xFFF7F4F1),
         borderRadius: BorderRadius.circular(16),
@@ -529,9 +499,7 @@ class _DropCountdownState
       child: Column(
         children: [
           Text(
-            expired
-                ? 'DROP CLOSED'
-                : 'DROP CLOSES IN',
+            expired ? 'DROP CLOSED' : 'DROP CLOSES IN',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w900,
@@ -546,8 +514,8 @@ class _DropCountdownState
             expired
                 ? '00 : 00 : 00'
                 : '${_twoDigits(hours)} : '
-                    '${_twoDigits(minutes)} : '
-                    '${_twoDigits(seconds)}',
+                      '${_twoDigits(minutes)} : '
+                      '${_twoDigits(seconds)}',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w900,
@@ -562,21 +530,16 @@ class _DropCountdownState
 }
 
 class _DropPurchaseControls extends StatefulWidget {
-  const _DropPurchaseControls({
-    required this.cookie,
-    required this.remaining,
-  });
+  const _DropPurchaseControls({required this.cookie, required this.remaining});
 
   final Cookie cookie;
   final int remaining;
 
   @override
-  State<_DropPurchaseControls> createState() =>
-      _DropPurchaseControlsState();
+  State<_DropPurchaseControls> createState() => _DropPurchaseControlsState();
 }
 
-class _DropPurchaseControlsState
-    extends State<_DropPurchaseControls> {
+class _DropPurchaseControlsState extends State<_DropPurchaseControls> {
   int quantity = 1;
 
   void _increase() {
@@ -602,9 +565,7 @@ class _DropPurchaseControlsState
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          '$quantity × ${widget.cookie.name} added to cart 🍪',
-        ),
+        content: Text('$quantity × ${widget.cookie.name} added to cart 🍪'),
         duration: const Duration(seconds: 1),
       ),
     );
@@ -614,8 +575,7 @@ class _DropPurchaseControlsState
   Widget build(BuildContext context) {
     final soldOut = widget.remaining == 0;
 
-    final total =
-        widget.cookie.discount * quantity;
+    final total = widget.cookie.discount * quantity;
 
     if (soldOut) {
       return SizedBox(
@@ -625,10 +585,7 @@ class _DropPurchaseControlsState
           onPressed: null,
           child: const Text(
             'SOLD OUT',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.8,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 0.8),
           ),
         ),
       );
@@ -687,8 +644,7 @@ class _DropPurchaseControlsState
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(15),
               ),
             ),
             child: Text(
@@ -725,17 +681,13 @@ class _DropQuantityButton extends StatelessWidget {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: enabled
-              ? const Color(0xFFF2EEE9)
-              : Colors.grey.shade100,
+          color: enabled ? const Color(0xFFF2EEE9) : Colors.grey.shade100,
           shape: BoxShape.circle,
         ),
         child: Icon(
           icon,
           size: 17,
-          color: enabled
-              ? const Color(0xFF2D160E)
-              : Colors.grey.shade400,
+          color: enabled ? const Color(0xFF2D160E) : Colors.grey.shade400,
         ),
       ),
     );
@@ -874,57 +826,57 @@ class _CookieCard extends StatelessWidget {
                         ),
                       ),
 
-               ValueListenableBuilder<int>(
-  valueListenable: Cart.changes,
-  builder: (context, _, __) {
-    final quantity = Cart.quantityFor(cookie);
+                      ValueListenableBuilder<int>(
+                        valueListenable: Cart.changes,
+                        builder: (context, _, __) {
+                          final quantity = Cart.quantityFor(cookie);
 
-    if (quantity == 0) {
-      return IconButton(
-        visualDensity: VisualDensity.compact,
-        onPressed: () {
-          Cart.add(cookie);
-        },
-        icon: const Icon(
-          CupertinoIcons.add_circled_solid,
-          size: 28,
-          color: Colors.black,
-        ),
-      );
-    }
+                          if (quantity == 0) {
+                            return IconButton(
+                              visualDensity: VisualDensity.compact,
+                              onPressed: () {
+                                Cart.add(cookie);
+                              },
+                              icon: const Icon(
+                                CupertinoIcons.add_circled_solid,
+                                size: 28,
+                                color: Colors.black,
+                              ),
+                            );
+                          }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _CollectionQuantityButton(
-          icon: CupertinoIcons.minus,
-          onPressed: () {
-            Cart.removeOne(cookie);
-          },
-        ),
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _CollectionQuantityButton(
+                                icon: CupertinoIcons.minus,
+                                onPressed: () {
+                                  Cart.removeOne(cookie);
+                                },
+                              ),
 
-        SizedBox(
-          width: 26,
-          child: Text(
-            '$quantity',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 14,
-            ),
-          ),
-        ),
+                              SizedBox(
+                                width: 26,
+                                child: Text(
+                                  '$quantity',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
 
-        _CollectionQuantityButton(
-          icon: CupertinoIcons.plus,
-          onPressed: () {
-            Cart.add(cookie);
-          },
-        ),
-      ],
-    );
-  },
-),
+                              _CollectionQuantityButton(
+                                icon: CupertinoIcons.plus,
+                                onPressed: () {
+                                  Cart.add(cookie);
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ],
@@ -958,11 +910,7 @@ class _CollectionQuantityButton extends StatelessWidget {
           color: const Color(0xFFF2EEE9),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          icon,
-          size: 14,
-          color: const Color(0xFF2D160E),
-        ),
+        child: Icon(icon, size: 14, color: const Color(0xFF2D160E)),
       ),
     );
   }
@@ -1031,325 +979,9 @@ class _FailureView extends StatelessWidget {
     );
   }
 }
-      class _NaimDrawer extends StatelessWidget {
-  const _NaimDrawer();
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: const Color(0xFFF8F8F8),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(
-          right: Radius.circular(28),
-        ),
-      ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  22,
-                  20,
-                  20,
-                ),
-                children: [
-                  // BRAND
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/blueberry-vanilla.png',
-                        width: 52,
-                        height: 52,
-                      ),
-
-                      const SizedBox(width: 12),
-
-                      const Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'NAIM',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          Text(
-                            'Your Moment of Bliss',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  _DrawerSectionTitle(
-                    title: 'TODAY',
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.sparkles,
-                    title: 'Today\'s Drop',
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  _DrawerSectionTitle(
-                    title: 'DISCOVER',
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.square_grid_2x2,
-                    title: 'The Collection',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'THE COLLECTION',
-                        subtitle:
-                            'Our most-loved cookies',
-                      );
-                    },
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.heart,
-                    title: 'Favorites',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'FAVORITES',
-                        subtitle:
-                            'Cookies you love most',
-                      );
-                    },
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.photo,
-                    title: 'Gallery',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'GALLERY',
-                        subtitle:
-                            'A little taste of Naim',
-                      );
-                    },
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.book,
-                    title: 'Naim Journal',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'NAIM JOURNAL',
-                        subtitle:
-                            'Stories, ingredients & inspiration',
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  _DrawerSectionTitle(
-                    title: 'YOUR NAIM',
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.bag,
-                    title: 'My Orders',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'MY ORDERS',
-                        subtitle:
-                            'Your cookie history',
-                      );
-                    },
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.person,
-                    title: 'My Account',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'MY ACCOUNT',
-                        subtitle:
-                            'Your Naim profile',
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  _DrawerSectionTitle(
-                    title: 'ABOUT',
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.heart_fill,
-                    title: 'Our Story',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'OUR STORY',
-                        subtitle:
-                            'Why Naim exists',
-                      );
-                    },
-                  ),
-
-                  _DrawerItem(
-                    icon: CupertinoIcons.info_circle,
-                    title: 'About Naim',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'ABOUT NAIM',
-                        subtitle:
-                            'Small batch. Made with intention.',
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            // LOG OUT
-            Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(20, 8, 20, 18),
-              child: Column(
-                children: [
-                  const Divider(),
-
-                  const SizedBox(height: 6),
-
-                  _DrawerItem(
-                    icon:
-                        CupertinoIcons.arrow_right_to_line,
-                    title: 'Log out',
-                    onTap: () {
-                      Navigator.pop(context);
-
-                      context
-                          .read<SignInBloc>()
-                          .add(SignOutRequired());
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-class _DrawerSectionTitle extends StatelessWidget {
-  const _DrawerSectionTitle({
-    required this.title,
-  });
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 12,
-        bottom: 7,
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w900,
-          letterSpacing: 1.4,
-          color: Colors.grey.shade500,
-        ),
-      ),
-    );
-  }
-}
-
-class _DrawerItem extends StatelessWidget {
-  const _DrawerItem({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 12,
-      ),
-      minLeadingWidth: 24,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      leading: Icon(
-        icon,
-        size: 21,
-        color: const Color(0xFF2D160E),
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      trailing: const Icon(
-        CupertinoIcons.chevron_right,
-        size: 14,
-      ),
-      onTap: onTap,
-    );
-  }
-}
-void _openNaimPage(
-  BuildContext context, {
-  required String title,
-  required String subtitle,
-}) {
-  Navigator.pop(context);
-
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (_) => _NaimPage(
-        title: title,
-        subtitle: subtitle,
-      ),
-    ),
-  );
-}
 
 class _NaimPage extends StatelessWidget {
-  const _NaimPage({
-    required this.title,
-    required this.subtitle,
-  });
+  const _NaimPage({required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
@@ -1357,36 +989,25 @@ class _NaimPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
 
-      appBar: AppBar(
-        backgroundColor:
-            Theme.of(context).colorScheme.surface,
-      ),
+      appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.surface),
 
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w900,
-              ),
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
             ),
 
             const SizedBox(height: 6),
 
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
             ),
 
             const SizedBox(height: 40),
@@ -1394,10 +1015,7 @@ class _NaimPage extends StatelessWidget {
             const Center(
               child: Text(
                 'Coming soon 🍪',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
             ),
           ],
@@ -1406,4 +1024,3 @@ class _NaimPage extends StatelessWidget {
     );
   }
 }
-  
