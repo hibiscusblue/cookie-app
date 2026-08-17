@@ -30,13 +30,24 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const CartScreen()));
-            },
-            icon: const Icon(CupertinoIcons.cart),
-          ),
+  onPressed: () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const CartScreen(),
+      ),
+    );
+  },
+  icon: const Icon(CupertinoIcons.cart),
+),
+
+IconButton(
+  onPressed: () {
+    context.read<SignInBloc>().add(
+       SignOutRequired(),
+    );
+  },
+  icon: const Icon(CupertinoIcons.arrow_right_to_line),
+),
         ],
       ),
       body: Padding(
