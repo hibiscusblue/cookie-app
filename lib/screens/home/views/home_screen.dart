@@ -180,198 +180,197 @@ class _DailyDropHero extends StatelessWidget {
         final bool soldOut = remaining == 0;
 
         return TweenAnimationBuilder<double>(
-  tween: Tween<double>(
-    begin: 0,
-    end: 1,
-  ),
-  duration: const Duration(milliseconds: 650),
-  curve: Curves.easeOutCubic,
-  builder: (context, value, child) {
-    return Opacity(
-      opacity: value,
-      child: Transform.translate(
-        offset: Offset(
-          0,
-          24 * (1 - value),
-        ),
-        child: child,
-      ),
-    );
-  },
-  child: Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(28),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // TOP LABEL
-        Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 5,
+          tween: Tween<double>(begin: 0, end: 1),
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeOutCubic,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, 24 * (1 - value)),
+                child: child,
               ),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: const Text(
-                'TODAY\'S DROP',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
-                ),
-              ),
+            );
+          },
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
             ),
-
-                  const Spacer(),
-
-                  Text(
-                    '$remaining LEFT',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 14),
-
-              // IMAGE + DETAILS
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 130,
-                    height: 130,
-                    child: CookieImage(
-                      picture: cookie.picture,
-                      name: cookie.name,
-                    ),
-                  ),
-
-                  const SizedBox(width: 18),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: [
-                            _Badge(
-                              label: cookie.label1,
-                              color: labelColor(cookie.label1),
-                            ),
-
-                            _Badge(
-                              label: cookie.label2,
-                              color: labelColor(cookie.label2),
-                            ),
-                          ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // TOP LABEL
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: const Text(
+                        'TODAY\'S DROP',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1,
                         ),
+                      ),
+                    ),
 
-                        const SizedBox(height: 10),
+                    const Spacer(),
 
-                        Text(
-                          cookie.name,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            height: 1.05,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFF2D160E),
-                          ),
+                    Text(
+                      '$remaining LEFT',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 14),
+
+                // IMAGE + DETAILS
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 130,
+                      height: 130,
+                      child: Transform.scale(
+                        scale: cookie.name.toLowerCase() == 'Marzipan'
+                            ? 0.45
+                            : 1.0,
+                        child: CookieImage(
+                          picture: cookie.picture,
+                          name: cookie.name,
                         ),
+                      ),
+                    ),
 
-                        const SizedBox(height: 10),
+                    const SizedBox(width: 18),
 
-                        Row(
-                          children: [
-                            Text(
-                              '€${cookie.discount.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontSize: 23,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF2D160E),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: [
+                              _Badge(
+                                label: cookie.label1,
+                                color: labelColor(cookie.label1),
                               ),
+
+                              _Badge(
+                                label: cookie.label2,
+                                color: labelColor(cookie.label2),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          Text(
+                            cookie.name,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              height: 1.05,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF2D160E),
                             ),
+                          ),
 
-                            const SizedBox(width: 7),
+                          const SizedBox(height: 10),
 
-                            if (cookie.discount > 0)
+                          Row(
+                            children: [
                               Text(
-                                '€${cookie.price.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.grey.shade500,
-                                  decoration: TextDecoration.lineThrough,
+                                '€${cookie.discount.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 23,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF2D160E),
                                 ),
                               ),
-                          ],
-                        ),
-                      ],
+
+                              const SizedBox(width: 7),
+
+                              if (cookie.discount > 0)
+                                Text(
+                                  '€${cookie.price.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.grey.shade500,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                // STOCK BAR
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: LinearProgressIndicator(
+                    value: stockProgress,
+                    minHeight: 7,
+                    backgroundColor: Colors.grey.shade200,
+                    color: soldOut ? Colors.grey : Colors.black,
                   ),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              // STOCK BAR
-              ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: LinearProgressIndicator(
-                  value: stockProgress,
-                  minHeight: 7,
-                  backgroundColor: Colors.grey.shade200,
-                  color: soldOut ? Colors.grey : Colors.black,
                 ),
-              ),
 
-              const SizedBox(height: 7),
+                const SizedBox(height: 7),
 
-              Text(
-                soldOut
-                    ? 'SOLD OUT'
-                    : remaining <= 4
-                    ? 'Almost gone — only $remaining left'
-                    : '$remaining cookies available today',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: soldOut
-                      ? Colors.grey
+                Text(
+                  soldOut
+                      ? 'SOLD OUT'
                       : remaining <= 4
-                      ? Colors.red.shade700
-                      : Colors.grey.shade700,
+                      ? 'Almost gone — only $remaining left'
+                      : '$remaining cookies available today',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: soldOut
+                        ? Colors.grey
+                        : remaining <= 4
+                        ? Colors.red.shade700
+                        : Colors.grey.shade700,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              _DropCountdown(endTime: endTime),
+                _DropCountdown(endTime: endTime),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // ADD BUTTON
-              _DropPurchaseControls(cookie: cookie, remaining: remaining),
-             ],
-          ), // Column
-        ), // Container
-      ); // TweenAnimationBuilder
-    },
-  ); // StreamBuilder
-}
+                // ADD BUTTON
+                _DropPurchaseControls(cookie: cookie, remaining: remaining),
+              ],
+            ), // Column
+          ), // Container
+        ); // TweenAnimationBuilder
+      },
+    ); // StreamBuilder
+  }
 }
 
 class _DropCountdown extends StatefulWidget {
