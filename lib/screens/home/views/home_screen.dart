@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
 
           ValueListenableBuilder<int>(
             valueListenable: Cart.changes,
-            builder: (context, _, __) {
+            builder: (context, _, _) {
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -882,7 +882,7 @@ class _CookieCard extends StatelessWidget {
 
                       ValueListenableBuilder<int>(
                         valueListenable: Cart.changes,
-                        builder: (context, _, __) {
+                        builder: (context, _, _) {
                           final quantity = Cart.quantityFor(cookie);
 
                           if (quantity == 0) {
@@ -971,7 +971,7 @@ class _CollectionQuantityButton extends StatelessWidget {
 }
 
 class _Badge extends StatelessWidget {
-  const _Badge({required this.label, required this.color, this.background});
+  const _Badge({required this.label, required this.color}) : background = null;
 
   final String label;
   final Color color;

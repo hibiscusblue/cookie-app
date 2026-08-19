@@ -21,6 +21,22 @@ class Cart {
     _notify();
   }
 
+  static int quantity(Cookie cookie) {
+  return items
+      .where((item) => item.cookieId == cookie.cookieId)
+      .length;
+}
+
+static List<Cookie> get uniqueItems {
+  final unique = <String, Cookie>{};
+
+  for (final cookie in items) {
+    unique[cookie.cookieId] = cookie;
+  }
+
+  return unique.values.toList();
+}
+
   static int get totalItems {
     return items.length;
   }

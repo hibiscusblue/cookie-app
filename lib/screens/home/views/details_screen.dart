@@ -65,10 +65,10 @@ class DetailsScreen extends StatelessWidget {
                         children: [
                           Text(
                             '${cookie.discount.toStringAsFixed(2)} €',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: Colors.black,
                             ),
                           ),
                           if (cookie.discount > 0)
