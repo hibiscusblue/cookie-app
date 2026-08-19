@@ -2,10 +2,15 @@ import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/cookie_image.dart';
 import 'package:flutter_application_1/components/macro.dart';
+import 'package:flutter_application_1/components/naim_app_bar.dart';
+import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({required this.cookie, super.key});
+  const DetailsScreen({
+    required this.cookie,
+    super.key,
+  });
 
   final Cookie cookie;
 
@@ -13,7 +18,13 @@ class DetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.surface),
+
+      // SAME DRAWER AS HOME
+      endDrawer: const NaimDrawer(),
+
+      // SAME HEADER AS HOME
+      appBar: const NaimAppBar(),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
         child: Column(
@@ -32,7 +43,9 @@ class DetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             const SizedBox(height: 30),
+
             Container(
               padding: const EdgeInsets.all(20),
               decoration: _cardDecoration(30),
@@ -51,15 +64,21 @@ class DetailsScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+
                             const SizedBox(height: 4),
+
                             Text(
                               cookie.description,
-                              style: TextStyle(color: Colors.grey.shade600),
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                              ),
                             ),
                           ],
                         ),
                       ),
+
                       const SizedBox(width: 10),
+
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -71,6 +90,7 @@ class DetailsScreen extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
+
                           if (cookie.discount > 0)
                             Text(
                               '${cookie.price.toStringAsFixed(2)} €',
@@ -85,9 +105,11 @@ class DetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
 
-                                    Align(
+                  const SizedBox(height: 18),
+
+                  // INGREDIENTS
+                  Align(
                     alignment: Alignment.centerLeft,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +121,9 @@ class DetailsScreen extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
+
                         const SizedBox(height: 6),
+
                         Text(
                           cookie.ingredients,
                           style: TextStyle(
@@ -111,7 +135,10 @@ class DetailsScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+
+                  const SizedBox(height: 22),
+
+                  // MACROS
                   Row(
                     children: [
                       MyMacroWidget(
@@ -119,19 +146,25 @@ class DetailsScreen extends StatelessWidget {
                         value: cookie.macros.calories,
                         icon: FontAwesomeIcons.fireFlameCurved,
                       ),
+
                       const SizedBox(width: 8),
+
                       MyMacroWidget(
                         title: 'Protein',
                         value: cookie.macros.proteins,
                         icon: FontAwesomeIcons.dumbbell,
                       ),
+
                       const SizedBox(width: 8),
+
                       MyMacroWidget(
                         title: 'Fat',
                         value: cookie.macros.fat,
                         icon: FontAwesomeIcons.droplet,
                       ),
+
                       const SizedBox(width: 8),
+
                       MyMacroWidget(
                         title: 'Carbs',
                         value: cookie.macros.carbs,
@@ -139,7 +172,10 @@ class DetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 30),
+
+                  // BUTTON
                   SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -153,10 +189,11 @@ class DetailsScreen extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        'Buy Now',
+                        'ADD TO CART',
                         style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.4,
                         ),
                       ),
                     ),
@@ -175,7 +212,11 @@ class DetailsScreen extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(radius),
       boxShadow: const [
-        BoxShadow(color: Colors.grey, offset: Offset(3, 3), blurRadius: 5),
+        BoxShadow(
+          color: Colors.grey,
+          offset: Offset(3, 3),
+          blurRadius: 5,
+        ),
       ],
     );
   }
