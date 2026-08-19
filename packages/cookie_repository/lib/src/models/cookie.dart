@@ -9,6 +9,7 @@ class Cookie {
   String name;
   String description;
   double price;
+  String ingredients;
   double discount;
   Macros macros;
 
@@ -20,6 +21,7 @@ class Cookie {
     required this.name,
     required this.description,
     required this.price,
+    required this.ingredients,
     required this.discount,
     required this.macros,
   });
@@ -33,6 +35,7 @@ class Cookie {
       name: name,
       description: description,
       price: price,
+      ingredients: ingredients,
       discount: discount,
       macros: macros,
     );
@@ -47,6 +50,7 @@ class Cookie {
       name: entity.name,
       description: entity.description,
       price: entity.price,
+      ingredients: entity.ingredients,
       discount: entity.discount,
       macros: entity.macros,
     );
