@@ -182,17 +182,9 @@ class NaimDrawer extends StatelessWidget {
                     icon: CupertinoIcons.arrow_right_to_line,
                     title: 'Log out',
                     onTap: () {
-                      final signInBloc = context.read<SignInBloc>();
-                      final navigator = Navigator.of(context);
+                      Navigator.pop(context);
 
-                      // Close the drawer
-                      navigator.pop();
-
-                      // Sign the user out
-                      signInBloc.add(SignOutRequired());
-
-                      // Remove DetailsScreen / Cart / other opened pages
-                      navigator.popUntil((route) => route.isFirst);
+                      context.read<SignInBloc>().add(SignOutRequired());
                     },
                   ),
                 ],
