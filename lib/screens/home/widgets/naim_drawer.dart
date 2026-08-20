@@ -11,9 +11,7 @@ class NaimDrawer extends StatelessWidget {
     return Drawer(
       backgroundColor: const Color(0xFFF8F8F8),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(
-          left: Radius.circular(28),
-        ),
+        borderRadius: BorderRadius.horizontal(left: Radius.circular(28)),
       ),
       child: SafeArea(
         child: Column(
@@ -43,10 +41,7 @@ class NaimDrawer extends StatelessWidget {
                           ),
                           Text(
                             'Your Moment of Bliss',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -187,11 +182,17 @@ class NaimDrawer extends StatelessWidget {
                     icon: CupertinoIcons.arrow_right_to_line,
                     title: 'Log out',
                     onTap: () {
-                      Navigator.pop(context);
+                      final signInBloc = context.read<SignInBloc>();
+                      final navigator = Navigator.of(context);
 
-                      context
-                          .read<SignInBloc>()
-                          .add(SignOutRequired());
+                      // Close the drawer
+                      navigator.pop();
+
+                      // Sign the user out
+                      signInBloc.add(SignOutRequired());
+
+                      // Remove DetailsScreen / Cart / other opened pages
+                      navigator.popUntil((route) => route.isFirst);
                     },
                   ),
                 ],
@@ -205,19 +206,14 @@ class NaimDrawer extends StatelessWidget {
 }
 
 class _DrawerSectionTitle extends StatelessWidget {
-  const _DrawerSectionTitle({
-    required this.title,
-  });
+  const _DrawerSectionTitle({required this.title});
 
   final String title;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 12,
-        bottom: 7,
-      ),
+      padding: const EdgeInsets.only(left: 12, bottom: 7),
       child: Text(
         title,
         style: TextStyle(
@@ -245,29 +241,15 @@ class _DrawerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 12,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       minLeadingWidth: 48,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      leading: Icon(
-        icon,
-        size: 21,
-        color: const Color(0xFF2D160E),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      leading: Icon(icon, size: 21, color: const Color(0xFF2D160E)),
       title: Text(
         title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-        ),
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
       ),
-      trailing: const Icon(
-        CupertinoIcons.chevron_right,
-        size: 14,
-      ),
+      trailing: const Icon(CupertinoIcons.chevron_right, size: 14),
       onTap: onTap,
     );
   }
@@ -282,19 +264,13 @@ void _openNaimPage(
 
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => _NaimPage(
-        title: title,
-        subtitle: subtitle,
-      ),
+      builder: (_) => _NaimPage(title: title, subtitle: subtitle),
     ),
   );
 }
 
 class _NaimPage extends StatelessWidget {
-  const _NaimPage({
-    required this.title,
-    required this.subtitle,
-  });
+  const _NaimPage({required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
@@ -302,41 +278,27 @@ class _NaimPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor:
-            Theme.of(context).colorScheme.surface,
-      ),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.surface),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w900,
-              ),
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: 6),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
             ),
             const SizedBox(height: 40),
             const Center(
               child: Text(
                 'Coming soon 🍪',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
             ),
           ],
