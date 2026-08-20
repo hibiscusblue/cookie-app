@@ -32,9 +32,7 @@ class _CartScreenState extends State<CartScreen> {
         backgroundColor: const Color(0xFFF8F8F8),
         title: const Text(
           'YOUR CART',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w900),
         ),
       ),
 
@@ -42,10 +40,7 @@ class _CartScreenState extends State<CartScreen> {
           ? const Center(
               child: Text(
                 'Your cart is empty 🍪',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
             )
           : Column(
@@ -57,26 +52,20 @@ class _CartScreenState extends State<CartScreen> {
                     itemBuilder: (context, index) {
                       final cookie = uniqueCookies[index];
 
-                      final quantity =
-                          Cart.quantityFor(cookie);
+                      final quantity = Cart.quantityFor(cookie);
 
-                      final subtotal =
-                          cookie.discount * quantity;
+                      final subtotal = cookie.discount * quantity;
 
                       return Container(
-                        margin:
-                            const EdgeInsets.only(bottom: 14),
+                        margin: const EdgeInsets.only(bottom: 14),
                         padding: const EdgeInsets.all(14),
 
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius:
-                              BorderRadius.circular(22),
+                          borderRadius: BorderRadius.circular(22),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(
-                                alpha: 0.05,
-                              ),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -88,9 +77,12 @@ class _CartScreenState extends State<CartScreen> {
                             SizedBox(
                               width: 82,
                               height: 82,
-                              child: CookieImage(
-                                picture: cookie.picture,
-                                name: cookie.name,
+                              child: Transform.scale(
+                                scale: cookie.imageScale,
+                                child: CookieImage(
+                                  picture: cookie.picture,
+                                  name: cookie.name,
+                                ),
                               ),
                             ),
 
@@ -98,15 +90,13 @@ class _CartScreenState extends State<CartScreen> {
 
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     cookie.name,
                                     style: const TextStyle(
                                       fontSize: 17,
-                                      fontWeight:
-                                          FontWeight.w900,
+                                      fontWeight: FontWeight.w900,
                                     ),
                                   ),
 
@@ -116,8 +106,7 @@ class _CartScreenState extends State<CartScreen> {
                                     '€${cookie.discount.toStringAsFixed(2)} each',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color:
-                                          Colors.grey.shade600,
+                                      color: Colors.grey.shade600,
                                     ),
                                   ),
 
@@ -126,13 +115,10 @@ class _CartScreenState extends State<CartScreen> {
                                   Row(
                                     children: [
                                       _CartQuantityButton(
-                                        icon:
-                                            CupertinoIcons.minus,
+                                        icon: CupertinoIcons.minus,
                                         onPressed: () {
                                           setState(() {
-                                            Cart.removeOne(
-                                              cookie,
-                                            );
+                                            Cart.removeOne(cookie);
                                           });
                                         },
                                       ),
@@ -141,20 +127,16 @@ class _CartScreenState extends State<CartScreen> {
                                         width: 36,
                                         child: Text(
                                           '$quantity',
-                                          textAlign:
-                                              TextAlign.center,
-                                          style:
-                                              const TextStyle(
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
                                             fontSize: 16,
-                                            fontWeight:
-                                                FontWeight.w900,
+                                            fontWeight: FontWeight.w900,
                                           ),
                                         ),
                                       ),
 
                                       _CartQuantityButton(
-                                        icon:
-                                            CupertinoIcons.plus,
+                                        icon: CupertinoIcons.plus,
                                         onPressed: () {
                                           setState(() {
                                             Cart.add(cookie);
@@ -168,35 +150,25 @@ class _CartScreenState extends State<CartScreen> {
                             ),
 
                             Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
                                   '€${subtotal.toStringAsFixed(2)}',
                                   style: const TextStyle(
                                     fontSize: 18,
-                                    fontWeight:
-                                        FontWeight.w900,
-                                    color:
-                                        Color(0xFF2D160E),
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF2D160E),
                                   ),
                                 ),
 
                                 const SizedBox(height: 12),
 
                                 IconButton(
-                                  visualDensity:
-                                      VisualDensity.compact,
+                                  visualDensity: VisualDensity.compact,
                                   onPressed: () {
                                     setState(() {
-                                      while (
-                                          Cart.quantityFor(
-                                                cookie,
-                                              ) >
-                                              0) {
-                                        Cart.removeOne(
-                                          cookie,
-                                        );
+                                      while (Cart.quantityFor(cookie) > 0) {
+                                        Cart.removeOne(cookie);
                                       }
                                     });
                                   },
@@ -215,12 +187,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
 
                 Container(
-                  padding: const EdgeInsets.fromLTRB(
-                    20,
-                    18,
-                    20,
-                    24,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(
@@ -233,15 +200,13 @@ class _CartScreenState extends State<CartScreen> {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               '${Cart.totalItems} cookies',
                               style: TextStyle(
                                 fontSize: 14,
-                                color:
-                                    Colors.grey.shade600,
+                                color: Colors.grey.shade600,
                               ),
                             ),
 
@@ -249,8 +214,7 @@ class _CartScreenState extends State<CartScreen> {
                               'TOTAL',
                               style: TextStyle(
                                 fontSize: 14,
-                                fontWeight:
-                                    FontWeight.w900,
+                                fontWeight: FontWeight.w900,
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -265,10 +229,8 @@ class _CartScreenState extends State<CartScreen> {
                             '€${Cart.total.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 28,
-                              fontWeight:
-                                  FontWeight.w900,
-                              color:
-                                  Color(0xFF2D160E),
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF2D160E),
                             ),
                           ),
                         ),
@@ -282,25 +244,17 @@ class _CartScreenState extends State<CartScreen> {
                             onPressed: () {
                               // Checkout will come next
                             },
-                            style:
-                                FilledButton.styleFrom(
-                              backgroundColor:
-                                  Colors.black,
-                              foregroundColor:
-                                  Colors.white,
-                              shape:
-                                  RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(
-                                      16,
-                                    ),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
                             ),
                             child: const Text(
                               'CHECKOUT',
                               style: TextStyle(
-                                fontWeight:
-                                    FontWeight.w900,
+                                fontWeight: FontWeight.w900,
                                 letterSpacing: 0.8,
                               ),
                             ),
@@ -317,10 +271,7 @@ class _CartScreenState extends State<CartScreen> {
 }
 
 class _CartQuantityButton extends StatelessWidget {
-  const _CartQuantityButton({
-    required this.icon,
-    required this.onPressed,
-  });
+  const _CartQuantityButton({required this.icon, required this.onPressed});
 
   final IconData icon;
   final VoidCallback onPressed;
@@ -337,11 +288,7 @@ class _CartQuantityButton extends StatelessWidget {
           color: Color(0xFFF2EEE9),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          icon,
-          size: 15,
-          color: const Color(0xFF2D160E),
-        ),
+        child: Icon(icon, size: 15, color: const Color(0xFF2D160E)),
       ),
     );
   }

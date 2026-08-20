@@ -16,9 +16,12 @@ class _SignInScreenState extends State<SignInScreen> {
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   bool signInRequired = false;
-  IconData iconPassword = CupertinoIcons.eye_fill;
   bool obscurePassword = true;
+
+  IconData iconPassword = CupertinoIcons.eye_fill;
+
   String? _errorMsg;
 
   @override
@@ -28,6 +31,17 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
+  void _signIn() {
+    if (_formKey.currentState!.validate()) {
+      context.read<SignInBloc>().add(
+            SignInRequired(
+              emailController.text.trim(),
+              passwordController.text,
+            ),
+          );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignInBloc, SignInState>(
@@ -35,10 +49,12 @@ class _SignInScreenState extends State<SignInScreen> {
         if (state is SignInSuccess) {
           setState(() {
             signInRequired = false;
+            _errorMsg = null;
           });
         } else if (state is SignInLoading) {
           setState(() {
             signInRequired = true;
+            _errorMsg = null;
           });
         } else if (state is SignInFailure) {
           setState(() {
@@ -49,22 +65,55 @@ class _SignInScreenState extends State<SignInScreen> {
       },
       child: Form(
         key: _formKey,
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: MyTextField(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 28),
+
+              const Text(
+                'WELCOME BACK',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.8,
+                  color: Colors.black,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              Text(
+                'Sign in to continue your Naim experience',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              MyTextField(
                 controller: emailController,
                 hintText: 'Email',
                 obscureText: false,
                 keyboardType: TextInputType.emailAddress,
-                prefixIcon: const Icon(CupertinoIcons.mail_solid),
+                prefixIcon: const Icon(
+                  CupertinoIcons.mail_solid,
+                  color: Color(0xFF2D160E),
+                ),
                 errorMsg: _errorMsg,
                 validator: (val) {
                   if (val == null || val.isEmpty) {
                     return 'Please fill in this field';
-                  } else if (!RegExp(
+                  }
+
+                  if (!RegExp(
                     r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$',
                   ).hasMatch(val)) {
                     return 'Please enter a valid email';
@@ -73,82 +122,82 @@ class _SignInScreenState extends State<SignInScreen> {
                   return null;
                 },
               ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: MyTextField(
+
+              const SizedBox(height: 14),
+
+              MyTextField(
                 controller: passwordController,
                 hintText: 'Password',
                 obscureText: obscurePassword,
                 keyboardType: TextInputType.visiblePassword,
-                prefixIcon: const Icon(CupertinoIcons.lock_fill),
+                prefixIcon: const Icon(
+                  CupertinoIcons.lock_fill,
+                  color: Color(0xFF2D160E),
+                ),
                 errorMsg: _errorMsg,
                 validator: (val) {
                   if (val == null || val.isEmpty) {
                     return 'Please fill in this field';
-                  } else if (val.length < 6) {
+                  }
+
+                  if (val.length < 6) {
                     return 'Password must be at least 6 characters';
                   }
+
                   return null;
                 },
                 suffixIcon: IconButton(
                   onPressed: () {
                     setState(() {
                       obscurePassword = !obscurePassword;
-                      if (obscurePassword) {
-                        iconPassword = CupertinoIcons.eye_fill;
-                      } else {
-                        iconPassword = CupertinoIcons.eye_slash_fill;
-                      }
+
+                      iconPassword = obscurePassword
+                          ? CupertinoIcons.eye_fill
+                          : CupertinoIcons.eye_slash_fill;
                     });
                   },
-                  icon: Icon(iconPassword),
+                  icon: Icon(
+                    iconPassword,
+                    color: const Color(0xFF2D160E),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            !signInRequired
-                ? SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: TextButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          context.read<SignInBloc>().add(
-                            SignInRequired(
-                              emailController.text,
-                              passwordController.text,
-                            ),
-                          );
-                        }
-                      },
-                      style: TextButton.styleFrom(
-                        elevation: 3.0,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(60),
-                        ),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 25,
-                          vertical: 5,
-                        ),
-                        child: Text(
-                          'Sign In',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+
+              const SizedBox(height: 24),
+
+              if (!signInRequired)
+                SizedBox(
+                  height: 54,
+                  child: FilledButton(
+                    onPressed: _signIn,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
                       ),
                     ),
-                  )
-                : const CircularProgressIndicator(),
-          ],
+                    child: const Text(
+                      'SIGN IN',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                )
+              else
+                const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
+                ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
