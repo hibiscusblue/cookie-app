@@ -12,6 +12,8 @@ class CookieEntity {
   String ingredients;
   double discount;
   Macros macros;
+  String themeColor;
+  double imageScale;
 
   CookieEntity({
     required this.cookieId,
@@ -24,6 +26,8 @@ class CookieEntity {
     required this.ingredients,
     required this.discount,
     required this.macros,
+    required this.themeColor,
+    required this.imageScale,
   });
 
   Map<String, Object?> toDocument() {
@@ -38,6 +42,8 @@ class CookieEntity {
       'ingredients': ingredients,
       'discount': discount,
       'macros': macros.toEntity().toDocument(),
+      'themeColor': themeColor,
+      'imageScale': imageScale,
     };
   }
 
@@ -46,6 +52,8 @@ class CookieEntity {
     String? documentId,
   }) {
     return CookieEntity(
+      themeColor: doc['themeColor'] as String? ?? '#000000',
+      imageScale: (doc['imageScale'] as num?)?.toDouble() ?? 1.0,
       cookieId: _stringValue(
         doc['cookieId'] ?? documentId,
         'cookieId',

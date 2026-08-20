@@ -143,9 +143,7 @@ class DailyDropHero extends StatelessWidget {
                       width: 130,
                       height: 130,
                       child: Transform.scale(
-                        scale: cookie.name.toLowerCase() == 'marzipan'
-                            ? 0.60
-                            : 1.0,
+                        scale: cookie.imageScale,
                         child: CookieImage(
                           picture: cookie.picture,
                           name: cookie.name,

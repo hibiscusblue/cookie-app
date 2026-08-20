@@ -37,9 +37,7 @@ class CookieCard extends StatelessWidget {
                 child: SizedBox.expand(
                   child: Center(
                     child: Transform.scale(
-                      scale: cookie.name.trim().toLowerCase() == 'marzipan'
-                          ? 0.60
-                          : 1.0,
+                      scale: cookie.imageScale,
                       child: CookieImage(
                         picture: cookie.picture,
                         name: cookie.name,

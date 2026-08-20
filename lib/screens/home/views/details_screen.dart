@@ -5,6 +5,7 @@ import 'package:flutter_application_1/components/macro.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_application_1/theme/cookie_theme.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({
@@ -16,6 +17,7 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = cookieThemeColor(cookie.themeColor);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
 
@@ -84,7 +86,7 @@ class DetailsScreen extends StatelessWidget {
                         children: [
                           Text(
                             '${cookie.discount.toStringAsFixed(2)} €',
-                            style: const TextStyle(
+                            style:  TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -145,6 +147,7 @@ class DetailsScreen extends StatelessWidget {
                         title: 'Calories',
                         value: cookie.macros.calories,
                         icon: FontAwesomeIcons.fireFlameCurved,
+                        iconColor: themeColor,
                       ),
 
                       const SizedBox(width: 8),
@@ -153,6 +156,7 @@ class DetailsScreen extends StatelessWidget {
                         title: 'Protein',
                         value: cookie.macros.proteins,
                         icon: FontAwesomeIcons.dumbbell,
+                        iconColor: themeColor,
                       ),
 
                       const SizedBox(width: 8),
@@ -161,6 +165,7 @@ class DetailsScreen extends StatelessWidget {
                         title: 'Fat',
                         value: cookie.macros.fat,
                         icon: FontAwesomeIcons.droplet,
+                        iconColor: themeColor,
                       ),
 
                       const SizedBox(width: 8),
@@ -169,6 +174,7 @@ class DetailsScreen extends StatelessWidget {
                         title: 'Carbs',
                         value: cookie.macros.carbs,
                         icon: FontAwesomeIcons.wheatAwn,
+                        iconColor: themeColor,
                       ),
                     ],
                   ),

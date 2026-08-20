@@ -5,7 +5,8 @@ class MyMacroWidget extends StatelessWidget {
   final String title;
   final int value;
   final FaIconData icon;
-  const MyMacroWidget({required this.title, required this.value, required this.icon, super.key});
+  final Color iconColor;
+  const MyMacroWidget({required this.title, required this.value, required this.icon, super.key, required this.iconColor,});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class MyMacroWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              FaIcon(icon, color: Colors.redAccent,),
+              FaIcon(icon, color: iconColor,),
               const SizedBox(height: 4,),
               Text(
                 title == "Calories" ? '$value $title' : '${value}g $title',

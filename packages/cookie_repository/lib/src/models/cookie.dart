@@ -12,6 +12,8 @@ class Cookie {
   String ingredients;
   double discount;
   Macros macros;
+  String themeColor;
+  double imageScale;
 
   Cookie({
     required this.cookieId,
@@ -24,6 +26,8 @@ class Cookie {
     required this.ingredients,
     required this.discount,
     required this.macros,
+    required this.themeColor,
+    required this.imageScale,
   });
 
   CookieEntity toEntity() {
@@ -38,6 +42,8 @@ class Cookie {
       ingredients: ingredients,
       discount: discount,
       macros: macros,
+      themeColor: themeColor,
+      imageScale: imageScale,
     );
   }
 
@@ -53,6 +59,8 @@ class Cookie {
       ingredients: entity.ingredients,
       discount: entity.discount,
       macros: entity.macros,
+      themeColor: entity.themeColor,
+      imageScale: entity.imageScale,
     );
   }
 }
