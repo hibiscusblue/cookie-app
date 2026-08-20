@@ -3,12 +3,10 @@ import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/cookie_image.dart';
-import 'package:flutter_application_1/screens/auth/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:flutter_application_1/screens/home/blocs/get_cookie_bloc/get_cookie_bloc.dart';
 import 'package:flutter_application_1/screens/home/views/details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/cart.dart';
-import 'package:flutter_application_1/screens/cart/cart_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
@@ -247,8 +245,8 @@ class _DailyDropHero extends StatelessWidget {
                       width: 130,
                       height: 130,
                       child: Transform.scale(
-                        scale: cookie.name.toLowerCase() == 'Marzipan'
-                            ? 0.45
+                        scale: cookie.name.toLowerCase() == 'marzipan'
+                            ? 0.60
                             : 1.0,
                         child: CookieImage(
                           picture: cookie.picture,
@@ -691,9 +689,16 @@ class _CookieCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: SizedBox.expand(
-                  child: CookieImage(
-                    picture: cookie.picture,
-                    name: cookie.name,
+                  child: Center(
+                    child: Transform.scale(
+                      scale: cookie.name.trim().toLowerCase() == 'marzipan'
+                          ? 0.60
+                          : 1.0,
+                      child: CookieImage(
+                        picture: cookie.picture,
+                        name: cookie.name,
+                      ),
+                    ),
                   ),
                 ),
               ),
