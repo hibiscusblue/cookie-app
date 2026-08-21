@@ -1,13 +1,6 @@
-import 'dart:async';
-import 'package:cookie_repository/cookie_repository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/components/cookie_image.dart';
 import 'package:flutter_application_1/screens/home/blocs/get_cookie_bloc/get_cookie_bloc.dart';
-import 'package:flutter_application_1/screens/home/views/details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_1/cart.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/daily_drop/daily_drop_hero.dart';

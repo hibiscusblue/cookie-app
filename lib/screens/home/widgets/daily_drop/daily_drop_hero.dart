@@ -11,7 +11,7 @@ import 'package:flutter_application_1/components/cookie_badge.dart';
 import 'package:flutter_application_1/theme/label_colors.dart';
 
 class DailyDropHero extends StatelessWidget {
-  const DailyDropHero({required this.cookies});
+  const DailyDropHero({super.key, required this.cookies});
 
   final List<Cookie> cookies;
 

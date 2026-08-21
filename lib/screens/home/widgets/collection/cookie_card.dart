@@ -9,7 +9,7 @@ import 'package:flutter_application_1/screens/home/views/details_screen.dart';
 import 'package:flutter_application_1/theme/label_colors.dart';
 
 class CookieCard extends StatelessWidget {
-  const CookieCard({required this.cookie});
+  const CookieCard({super.key, required this.cookie});
 
   final Cookie cookie;
 

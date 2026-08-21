@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/auth/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_application_1/screens/journal/journal_screen.dart';
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -104,10 +105,12 @@ class NaimDrawer extends StatelessWidget {
                     icon: CupertinoIcons.book,
                     title: 'Naim Journal',
                     onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'NAIM JOURNAL',
-                        subtitle: 'Stories, ingredients & inspiration',
+                      Navigator.pop(context);
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const JournalScreen(),
+                        ),
                       );
                     },
                   ),
