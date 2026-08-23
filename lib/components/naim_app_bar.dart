@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/screens/cart/cart_screen.dart';
 import 'package:flutter_application_1/components/naim_search_delegate.dart';
+import 'package:flutter_application_1/screens/account/account_screen.dart';
 
 class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
   const NaimAppBar({super.key});
@@ -49,11 +50,18 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
 
         IconButton(
-          onPressed: () {
-            // Profile screen later
-          },
-          icon: const Icon(CupertinoIcons.person, size: 22),
-        ),
+  onPressed: () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const AccountScreen(),
+      ),
+    );
+  },
+  icon: const Icon(
+    CupertinoIcons.person,
+    size: 22,
+  ),
+),
 
         ValueListenableBuilder<int>(
           valueListenable: Cart.changes,
