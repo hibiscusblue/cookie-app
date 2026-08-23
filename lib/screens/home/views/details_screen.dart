@@ -1,13 +1,16 @@
 import 'package:cookie_repository/cookie_repository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/components/cookie_image.dart';
 import 'package:flutter_application_1/components/macro.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_application_1/theme/cookie_theme.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class DetailsScreen extends StatelessWidget {
+class DetailsScreen extends StatefulWidget {
   const DetailsScreen({
     required this.cookie,
     super.key,
@@ -16,15 +19,27 @@ class DetailsScreen extends StatelessWidget {
   final Cookie cookie;
 
   @override
+  State<DetailsScreen> createState() => _DetailsScreenState();
+}
+
+class _DetailsScreenState extends State<DetailsScreen> {
+  int quantity = 1;
+
+  @override
   Widget build(BuildContext context) {
+    final cookie = widget.cookie;
     final themeColor = cookieThemeColor(cookie.themeColor);
+
+    final unitPrice =
+        cookie.discount > 0 ? cookie.discount : cookie.price;
+
+    final totalPrice = unitPrice * quantity;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
 
-      // SAME DRAWER AS HOME
       endDrawer: const NaimDrawer(),
 
-      // SAME HEADER AS HOME
       appBar: const NaimAppBar(),
 
       body: SingleChildScrollView(
@@ -85,8 +100,8 @@ class DetailsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            '${cookie.discount.toStringAsFixed(2)} €',
-                            style:  TextStyle(
+                            '${unitPrice.toStringAsFixed(2)} €',
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -110,7 +125,6 @@ class DetailsScreen extends StatelessWidget {
 
                   const SizedBox(height: 18),
 
-                  // INGREDIENTS
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Column(
@@ -140,7 +154,6 @@ class DetailsScreen extends StatelessWidget {
 
                   const SizedBox(height: 22),
 
-                  // MACROS
                   Row(
                     children: [
                       MyMacroWidget(
@@ -181,24 +194,84 @@ class DetailsScreen extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  // BUTTON
+                  Row(
+                    children: [
+                      const Text(
+                        'QUANTITY',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      _DetailsQuantityButton(
+                        icon: CupertinoIcons.minus,
+                        onPressed: quantity > 1
+                            ? () {
+                                setState(() {
+                                  quantity--;
+                                });
+                              }
+                            : null,
+                      ),
+
+                      const SizedBox(width: 18),
+
+                      SizedBox(
+                        width: 24,
+                        child: Text(
+                          '$quantity',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 18),
+
+                      _DetailsQuantityButton(
+                        icon: CupertinoIcons.plus,
+                        onPressed: () {
+                          setState(() {
+                            quantity++;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
                   SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    height: 62,
                     child: FilledButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        for (int i = 0; i < quantity; i++) {
+                          Cart.add(cookie);
+                        }
+
+                        setState(() {
+                          quantity = 1;
+                        });
+                      },
                       style: FilledButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(18),
                         ),
                       ),
-                      child: const Text(
-                        'ADD TO CART',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
+                      child: Text(
+                        'ADD $quantity TO CART  •  €${totalPrice.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w900,
                           letterSpacing: 0.4,
                         ),
                       ),
@@ -224,6 +297,41 @@ class DetailsScreen extends StatelessWidget {
           blurRadius: 5,
         ),
       ],
+    );
+  }
+}
+
+class _DetailsQuantityButton extends StatelessWidget {
+  const _DetailsQuantityButton({
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(100),
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: onPressed == null
+              ? Colors.grey.shade100
+              : const Color(0xFFF2EEE9),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+          color: onPressed == null
+              ? Colors.grey.shade400
+              : const Color(0xFF2D160E),
+        ),
+      ),
     );
   }
 }
