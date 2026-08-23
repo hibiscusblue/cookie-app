@@ -1,7 +1,8 @@
 import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_application_1/screens/home/blocs/get_cookie_bloc/get_cookie_bloc.dart';
 import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/components/cookie_badge.dart';
 import 'package:flutter_application_1/components/cookie_image.dart';
@@ -22,9 +23,14 @@ class CookieCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: () {
+          final getCookieBloc = context.read<GetCookieBloc>();
+
           Navigator.of(context).push(
             MaterialPageRoute<void>(
-              builder: (_) => DetailsScreen(cookie: cookie),
+              builder: (_) => BlocProvider.value(
+                value: getCookieBloc,
+                child: DetailsScreen(cookie: cookie),
+              ),
             ),
           );
         },
@@ -58,7 +64,7 @@ class CookieCard extends StatelessWidget {
                     spacing: 8,
                     runSpacing: 4,
                     children: [
-                     CookieBadge(
+                      CookieBadge(
                         label: cookie.label1,
                         color: labelColor(cookie.label1),
                       ),
