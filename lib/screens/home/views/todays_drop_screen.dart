@@ -1,3 +1,4 @@
+import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +14,9 @@ class TodaysDropScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => context.read<GetCookieBloc>(),
+      create: (_) => GetCookieBloc(
+        FirebaseCookieRepo(),
+      )..add(GetCookie()),
       child: const _TodaysDropView(),
     );
   }
@@ -26,8 +29,10 @@ class _TodaysDropView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
+
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: BlocBuilder<GetCookieBloc, GetCookieState>(

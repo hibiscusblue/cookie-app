@@ -58,16 +58,11 @@ class NaimDrawer extends StatelessWidget {
                     icon: CupertinoIcons.sparkles,
                     title: 'Today\'s Drop',
                     onTap: () {
-                      final getCookieBloc = context.read<GetCookieBloc>();
-
                       Navigator.pop(context);
 
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => BlocProvider.value(
-                            value: getCookieBloc,
-                            child: const TodaysDropScreen(),
-                          ),
+                          builder: (_) => const TodaysDropScreen(),
                         ),
                       );
                     },
