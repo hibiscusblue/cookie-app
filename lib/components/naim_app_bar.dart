@@ -50,18 +50,13 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
 
         IconButton(
-  onPressed: () {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const AccountScreen(),
-      ),
-    );
-  },
-  icon: const Icon(
-    CupertinoIcons.person,
-    size: 22,
-  ),
-),
+          onPressed: () {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const AccountScreen()));
+          },
+          icon: const Icon(CupertinoIcons.person, size: 22),
+        ),
 
         ValueListenableBuilder<int>(
           valueListenable: Cart.changes,
