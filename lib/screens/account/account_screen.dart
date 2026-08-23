@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -9,211 +10,210 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authUser = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
 
-      body: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          final user = snapshot.data;
+      body: authUser == null
+          ? const Center(
+              child: Text(
+                'Please sign in to view your account.',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
+          : StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(authUser.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  );
+                }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // const Text(
-                //   'MY ACCOUNT',
-                //   style: TextStyle(
-                //     fontSize: 28,
-                //     fontWeight: FontWeight.w900,
-                //     letterSpacing: 0.8,
-                //   ),
-                // ),
-
-                // const SizedBox(height: 24),
-
-                // =================================================
-                // USER CARD
-                // =================================================
-
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(22),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: const Color(0xFFF2EEE9),
-                        child: Text(
-                          _initialFor(user),
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFF2D160E),
-                          ),
-                        ),
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text(
+                      'Unable to load your account.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
+                    ),
+                  );
+                }
 
-                      const SizedBox(width: 16),
+                final data = snapshot.data?.data();
 
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                final name =
+                    data?['name']?.toString().trim() ?? '';
+
+                final email =
+                    data?['email']?.toString().trim() ??
+                    authUser.email ??
+                    '';
+
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // =================================================
+                      // USER CARD
+                      // =================================================
+
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        child: Row(
                           children: [
-                            Text(
-                              _welcomeText(user),
-                              style: const TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.w900,
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundColor:
+                                  const Color(0xFFF2EEE9),
+                              child: Text(
+                                _initialFor(name),
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF2D160E),
+                                ),
                               ),
                             ),
 
-                            const SizedBox(height: 4),
+                            const SizedBox(width: 16),
 
-                            Text(
-                              user?.email ?? 'Your Naim account',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    name.isNotEmpty
+                                        ? 'Welcome, $name'
+                                        : 'Welcome to Naim',
+                                    style: const TextStyle(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 4),
+
+                                  Text(
+                                    email.isNotEmpty
+                                        ? email
+                                        : 'Your Naim account',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
+
+                      const SizedBox(height: 30),
+
+                      // =================================================
+                      // ACCOUNT OPTIONS
+                      // =================================================
+
+                      _AccountTile(
+                        icon: Icons.receipt_long_outlined,
+                        title: 'My Orders',
+                        subtitle: 'View your previous orders',
+                        onTap: () {
+                          // Connect later.
+                        },
+                      ),
+
+                      _AccountTile(
+                        icon: Icons.favorite_border,
+                        title: 'Favorites',
+                        subtitle: 'Your saved cookies',
+                        onTap: () {
+                          // Connect later.
+                        },
+                      ),
+
+                      _AccountTile(
+                        icon: Icons.location_on_outlined,
+                        title: 'Addresses',
+                        subtitle: 'Delivery and billing addresses',
+                        onTap: () {
+                          // Connect later.
+                        },
+                      ),
+
+                      _AccountTile(
+                        icon: Icons.person_outline,
+                        title: 'Personal Details',
+                        subtitle:
+                            'Name, email and account information',
+                        onTap: () {
+                          _showPersonalDetails(
+                            context,
+                            name: name,
+                            email: email,
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // =================================================
+                      // LOG OUT
+                      // =================================================
+
+                      _AccountTile(
+                        icon: Icons.logout,
+                        title: 'Log out',
+                        subtitle:
+                            'Sign out of your Naim account',
+                        onTap: () {
+                          _logOut(context);
+                        },
+                      ),
                     ],
                   ),
-                ),
-
-                const SizedBox(height: 30),
-
-                // =================================================
-                // ACCOUNT OPTIONS
-                // =================================================
-
-                _AccountTile(
-                  icon: Icons.receipt_long_outlined,
-                  title: 'My Orders',
-                  subtitle: 'View your previous orders',
-                  onTap: () {
-                    // We will connect this next.
-                  },
-                ),
-
-                _AccountTile(
-                  icon: Icons.favorite_border,
-                  title: 'Favorites',
-                  subtitle: 'Your saved cookies',
-                  onTap: () {
-                    // Connect to Favorites screen later.
-                  },
-                ),
-
-                _AccountTile(
-                  icon: Icons.location_on_outlined,
-                  title: 'Addresses',
-                  subtitle: 'Delivery and billing addresses',
-                  onTap: () {
-                    // Connect address screen later.
-                  },
-                ),
-
-                _AccountTile(
-                  icon: Icons.person_outline,
-                  title: 'Personal Details',
-                  subtitle: 'Name, email and account information',
-                  onTap: () {
-                    _showPersonalDetails(
-                      context,
-                      user,
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 20),
-
-                // =================================================
-                // LOG OUT
-                // =================================================
-
-                _AccountTile(
-                  icon: Icons.logout,
-                  title: 'Log out',
-                  subtitle: 'Sign out of your Naim account',
-                  onTap: () {
-                    _logOut(context);
-                  },
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
-      ),
     );
-  }
-
-  // =============================================================
-  // USER NAME
-  // =============================================================
-
-  String _welcomeText(User? user) {
-    if (user == null) {
-      return 'Welcome to Naim';
-    }
-
-    final displayName = user.displayName?.trim();
-
-    if (displayName != null && displayName.isNotEmpty) {
-      return 'Welcome, $displayName';
-    }
-
-    final email = user.email;
-
-    if (email != null && email.contains('@')) {
-      final name = email.split('@').first;
-
-      if (name.isNotEmpty) {
-        return 'Welcome, ${_capitalize(name)}';
-      }
-    }
-
-    return 'Welcome to Naim';
   }
 
   // =============================================================
   // PROFILE INITIAL
   // =============================================================
 
-  String _initialFor(User? user) {
-    final displayName = user?.displayName?.trim();
+  String _initialFor(String name) {
+    final cleanName = name.trim();
 
-    if (displayName != null && displayName.isNotEmpty) {
-      return displayName[0].toUpperCase();
-    }
-
-    final email = user?.email;
-
-    if (email != null && email.isNotEmpty) {
-      return email[0].toUpperCase();
+    if (cleanName.isNotEmpty) {
+      return cleanName[0].toUpperCase();
     }
 
     return 'N';
-  }
-
-  String _capitalize(String value) {
-    if (value.isEmpty) {
-      return value;
-    }
-
-    return value[0].toUpperCase() + value.substring(1);
   }
 
   // =============================================================
@@ -221,9 +221,10 @@ class AccountScreen extends StatelessWidget {
   // =============================================================
 
   void _showPersonalDetails(
-    BuildContext context,
-    User? user,
-  ) {
+    BuildContext context, {
+    required String name,
+    required String email,
+  }) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -252,8 +253,8 @@ class AccountScreen extends StatelessWidget {
 
               _DetailRow(
                 title: 'Name',
-                value: user?.displayName?.isNotEmpty == true
-                    ? user!.displayName!
+                value: name.isNotEmpty
+                    ? name
                     : 'Not added yet',
               ),
 
@@ -261,7 +262,9 @@ class AccountScreen extends StatelessWidget {
 
               _DetailRow(
                 title: 'Email',
-                value: user?.email ?? 'Not available',
+                value: email.isNotEmpty
+                    ? email
+                    : 'Not available',
               ),
             ],
           ),
@@ -392,7 +395,8 @@ class _AccountTile extends StatelessWidget {
 
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,
