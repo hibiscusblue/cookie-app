@@ -24,16 +24,16 @@ class AccountScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'MY ACCOUNT',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.8,
-                  ),
-                ),
+                // const Text(
+                //   'MY ACCOUNT',
+                //   style: TextStyle(
+                //     fontSize: 28,
+                //     fontWeight: FontWeight.w900,
+                //     letterSpacing: 0.8,
+                //   ),
+                // ),
 
-                const SizedBox(height: 24),
+                // const SizedBox(height: 24),
 
                 // =================================================
                 // USER CARD
