@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/screens/cart/cart_screen.dart';
-
+import 'package:flutter_application_1/components/naim_search_delegate.dart';
 
 class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
   const NaimAppBar({super.key});
@@ -43,7 +43,7 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
-            // Search screen later
+            showSearch(context: context, delegate: NaimSearchDelegate());
           },
           icon: const Icon(CupertinoIcons.search, size: 22),
         ),
