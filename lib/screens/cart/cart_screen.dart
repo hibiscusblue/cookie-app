@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/components/cookie_image.dart';
+import 'package:flutter_application_1/components/naim_app_bar.dart';
+import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -28,13 +30,8 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
 
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF8F8F8),
-        title: const Text(
-          'YOUR CART',
-          style: TextStyle(fontWeight: FontWeight.w900),
-        ),
-      ),
+      appBar: const NaimAppBar(),
+      endDrawer: const NaimDrawer(),
 
       body: Cart.items.isEmpty
           ? const Center(
