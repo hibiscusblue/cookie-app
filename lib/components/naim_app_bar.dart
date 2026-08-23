@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/screens/cart/cart_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_1/screens/home/blocs/get_cookie_bloc/get_cookie_bloc.dart';
+
 
 class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
   const NaimAppBar({super.key});
@@ -64,15 +63,8 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    final getCookieBloc = context.read<GetCookieBloc>();
-
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                          value: getCookieBloc,
-                          child: const CartScreen(),
-                        ),
-                      ),
+                      MaterialPageRoute(builder: (_) => const CartScreen()),
                     );
                   },
                   icon: const Icon(CupertinoIcons.cart, size: 23),
