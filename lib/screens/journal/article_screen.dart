@@ -1,31 +1,19 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_application_1/components/naim_app_bar.dart';
+import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'journal_article.dart';
 
 class ArticleScreen extends StatelessWidget {
   final JournalArticle article;
 
-  const ArticleScreen({
-    super.key,
-    required this.article,
-  });
+  const ArticleScreen({super.key, required this.article});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
-        title: const Text(
-          'NAIM JOURNAL',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 0.8,
-          ),
-        ),
-      ),
+      appBar: const NaimAppBar(),
+      endDrawer: const NaimDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(24, 18, 24, 48),
         child: Column(
@@ -71,29 +59,18 @@ class ArticleScreen extends StatelessWidget {
                 if (article.date != null)
                   Text(
                     _formatDate(article.date!),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
 
                 if (article.date != null)
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      '•',
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
+                    child: Text('•', style: TextStyle(color: Colors.grey)),
                   ),
 
                 Text(
                   _readTime(article.content),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -109,11 +86,7 @@ class ArticleScreen extends StatelessWidget {
                     article.image,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (
-                      context,
-                      error,
-                      stackTrace,
-                    ) {
+                    errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: const Color(0xFFF2EEE9),
                         child: const Center(
@@ -129,14 +102,9 @@ class ArticleScreen extends StatelessWidget {
                 ),
               ),
 
-            if (article.image.isNotEmpty)
-              const SizedBox(height: 34),
+            if (article.image.isNotEmpty) const SizedBox(height: 34),
 
-            Container(
-              width: 42,
-              height: 2,
-              color: const Color(0xFF2D160E),
-            ),
+            Container(width: 42, height: 2, color: const Color(0xFF2D160E)),
 
             const SizedBox(height: 26),
 
@@ -207,9 +175,7 @@ String _readTime(String content) {
     return '1 min read';
   }
 
-  final words = content.trim().split(
-        RegExp(r'\s+'),
-      );
+  final words = content.trim().split(RegExp(r'\s+'));
 
   final minutes = (words.length / 200).ceil();
 

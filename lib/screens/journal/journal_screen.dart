@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_application_1/components/naim_app_bar.dart';
+import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'article_screen.dart';
 import 'journal_article.dart';
 
@@ -11,18 +12,8 @@ class JournalScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
-        title: const Text(
-          'NAIM JOURNAL',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 0.8,
-          ),
-        ),
-      ),
+      appBar: const NaimAppBar(),
+      endDrawer: const NaimDrawer(),
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
@@ -31,19 +22,13 @@ class JournalScreen extends StatelessWidget {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (snapshot.hasError) {
               debugPrint('JOURNAL ERROR: ${snapshot.error}');
 
-              return const Center(
-                child: Text(
-                  'Unable to load the journal.',
-                ),
-              );
+              return const Center(child: Text('Unable to load the journal.'));
             }
 
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -51,9 +36,7 @@ class JournalScreen extends StatelessWidget {
             }
 
             final articles = snapshot.data!.docs
-                .map(
-                  (doc) => JournalArticle.fromDocument(doc),
-                )
+                .map((doc) => JournalArticle.fromDocument(doc))
                 .toList();
 
             JournalArticle? featured;
@@ -72,12 +55,7 @@ class JournalScreen extends StatelessWidget {
                 .toList();
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                24,
-                18,
-                24,
-                50,
-              ),
+              padding: const EdgeInsets.fromLTRB(24, 18, 24, 50),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -117,9 +95,7 @@ class JournalScreen extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
-                  _FeaturedArticleCard(
-                    article: featured,
-                  ),
+                  _FeaturedArticleCard(article: featured),
 
                   if (latestArticles.isNotEmpty) ...[
                     const SizedBox(height: 42),
@@ -153,12 +129,8 @@ class JournalScreen extends StatelessWidget {
 
                     ...latestArticles.map(
                       (article) => Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 18,
-                        ),
-                        child: _JournalArticleCard(
-                          article: article,
-                        ),
+                        padding: const EdgeInsets.only(bottom: 18),
+                        child: _JournalArticleCard(article: article),
                       ),
                     ),
                   ],
@@ -175,9 +147,7 @@ class JournalScreen extends StatelessWidget {
 class _FeaturedArticleCard extends StatelessWidget {
   final JournalArticle article;
 
-  const _FeaturedArticleCard({
-    required this.article,
-  });
+  const _FeaturedArticleCard({required this.article});
 
   @override
   Widget build(BuildContext context) {
@@ -206,11 +176,7 @@ class _FeaturedArticleCard extends StatelessWidget {
                     article.image,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (
-                      context,
-                      error,
-                      stackTrace,
-                    ) {
+                    errorBuilder: (context, error, stackTrace) {
                       return const _ImagePlaceholder();
                     },
                   ),
@@ -236,12 +202,7 @@ class _FeaturedArticleCard extends StatelessWidget {
 
                       const SizedBox(width: 10),
 
-                      const Text(
-                        '•',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
+                      const Text('•', style: TextStyle(color: Colors.grey)),
 
                       const SizedBox(width: 10),
 
@@ -324,9 +285,7 @@ class _FeaturedArticleCard extends StatelessWidget {
 class _JournalArticleCard extends StatelessWidget {
   final JournalArticle article;
 
-  const _JournalArticleCard({
-    required this.article,
-  });
+  const _JournalArticleCard({required this.article});
 
   @override
   Widget build(BuildContext context) {
@@ -340,9 +299,7 @@ class _JournalArticleCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: Colors.black.withOpacity(0.06),
-          ),
+          border: Border.all(color: Colors.black.withOpacity(0.06)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,11 +315,7 @@ class _JournalArticleCard extends StatelessWidget {
                     article.image,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (
-                      context,
-                      error,
-                      stackTrace,
-                    ) {
+                    errorBuilder: (context, error, stackTrace) {
                       return const _ImagePlaceholder();
                     },
                   ),
@@ -483,33 +436,21 @@ class _EmptyJournal extends StatelessWidget {
       child: Center(
         child: Text(
           'Something beautiful is baking.',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
         ),
       ),
     );
   }
 }
 
-void _openArticle(
-  BuildContext context,
-  JournalArticle article,
-) {
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (_) => ArticleScreen(
-        article: article,
-      ),
-    ),
-  );
+void _openArticle(BuildContext context, JournalArticle article) {
+  Navigator.of(
+    context,
+  ).push(MaterialPageRoute(builder: (_) => ArticleScreen(article: article)));
 }
 
 String _readTime(String content) {
-  final words = content.trim().split(
-        RegExp(r'\s+'),
-      );
+  final words = content.trim().split(RegExp(r'\s+'));
 
   if (content.trim().isEmpty) {
     return '1 min read';
