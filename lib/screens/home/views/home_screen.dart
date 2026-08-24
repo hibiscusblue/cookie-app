@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/daily_drop/daily_drop_hero.dart';
-import 'package:flutter_application_1/screens/home/widgets/collection/cookie_card.dart';
+import 'package:flutter_application_1/screens/home/widgets/collection/collection_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -27,46 +27,13 @@ class HomeScreen extends StatelessWidget {
               GetCookieSuccess() => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // DAILY DROP HERO
+                  // DAILY DROP
                   DailyDropHero(cookies: state.cookies),
 
                   const SizedBox(height: 24),
 
-                  // COLLECTION TITLE
-                  const Text(
-                    'THE COLLECTION',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-
-                  const SizedBox(height: 4),
-
-                  Text(
-                    'Our most-loved cookies',
-                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  // EXISTING COOKIE GRID
-                  Expanded(
-                    child: GridView.builder(
-                      itemCount: state.cookies.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.68,
-                          ),
-                      itemBuilder: (context, index) {
-                        return CookieCard(cookie: state.cookies[index]);
-                      },
-                    ),
-                  ),
+                  // COLLECTION
+                  Expanded(child: CollectionSection(cookies: state.cookies)),
                 ],
               ),
 
@@ -80,7 +47,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
 
 class _FailureView extends StatelessWidget {
   const _FailureView({required this.message});
