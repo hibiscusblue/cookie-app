@@ -47,6 +47,7 @@ class _TodaysDropView extends StatelessWidget {
               return SingleChildScrollView(
                 child: DailyDropHero(
                   cookies: state.cookies,
+                  showRules: true,
                 ),
               );
             }
