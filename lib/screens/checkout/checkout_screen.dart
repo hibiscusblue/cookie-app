@@ -204,22 +204,74 @@ class CheckoutScreen extends StatelessWidget {
                                 };
                               }).toList();
 
-                              final orderRef = FirebaseFirestore.instance
+                              final firestore = FirebaseFirestore.instance;
+
+                              final now = DateTime.now();
+
+                              final year = now.year.toString().substring(2);
+                              final month = now.month.toString().padLeft(
+                                2,
+                                '0',
+                              );
+                              final day = now.day.toString().padLeft(2, '0');
+
+                              final dateCode = '$year$month$day';
+
+                              final counterRef = firestore
+                                  .collection('orderCounters')
+                                  .doc(dateCode);
+
+                              final orderRef = firestore
                                   .collection('orders')
                                   .doc();
 
-                              await orderRef.set({
-                                'orderId': orderRef.id,
-                                'userId': user.uid,
-                                'email': user.email,
-                                'items': orderItems,
-                                'total': Cart.total,
-                                'orderStatus': 'pending',
-                                'paymentStatus': 'unpaid',
-                                'paymentMethod': 'tikkie',
-                                'fulfilmentMethod': 'pickup',
-                                'pickupLocation': 'Venlo',
-                                'createdAt': FieldValue.serverTimestamp(),
+                              await firestore.runTransaction((
+                                transaction,
+                              ) async {
+                                final counterSnapshot = await transaction.get(
+                                  counterRef,
+                                );
+
+                                int nextNumber = 1;
+
+                                if (counterSnapshot.exists) {
+                                  final data = counterSnapshot.data();
+
+                                  final currentNumber =
+                                      (data?['lastNumber'] as num?)?.toInt() ??
+                                      0;
+
+                                  nextNumber = currentNumber + 1;
+                                }
+
+                                final sequence = nextNumber.toString().padLeft(
+                                  3,
+                                  '0',
+                                );
+
+                                final orderNumber = int.parse(
+                                  '$dateCode$sequence',
+                                );
+
+                                transaction.set(counterRef, {
+                                  'lastNumber': nextNumber,
+                                  'updatedAt': FieldValue.serverTimestamp(),
+                                });
+
+                                transaction.set(orderRef, {
+                                  'orderId': orderRef.id,
+                                  'orderNumber': orderNumber,
+                                  'userId': user.uid,
+                                  'email': user.email,
+                                  'items': orderItems,
+                                  'total': Cart.total,
+                                  'orderStatus': 'pending',
+                                  'paymentStatus': 'unpaid',
+                                  'paymentMethod': 'tikkie',
+                                  'fulfilmentMethod': 'pickup',
+                                  'pickupLocation': 'Venlo',
+                                  'createdAt': FieldValue.serverTimestamp(),
+                                });
                               });
 
                               Cart.clear();

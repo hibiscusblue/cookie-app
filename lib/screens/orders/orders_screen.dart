@@ -20,10 +20,7 @@ class OrdersScreen extends StatelessWidget {
           ? const Center(
               child: Text(
                 'Please sign in to view your orders.',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             )
           : StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -34,9 +31,7 @@ class OrdersScreen extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black,
-                    ),
+                    child: CircularProgressIndicator(color: Colors.black),
                   );
                 }
 
@@ -55,10 +50,8 @@ class OrdersScreen extends StatelessWidget {
                 final orders = snapshot.data?.docs ?? [];
 
                 orders.sort((a, b) {
-                  final aTime =
-                      a.data()['createdAt'] as Timestamp?;
-                  final bTime =
-                      b.data()['createdAt'] as Timestamp?;
+                  final aTime = a.data()['createdAt'] as Timestamp?;
+                  final bTime = b.data()['createdAt'] as Timestamp?;
 
                   if (aTime == null || bTime == null) {
                     return 0;
@@ -103,9 +96,7 @@ class OrdersScreen extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   final order = orders[index].data();
 
-                                  return _OrderCard(
-                                    order: order,
-                                  );
+                                  return _OrderCard(order: order);
                                 },
                               ),
                       ),
@@ -119,31 +110,25 @@ class OrdersScreen extends StatelessWidget {
 }
 
 class _OrderCard extends StatelessWidget {
-  const _OrderCard({
-    required this.order,
-  });
+  const _OrderCard({required this.order});
 
   final Map<String, dynamic> order;
 
   @override
   Widget build(BuildContext context) {
-    final items =
-        List<Map<String, dynamic>>.from(order['items'] ?? []);
+    final items = List<Map<String, dynamic>>.from(order['items'] ?? []);
 
-    final total =
-        (order['total'] as num?)?.toDouble() ?? 0;
+    final total = (order['total'] as num?)?.toDouble() ?? 0;
 
-    final orderStatus =
-        order['orderStatus']?.toString() ?? 'pending';
+    final orderStatus = order['orderStatus']?.toString() ?? 'pending';
 
-    final paymentStatus =
-        order['paymentStatus']?.toString() ?? 'unpaid';
+    final paymentStatus = order['paymentStatus']?.toString() ?? 'unpaid';
 
-    final orderId =
-        order['orderId']?.toString() ?? '';
+    final orderId = order['orderId']?.toString() ?? '';
 
-    final createdAt =
-        order['createdAt'] as Timestamp?;
+    final orderNumber = order['orderNumber']?.toString() ?? '';
+
+    final createdAt = order['createdAt'] as Timestamp?;
 
     return Container(
       width: double.infinity,
@@ -169,9 +154,7 @@ class _OrderCard extends StatelessWidget {
                 ),
               ),
 
-              _StatusBadge(
-                label: orderStatus,
-              ),
+              _StatusBadge(label: orderStatus),
             ],
           ),
 
@@ -179,10 +162,9 @@ class _OrderCard extends StatelessWidget {
 
           if (orderId.isNotEmpty)
             Text(
-              '#${orderId.substring(
-                0,
-                orderId.length > 8 ? 8 : orderId.length,
-              ).toUpperCase()}',
+              orderNumber.isNotEmpty
+                  ? '#$orderNumber'
+                  : '#${orderId.substring(0, orderId.length > 8 ? 8 : orderId.length).toUpperCase()}',
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
@@ -194,14 +176,11 @@ class _OrderCard extends StatelessWidget {
           const SizedBox(height: 18),
 
           ...items.map((item) {
-            final name =
-                item['name']?.toString() ?? 'Cookie';
+            final name = item['name']?.toString() ?? 'Cookie';
 
-            final quantity =
-                item['quantity'] ?? 1;
+            final quantity = item['quantity'] ?? 1;
 
-            final subtotal =
-                (item['subtotal'] as num?)?.toDouble() ?? 0;
+            final subtotal = (item['subtotal'] as num?)?.toDouble() ?? 0;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 10),
@@ -219,10 +198,7 @@ class _OrderCard extends StatelessWidget {
 
                   Text(
                     '× $quantity',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                   ),
 
                   const SizedBox(width: 16),
@@ -306,19 +282,14 @@ class _OrderCard extends StatelessWidget {
 }
 
 class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({
-    required this.label,
-  });
+  const _StatusBadge({required this.label});
 
   final String label;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 11,
-        vertical: 6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
       decoration: BoxDecoration(
         color: const Color(0xFFF2EEE9),
         borderRadius: BorderRadius.circular(100),
@@ -357,10 +328,7 @@ class _EmptyOrders extends StatelessWidget {
 
             const Text(
               'No orders yet.',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
             ),
 
             const SizedBox(height: 8),
