@@ -32,58 +32,99 @@ class _FavoritesView extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
-      body: ValueListenableBuilder<int>(
-        valueListenable: Favorites.changes,
-        builder: (context, _, _) {
-          final favorites = Favorites.items;
 
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'FAVORITES',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.5,
-                  ),
+      body: BlocBuilder<GetCookieBloc, GetCookieState>(
+        builder: (context, state) {
+          if (state is GetCookieFailure) {
+            return Center(
+              child: Text(
+                state.message,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
                 ),
+              ),
+            );
+          }
 
-                const SizedBox(height: 4),
+          if (state is! GetCookieSuccess) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Colors.black,
+              ),
+            );
+          }
 
-                Text(
-                  'The ones you couldn\'t forget',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade600,
+          return FutureBuilder<void>(
+            future: Favorites.load(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
                   ),
-                ),
+                );
+              }
 
-                const SizedBox(height: 18),
+              return ValueListenableBuilder<int>(
+                valueListenable: Favorites.changes,
+                builder: (context, _, _) {
+                  final favoriteCookies = state.cookies
+                      .where(
+                        (cookie) => Favorites.contains(cookie),
+                      )
+                      .toList();
 
-                Expanded(
-                  child: favorites.isEmpty
-                      ? const _EmptyFavorites()
-                      : GridView.builder(
-                          itemCount: favorites.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.68,
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'FAVORITES',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.5,
                           ),
-                          itemBuilder: (context, index) {
-                            return CookieCard(
-                              cookie: favorites[index],
-                            );
-                          },
                         ),
-                ),
-              ],
-            ),
+
+                        const SizedBox(height: 4),
+
+                        Text(
+                          'The ones you couldn\'t forget',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        Expanded(
+                          child: favoriteCookies.isEmpty
+                              ? const _EmptyFavorites()
+                              : GridView.builder(
+                                  itemCount: favoriteCookies.length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 16,
+                                    mainAxisSpacing: 16,
+                                    childAspectRatio: 0.68,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return CookieCard(
+                                      cookie: favoriteCookies[index],
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),

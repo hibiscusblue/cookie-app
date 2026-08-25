@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:cookie_repository/cookie_repository.dart';
-
+import 'package:flutter_application_1/favorites.dart';
 import 'cookie_card.dart';
 
-class CollectionSection extends StatelessWidget {
+class CollectionSection extends StatefulWidget {
   const CollectionSection({
     super.key,
     required this.cookies,
   });
 
   final List<Cookie> cookies;
+
+  @override
+  State<CollectionSection> createState() =>
+      _CollectionSectionState();
+}
+
+class _CollectionSectionState
+    extends State<CollectionSection> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    Favorites.load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +54,7 @@ class CollectionSection extends StatelessWidget {
 
         Expanded(
           child: GridView.builder(
-            itemCount: cookies.length,
+            itemCount: widget.cookies.length,
             gridDelegate:
                 const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -49,7 +64,7 @@ class CollectionSection extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               return CookieCard(
-                cookie: cookies[index],
+                cookie: widget.cookies[index],
               );
             },
           ),
