@@ -15,6 +15,14 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
+      leading: Navigator.of(context).canPop()
+          ? IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(CupertinoIcons.chevron_left, size: 22),
+            )
+          : null,
       backgroundColor: Theme.of(context).colorScheme.surface,
       elevation: 0,
       toolbarHeight: 68,

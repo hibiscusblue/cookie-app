@@ -100,17 +100,17 @@ class NaimDrawer extends StatelessWidget {
                     },
                   ),
 
-                  _DrawerItem(
-                    icon: CupertinoIcons.photo,
-                    title: 'Gallery',
-                    onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'GALLERY',
-                        subtitle: 'A little taste of Naim',
-                      );
-                    },
-                  ),
+                  // _DrawerItem(
+                  //   icon: CupertinoIcons.photo,
+                  //   title: 'Gallery',
+                  //   onTap: () {
+                  //     _openNaimPage(
+                  //       context,
+                  //       title: 'GALLERY',
+                  //       subtitle: 'A little taste of Naim',
+                  //     );
+                  //   },
+                  // ),
 
                   _DrawerItem(
                     icon: CupertinoIcons.book,
