@@ -6,7 +6,9 @@ import 'package:flutter_application_1/components/naim_search_delegate.dart';
 import 'package:flutter_application_1/screens/account/account_screen.dart';
 
 class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const NaimAppBar({super.key});
+  const NaimAppBar({super.key, this.showBackButton});
+
+  final bool? showBackButton;
 
   @override
   Size get preferredSize => const Size.fromHeight(68);
@@ -15,10 +17,10 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      leading: Navigator.of(context).canPop()
+      leading: (showBackButton ?? Navigator.of(context).canPop())
           ? IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).maybePop();
               },
               icon: const Icon(CupertinoIcons.chevron_left, size: 22),
             )

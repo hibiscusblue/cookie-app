@@ -6,6 +6,7 @@ import 'package:flutter_application_1/screens/journal/journal_screen.dart';
 import 'package:flutter_application_1/screens/home/views/todays_drop_screen.dart';
 import 'package:flutter_application_1/screens/home/views/collection_screen.dart';
 import 'package:flutter_application_1/screens/home/views/favorites_screen.dart';
+import 'package:flutter_application_1/screens/orders/orders_screen.dart';
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -111,7 +112,6 @@ class NaimDrawer extends StatelessWidget {
                   //     );
                   //   },
                   // ),
-
                   _DrawerItem(
                     icon: CupertinoIcons.book,
                     title: 'Naim Journal',
@@ -134,10 +134,10 @@ class NaimDrawer extends StatelessWidget {
                     icon: CupertinoIcons.bag,
                     title: 'My Orders',
                     onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'MY ORDERS',
-                        subtitle: 'Your cookie history',
+                      Navigator.pop(context);
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const OrdersScreen()),
                       );
                     },
                   ),

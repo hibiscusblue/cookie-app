@@ -22,35 +22,29 @@ class Cart {
   }
 
   static int quantity(Cookie cookie) {
-  return items
-      .where((item) => item.cookieId == cookie.cookieId)
-      .length;
-}
-
-static List<Cookie> get uniqueItems {
-  final unique = <String, Cookie>{};
-
-  for (final cookie in items) {
-    unique[cookie.cookieId] = cookie;
+    return items.where((item) => item.cookieId == cookie.cookieId).length;
   }
 
-  return unique.values.toList();
-}
+  static List<Cookie> get uniqueItems {
+    final unique = <String, Cookie>{};
+
+    for (final cookie in items) {
+      unique[cookie.cookieId] = cookie;
+    }
+
+    return unique.values.toList();
+  }
 
   static int get totalItems {
     return items.length;
   }
 
   static int quantityFor(Cookie cookie) {
-    return items
-        .where((item) => item.cookieId == cookie.cookieId)
-        .length;
+    return items.where((item) => item.cookieId == cookie.cookieId).length;
   }
 
   static void removeOne(Cookie cookie) {
-    final index = items.indexWhere(
-      (item) => item.cookieId == cookie.cookieId,
-    );
+    final index = items.indexWhere((item) => item.cookieId == cookie.cookieId);
 
     if (index != -1) {
       items.removeAt(index);
@@ -58,10 +52,16 @@ static List<Cookie> get uniqueItems {
     }
   }
 
+  static void clear() {
+    items.clear();
+    _notify();
+  }
+
   static double get total {
-    return items.fold(
-      0,
-      (sum, cookie) => sum + cookie.discount,
-    );
+    return items.fold(0, (sum, cookie) {
+      final unitPrice = cookie.discount > 0 ? cookie.discount : cookie.price;
+
+      return sum + unitPrice;
+    });
   }
 }

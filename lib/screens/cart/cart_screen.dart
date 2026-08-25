@@ -4,6 +4,7 @@ import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/components/cookie_image.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
+import 'package:flutter_application_1/screens/checkout/checkout_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -51,7 +52,11 @@ class _CartScreenState extends State<CartScreen> {
 
                       final quantity = Cart.quantityFor(cookie);
 
-                      final subtotal = cookie.discount * quantity;
+                      final unitPrice = cookie.discount > 0
+                          ? cookie.discount
+                          : cookie.price;
+
+                      final subtotal = unitPrice * quantity;
 
                       return Container(
                         margin: const EdgeInsets.only(bottom: 14),
@@ -100,7 +105,7 @@ class _CartScreenState extends State<CartScreen> {
                                   const SizedBox(height: 5),
 
                                   Text(
-                                    '€${cookie.discount.toStringAsFixed(2)} each',
+                                    '€${unitPrice.toStringAsFixed(2)} each',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey.shade600,
@@ -239,7 +244,11 @@ class _CartScreenState extends State<CartScreen> {
                           height: 54,
                           child: FilledButton(
                             onPressed: () {
-                              // Checkout will come next
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const CheckoutScreen(),
+                                ),
+                              );
                             },
                             style: FilledButton.styleFrom(
                               backgroundColor: Colors.black,

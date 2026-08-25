@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       endDrawer: const NaimDrawer(),
-      appBar: const NaimAppBar(),
+      appBar: const NaimAppBar(showBackButton: false),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: BlocBuilder<GetCookieBloc, GetCookieState>(

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_application_1/screens/orders/orders_screen.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 
@@ -21,10 +21,7 @@ class AccountScreen extends StatelessWidget {
           ? const Center(
               child: Text(
                 'Please sign in to view your account.',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             )
           : StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -35,9 +32,7 @@ class AccountScreen extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black,
-                    ),
+                    child: CircularProgressIndicator(color: Colors.black),
                   );
                 }
 
@@ -55,13 +50,10 @@ class AccountScreen extends StatelessWidget {
 
                 final data = snapshot.data?.data();
 
-                final name =
-                    data?['name']?.toString().trim() ?? '';
+                final name = data?['name']?.toString().trim() ?? '';
 
                 final email =
-                    data?['email']?.toString().trim() ??
-                    authUser.email ??
-                    '';
+                    data?['email']?.toString().trim() ?? authUser.email ?? '';
 
                 return SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
@@ -71,7 +63,6 @@ class AccountScreen extends StatelessWidget {
                       // =================================================
                       // USER CARD
                       // =================================================
-
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(22),
@@ -83,8 +74,7 @@ class AccountScreen extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 30,
-                              backgroundColor:
-                                  const Color(0xFFF2EEE9),
+                              backgroundColor: const Color(0xFFF2EEE9),
                               child: Text(
                                 _initialFor(name),
                                 style: const TextStyle(
@@ -99,8 +89,7 @@ class AccountScreen extends StatelessWidget {
 
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     name.isNotEmpty
@@ -137,13 +126,16 @@ class AccountScreen extends StatelessWidget {
                       // =================================================
                       // ACCOUNT OPTIONS
                       // =================================================
-
                       _AccountTile(
                         icon: Icons.receipt_long_outlined,
                         title: 'My Orders',
                         subtitle: 'View your previous orders',
                         onTap: () {
-                          // Connect later.
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const OrdersScreen(),
+                            ),
+                          );
                         },
                       ),
 
@@ -168,8 +160,7 @@ class AccountScreen extends StatelessWidget {
                       _AccountTile(
                         icon: Icons.person_outline,
                         title: 'Personal Details',
-                        subtitle:
-                            'Name, email and account information',
+                        subtitle: 'Name, email and account information',
                         onTap: () {
                           _showPersonalDetails(
                             context,
@@ -184,12 +175,10 @@ class AccountScreen extends StatelessWidget {
                       // =================================================
                       // LOG OUT
                       // =================================================
-
                       _AccountTile(
                         icon: Icons.logout,
                         title: 'Log out',
-                        subtitle:
-                            'Sign out of your Naim account',
+                        subtitle: 'Sign out of your Naim account',
                         onTap: () {
                           _logOut(context);
                         },
@@ -233,9 +222,7 @@ class AccountScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 26, 24, 34),
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(30),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -243,28 +230,21 @@ class AccountScreen extends StatelessWidget {
             children: [
               const Text(
                 'PERSONAL DETAILS',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
               ),
 
               const SizedBox(height: 24),
 
               _DetailRow(
                 title: 'Name',
-                value: name.isNotEmpty
-                    ? name
-                    : 'Not added yet',
+                value: name.isNotEmpty ? name : 'Not added yet',
               ),
 
               const SizedBox(height: 18),
 
               _DetailRow(
                 title: 'Email',
-                value: email.isNotEmpty
-                    ? email
-                    : 'Not available',
+                value: email.isNotEmpty ? email : 'Not available',
               ),
             ],
           ),
@@ -288,9 +268,7 @@ class AccountScreen extends StatelessWidget {
           ),
           title: const Text(
             'Log out?',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: const Text(
             'Are you sure you want to log out of your Naim account?',
@@ -318,9 +296,7 @@ class AccountScreen extends StatelessWidget {
               ),
               child: const Text(
                 'LOG OUT',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
           ],
@@ -338,9 +314,7 @@ class AccountScreen extends StatelessWidget {
       return;
     }
 
-    Navigator.of(context).popUntil(
-      (route) => route.isFirst,
-    );
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }
 
@@ -372,10 +346,7 @@ class _AccountTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
             child: Row(
               children: [
                 Container(
@@ -385,18 +356,14 @@ class _AccountTile extends StatelessWidget {
                     color: const Color(0xFFF2EEE9),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(
-                    icon,
-                    color: const Color(0xFF2D160E),
-                  ),
+                  child: Icon(icon, color: const Color(0xFF2D160E)),
                 ),
 
                 const SizedBox(width: 14),
 
                 Expanded(
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,
@@ -419,10 +386,7 @@ class _AccountTile extends StatelessWidget {
                   ),
                 ),
 
-                const Icon(
-                  Icons.chevron_right,
-                  size: 20,
-                ),
+                const Icon(Icons.chevron_right, size: 20),
               ],
             ),
           ),
@@ -437,10 +401,7 @@ class _AccountTile extends StatelessWidget {
 // ===============================================================
 
 class _DetailRow extends StatelessWidget {
-  const _DetailRow({
-    required this.title,
-    required this.value,
-  });
+  const _DetailRow({required this.title, required this.value});
 
   final String title;
   final String value;
@@ -464,10 +425,7 @@ class _DetailRow extends StatelessWidget {
 
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ],
     );
