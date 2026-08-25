@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/screens/journal/journal_screen.dart';
 import 'package:flutter_application_1/screens/home/views/todays_drop_screen.dart';
 import 'package:flutter_application_1/screens/home/views/collection_screen.dart';
+import 'package:flutter_application_1/screens/home/views/favorites_screen.dart';
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -85,15 +86,16 @@ class NaimDrawer extends StatelessWidget {
                       );
                     },
                   ),
-
                   _DrawerItem(
                     icon: CupertinoIcons.heart,
                     title: 'Favorites',
                     onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'FAVORITES',
-                        subtitle: 'Cookies you love most',
+                      Navigator.pop(context);
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const FavoritesScreen(),
+                        ),
                       );
                     },
                   ),

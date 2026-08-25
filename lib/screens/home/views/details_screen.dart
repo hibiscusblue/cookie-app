@@ -1,8 +1,8 @@
 import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_application_1/cart.dart';
+import 'package:flutter_application_1/favorites.dart';
 import 'package:flutter_application_1/components/cookie_image.dart';
 import 'package:flutter_application_1/components/macro.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
@@ -11,10 +11,7 @@ import 'package:flutter_application_1/theme/cookie_theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DetailsScreen extends StatefulWidget {
-  const DetailsScreen({
-    required this.cookie,
-    super.key,
-  });
+  const DetailsScreen({required this.cookie, super.key});
 
   final Cookie cookie;
 
@@ -30,8 +27,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final cookie = widget.cookie;
     final themeColor = cookieThemeColor(cookie.themeColor);
 
-    final unitPrice =
-        cookie.discount > 0 ? cookie.discount : cookie.price;
+    final unitPrice = cookie.discount > 0 ? cookie.discount : cookie.price;
 
     final totalPrice = unitPrice * quantity;
 
@@ -51,12 +47,44 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: _cardDecoration(30),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: CookieImage(
-                    picture: cookie.picture,
-                    name: cookie.name,
-                  ),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: CookieImage(
+                          picture: cookie.picture,
+                          name: cookie.name,
+                        ),
+                      ),
+                    ),
+
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: Favorites.changes,
+                        builder: (context, _, _) {
+                          final isFavorite = Favorites.contains(cookie);
+
+                          return IconButton(
+                            onPressed: () {
+                              Favorites.toggle(cookie);
+                            },
+                            icon: Icon(
+                              isFavorite
+                                  ? CupertinoIcons.heart_fill
+                                  : CupertinoIcons.heart,
+                              color: isFavorite
+                                  ? const Color(0xFF2D160E)
+                                  : Colors.grey.shade600,
+                              size: 30,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -86,9 +114,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
                             Text(
                               cookie.description,
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                              ),
+                              style: TextStyle(color: Colors.grey.shade600),
                             ),
                           ],
                         ),
@@ -291,21 +317,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
       color: Colors.white,
       borderRadius: BorderRadius.circular(radius),
       boxShadow: const [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(3, 3),
-          blurRadius: 5,
-        ),
+        BoxShadow(color: Colors.grey, offset: Offset(3, 3), blurRadius: 5),
       ],
     );
   }
 }
 
 class _DetailsQuantityButton extends StatelessWidget {
-  const _DetailsQuantityButton({
-    required this.icon,
-    required this.onPressed,
-  });
+  const _DetailsQuantityButton({required this.icon, required this.onPressed});
 
   final IconData icon;
   final VoidCallback? onPressed;

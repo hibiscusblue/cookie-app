@@ -8,6 +8,7 @@ import 'package:flutter_application_1/components/cookie_badge.dart';
 import 'package:flutter_application_1/components/cookie_image.dart';
 import 'package:flutter_application_1/screens/home/views/details_screen.dart';
 import 'package:flutter_application_1/theme/label_colors.dart';
+import 'package:flutter_application_1/favorites.dart';
 
 class CookieCard extends StatelessWidget {
   const CookieCard({super.key, required this.cookie});
@@ -38,22 +39,51 @@ class CookieCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: SizedBox.expand(
-                  child: Center(
-                    child: Transform.scale(
-                      scale: cookie.imageScale,
-                      child: CookieImage(
-                        picture: cookie.picture,
-                        name: cookie.name,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: SizedBox.expand(
+                      child: Center(
+                        child: Transform.scale(
+                          scale: cookie.imageScale,
+                          child: CookieImage(
+                            picture: cookie.picture,
+                            name: cookie.name,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: Favorites.changes,
+                      builder: (context, _, _) {
+                        final isFavorite = Favorites.contains(cookie);
+
+                        return IconButton(
+                          onPressed: () {
+                            Favorites.toggle(cookie);
+                          },
+                          icon: Icon(
+                            isFavorite
+                                ? CupertinoIcons.heart_fill
+                                : CupertinoIcons.heart,
+                            color: isFavorite
+                                ? const Color(0xFF2D160E)
+                                : Colors.grey.shade600,
+                            size: 24,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
               child: Column(
