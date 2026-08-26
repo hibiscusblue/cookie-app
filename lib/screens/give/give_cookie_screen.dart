@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_application_1/screens/give/give_cookie_selection_screen.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 
@@ -26,10 +26,7 @@ class _GiveCookieScreenState extends State<GiveCookieScreen> {
           children: [
             const Text(
               'GIVE A COOKIE',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
             ),
 
             const SizedBox(height: 8),
@@ -64,10 +61,7 @@ class _GiveCookieScreenState extends State<GiveCookieScreen> {
 
                   const Text(
                     'How many cookies?',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   ),
 
                   const SizedBox(height: 24),
@@ -116,9 +110,7 @@ class _GiveCookieScreenState extends State<GiveCookieScreen> {
                     quantity == 1
                         ? '1 cookie for someone else'
                         : '$quantity cookies for someone else',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -136,9 +128,7 @@ class _GiveCookieScreenState extends State<GiveCookieScreen> {
               child: const Text(
                 'We will later connect this to a verified community or charity '
                 'partner so every sponsored cookie has a clear destination.',
-                style: TextStyle(
-                  height: 1.5,
-                ),
+                style: TextStyle(height: 1.5),
               ),
             ),
 
@@ -148,23 +138,24 @@ class _GiveCookieScreenState extends State<GiveCookieScreen> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () {
-                  // We will connect this to checkout later.
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          GiveCookieSelectionScreen(quantity: quantity),
+                    ),
+                  );
                 },
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 17,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 17),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
                   ),
                 ),
                 child: const Text(
                   'CONTINUE',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w900),
                 ),
               ),
             ),
@@ -176,10 +167,7 @@ class _GiveCookieScreenState extends State<GiveCookieScreen> {
 }
 
 class _QuantityButton extends StatelessWidget {
-  const _QuantityButton({
-    required this.icon,
-    required this.onTap,
-  });
+  const _QuantityButton({required this.icon, required this.onTap});
 
   final IconData icon;
   final VoidCallback? onTap;

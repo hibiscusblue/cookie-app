@@ -30,7 +30,7 @@ class GiveScreen extends StatelessWidget {
             const SizedBox(height: 8),
 
             Text(
-              'A little sweetness can belong to someone else.',
+              'A little sweetness for someone else.',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.grey.shade600,
