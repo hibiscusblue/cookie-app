@@ -173,6 +173,7 @@ class AccountScreen extends StatelessWidget {
                         onTap: () {
                           _showPersonalDetails(
                             context,
+                            userId: authUser.uid,
                             name: name,
                             email: email,
                           );
@@ -220,42 +221,300 @@ class AccountScreen extends StatelessWidget {
 
   void _showPersonalDetails(
     BuildContext context, {
+    required String userId,
     required String name,
     required String email,
   }) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.fromLTRB(24, 26, 24, 34),
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 34),
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'PERSONAL DETAILS',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-              ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Little drag handle
+                Center(
+                  child: Container(
+                    width: 42,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
 
-              const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-              _DetailRow(
-                title: 'Name',
-                value: name.isNotEmpty ? name : 'Not added yet',
-              ),
+                const Text(
+                  'PERSONAL DETAILS',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+                ),
 
-              const SizedBox(height: 18),
+                const SizedBox(height: 24),
 
-              _DetailRow(
-                title: 'Email',
-                value: email.isNotEmpty ? email : 'Not available',
-              ),
-            ],
+                // ===========================================================
+                // PROFILE
+                // ===========================================================
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 29,
+                      backgroundColor: const Color(0xFFF2EEE9),
+                      child: Text(
+                        _initialFor(name),
+                        style: const TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF2D160E),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 16),
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name.isNotEmpty ? name : 'Naim customer',
+                            style: const TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+
+                          const SizedBox(height: 3),
+
+                          Text(
+                            email,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 28),
+
+                Divider(color: Colors.grey.shade200),
+
+                const SizedBox(height: 22),
+
+                // ===========================================================
+                // DEFAULT ADDRESS
+                // ===========================================================
+                Row(
+                  children: [
+                    Text(
+                      'DEFAULT DELIVERY ADDRESS',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(userId)
+                      .collection('addresses')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Center(
+                          child: CircularProgressIndicator(color: Colors.black),
+                        ),
+                      );
+                    }
+
+                    final addresses = snapshot.data?.docs ?? [];
+
+                    QueryDocumentSnapshot<Map<String, dynamic>>? defaultAddress;
+
+                    for (final address in addresses) {
+                      if (address.data()['isDefault'] == true) {
+                        defaultAddress = address;
+                        break;
+                      }
+                    }
+
+                    if (defaultAddress == null) {
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF7F5F3),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_outlined,
+                              color: Color(0xFF2D160E),
+                            ),
+
+                            const SizedBox(width: 12),
+
+                            Text(
+                              'No default address selected',
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    final data = defaultAddress.data();
+
+                    final street = data['street']?.toString() ?? '';
+
+                    final houseNumber = data['houseNumber']?.toString() ?? '';
+
+                    final postalCode = data['postalCode']?.toString() ?? '';
+
+                    final city = data['city']?.toString() ?? '';
+
+                    final country = data['country']?.toString() ?? '';
+
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF7F5F3),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(13),
+                            ),
+                            child: const Icon(
+                              Icons.location_on_outlined,
+                              color: Color(0xFF2D160E),
+                            ),
+                          ),
+
+                          const SizedBox(width: 14),
+
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '$street $houseNumber',
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 4),
+
+                                Text(
+                                  '$postalCode $city',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 2),
+
+                                Text(
+                                  country,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 9,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Text(
+                              'DEFAULT',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.7,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 18),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AddressesScreen(),
+                        ),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      side: const BorderSide(color: Colors.black),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text(
+                      'MANAGE ADDRESSES',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

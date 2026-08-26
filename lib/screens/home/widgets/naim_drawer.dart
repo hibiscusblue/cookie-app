@@ -8,7 +8,7 @@ import 'package:flutter_application_1/screens/home/views/collection_screen.dart'
 import 'package:flutter_application_1/screens/home/views/favorites_screen.dart';
 import 'package:flutter_application_1/screens/orders/orders_screen.dart';
 import 'package:flutter_application_1/screens/account/account_screen.dart';
-
+import 'package:flutter_application_1/screens/give/give_screen.dart';
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -160,6 +160,24 @@ class NaimDrawer extends StatelessWidget {
 
                   const SizedBox(height: 18),
 
+                  const _DrawerSectionTitle(title: 'GIVE'),
+
+                  _DrawerItem(
+                    icon: CupertinoIcons.gift,
+                    title: 'Give',
+                    onTap: () {
+                      Navigator.pop(context);
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const GiveScreen()),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  const SizedBox(height: 18),
+
                   const _DrawerSectionTitle(title: 'ABOUT'),
 
                   _DrawerItem(
@@ -195,14 +213,61 @@ class NaimDrawer extends StatelessWidget {
                 children: [
                   const Divider(),
                   const SizedBox(height: 6),
-
                   _DrawerItem(
                     icon: CupertinoIcons.arrow_right_to_line,
                     title: 'Log out',
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
 
-                      context.read<SignInBloc>().add(SignOutRequired());
+                      final shouldLogout = await showDialog<bool>(
+                        context: context,
+                        builder: (dialogContext) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            title: const Text(
+                              'Log out?',
+                              style: TextStyle(fontWeight: FontWeight.w900),
+                            ),
+                            content: const Text(
+                              'Are you sure you want to log out of your Naim account?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(dialogContext, false);
+                                },
+                                child: const Text(
+                                  'CANCEL',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                              FilledButton(
+                                onPressed: () {
+                                  Navigator.pop(dialogContext, true);
+                                },
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text(
+                                  'LOG OUT',
+                                  style: TextStyle(fontWeight: FontWeight.w800),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (shouldLogout == true && context.mounted) {
+                        context.read<SignInBloc>().add(SignOutRequired());
+                      }
                     },
                   ),
                 ],
