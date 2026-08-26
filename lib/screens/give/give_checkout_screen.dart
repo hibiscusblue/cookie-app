@@ -18,8 +18,7 @@ class GiveCheckoutScreen extends StatefulWidget {
   final double totalPrice;
 
   @override
-  State<GiveCheckoutScreen> createState() =>
-      _GiveCheckoutScreenState();
+  State<GiveCheckoutScreen> createState() => _GiveCheckoutScreenState();
 }
 
 class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
@@ -56,11 +55,9 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please sign in first.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please sign in first.')));
       return;
     }
 
@@ -69,33 +66,105 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
     });
 
     try {
-      await FirebaseFirestore.instance
-          .collection('giveOrders')
-          .add({
+      final firestore = FirebaseFirestore.instance;
+
+      // ============================================================
+      // 1. LOAD COOKIE INFORMATION
+      // ============================================================
+
+      final cookieSnapshot = await firestore.collection('cookies').get();
+
+      final List<Map<String, dynamic>> orderItems = [];
+
+      for (final cookieDoc in cookieSnapshot.docs) {
+        final quantity = widget.selectedCookies[cookieDoc.id] ?? 0;
+
+        if (quantity <= 0) {
+          continue;
+        }
+
+        final data = cookieDoc.data();
+
+        final name = data['name']?.toString() ?? 'Naim Cookie';
+
+        final price =
+            (data['discount'] as num?)?.toDouble() ??
+            (data['price'] as num?)?.toDouble() ??
+            0.0;
+
+        orderItems.add({
+          'cookieId': cookieDoc.id,
+          'name': name,
+          'quantity': quantity,
+          'price': price,
+          'subtotal': price * quantity,
+          'isChefChoice': false,
+        });
+      }
+
+      // ============================================================
+      // 2. ADD CHEF'S CHOICE
+      // ============================================================
+
+      if (widget.chefChoiceCount > 0) {
+        const chefChoicePrice = 2.99;
+
+        orderItems.add({
+          'cookieId': 'chef_choice',
+          'name': 'Chef\'s Choice',
+          'quantity': widget.chefChoiceCount,
+          'price': chefChoicePrice,
+          'subtotal': chefChoicePrice * widget.chefChoiceCount,
+          'isChefChoice': true,
+        });
+      }
+
+      // ============================================================
+      // 3. CREATE ORDER DOCUMENT
+      // ============================================================
+
+      final orderRef = firestore.collection('orders').doc();
+
+      final orderId = orderRef.id;
+
+      // A simple readable number for now.
+      final orderNumber =
+          'GIFT-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+
+      await orderRef.set({
+        'orderId': orderId,
+        'orderNumber': orderNumber,
+
         'userId': user.uid,
 
-        'selectedCookies':
-            Map<String, int>.from(widget.selectedCookies),
+        // Lets us distinguish normal and gift orders.
+        'orderType': 'gift',
 
-        'chefChoiceCount': widget.chefChoiceCount,
+        'items': orderItems,
 
-        'totalPrice': widget.totalPrice,
+        'total': widget.totalPrice,
 
+        'orderStatus': 'pending',
+        'paymentStatus': 'unpaid',
+
+        // ==========================================================
+        // RECIPIENT
+        // ==========================================================
         'deliveryAddress': {
           'fullName': _fullNameController.text.trim(),
           'street': _streetController.text.trim(),
-          'houseNumber':
-              _houseNumberController.text.trim(),
-          'postalCode':
-              _postalCodeController.text.trim(),
+          'houseNumber': _houseNumberController.text.trim(),
+          'postalCode': _postalCodeController.text.trim(),
           'city': _cityController.text.trim(),
           'country': _countryController.text.trim(),
         },
 
+        // ==========================================================
+        // PERSONAL MESSAGE
+        // ==========================================================
         'personalNote': _noteController.text.trim(),
 
-        'type': 'charity',
-        'status': 'pending',
+        'chefChoiceCount': widget.chefChoiceCount,
 
         'createdAt': FieldValue.serverTimestamp(),
       });
@@ -105,22 +174,16 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
       }
 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const GiveSuccessScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const GiveSuccessScreen()),
       );
     } catch (e) {
       if (!mounted) {
         return;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Could not place gift order: $e',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not place gift order: $e')));
     } finally {
       if (mounted) {
         setState(() {
@@ -133,8 +196,7 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
 
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
@@ -143,24 +205,15 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
         key: _formKey,
 
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            24,
-            18,
-            24,
-            40,
-          ),
+          padding: const EdgeInsets.fromLTRB(24, 18, 24, 40),
 
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
               const Text(
                 'GIFT CHECKOUT',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
               ),
 
               const SizedBox(height: 8),
@@ -179,7 +232,6 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
               // ===========================================================
               // DELIVERY ADDRESS
               // ===========================================================
-
               const Text(
                 'DELIVERY ADDRESS',
                 style: TextStyle(
@@ -209,8 +261,7 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
               const SizedBox(height: 16),
 
               _CheckoutField(
-                controller:
-                    _houseNumberController,
+                controller: _houseNumberController,
                 label: 'HOUSE NUMBER',
                 hint: 'House number',
               ),
@@ -218,8 +269,7 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
               const SizedBox(height: 16),
 
               _CheckoutField(
-                controller:
-                    _postalCodeController,
+                controller: _postalCodeController,
                 label: 'POSTAL CODE',
                 hint: 'Postal code',
               ),
@@ -245,7 +295,6 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
               // ===========================================================
               // PERSONAL NOTE
               // ===========================================================
-
               const Text(
                 'PERSONAL NOTE',
                 style: TextStyle(
@@ -260,10 +309,7 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
 
               Text(
                 'Optional',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey.shade500,
-                ),
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
               ),
 
               const SizedBox(height: 10),
@@ -274,38 +320,30 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
                 maxLength: 200,
 
                 decoration: InputDecoration(
-                  hintText:
-                      'Write something kind for them...',
+                  hintText: 'Write something kind for them...',
 
                   filled: true,
                   fillColor: Colors.white,
 
                   border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
                   ),
 
-                  enabledBorder:
-                      OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(20),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
                   ),
 
-                  focusedBorder:
-                      OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(20),
-                    borderSide:
-                        const BorderSide(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: const BorderSide(
                       color: Colors.black,
                       width: 1.5,
                     ),
                   ),
 
-                  contentPadding:
-                      const EdgeInsets.all(18),
+                  contentPadding: const EdgeInsets.all(18),
                 ),
               ),
 
@@ -314,15 +352,13 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
               // ===========================================================
               // ORDER TOTAL
               // ===========================================================
-
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(22),
 
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius:
-                      BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24),
                 ),
 
                 child: Row(
@@ -330,8 +366,7 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
                     const Text(
                       'TOTAL',
                       style: TextStyle(
-                        fontWeight:
-                            FontWeight.w900,
+                        fontWeight: FontWeight.w900,
                         letterSpacing: 1,
                       ),
                     ),
@@ -342,8 +377,7 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
                       '€${widget.totalPrice.toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 22,
-                        fontWeight:
-                            FontWeight.w900,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                   ],
@@ -358,28 +392,21 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
 
                 decoration: BoxDecoration(
                   color: const Color(0xFFF2EEE9),
-                  borderRadius:
-                      BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20),
                 ),
 
                 child: const Row(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
-                    Icon(
-                      Icons.favorite_outline,
-                      color: Color(0xFF2D160E),
-                    ),
+                    Icon(Icons.favorite_outline, color: Color(0xFF2D160E)),
 
                     SizedBox(width: 12),
 
                     Expanded(
                       child: Text(
                         'Your personal note can be included with the cookies so the recipient knows someone was thinking of them.',
-                        style: TextStyle(
-                          height: 1.45,
-                        ),
+                        style: TextStyle(height: 1.45),
                       ),
                     ),
                   ],
@@ -391,28 +418,20 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
               // ===========================================================
               // PLACE ORDER
               // ===========================================================
-
               SizedBox(
                 width: double.infinity,
 
                 child: FilledButton(
-                  onPressed:
-                      _isPlacingOrder
-                          ? null
-                          : _placeGiftOrder,
+                  onPressed: _isPlacingOrder ? null : _placeGiftOrder,
 
                   style: FilledButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
 
-                    padding:
-                        const EdgeInsets.symmetric(
-                      vertical: 17,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 17),
 
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                   ),
 
@@ -420,18 +439,14 @@ class _GiveCheckoutScreenState extends State<GiveCheckoutScreen> {
                       ? const SizedBox(
                           width: 20,
                           height: 20,
-                          child:
-                              CircularProgressIndicator(
+                          child: CircularProgressIndicator(
                             strokeWidth: 2,
                             color: Colors.white,
                           ),
                         )
                       : const Text(
                           'PLACE GIFT ORDER',
-                          style: TextStyle(
-                            fontWeight:
-                                FontWeight.w900,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w900),
                         ),
                 ),
               ),
@@ -461,8 +476,7 @@ class _CheckoutField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
 
       children: [
         Text(
@@ -481,8 +495,7 @@ class _CheckoutField extends StatelessWidget {
           controller: controller,
 
           validator: (value) {
-            if (value == null ||
-                value.trim().isEmpty) {
+            if (value == null || value.trim().isEmpty) {
               return 'Please enter this information';
             }
 
@@ -496,28 +509,21 @@ class _CheckoutField extends StatelessWidget {
             fillColor: Colors.white,
 
             border: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(18),
               borderSide: BorderSide.none,
             ),
 
             enabledBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(18),
               borderSide: BorderSide.none,
             ),
 
             focusedBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(18),
-              borderSide: const BorderSide(
-                color: Colors.black,
-                width: 1.5,
-              ),
+              borderRadius: BorderRadius.circular(18),
+              borderSide: const BorderSide(color: Colors.black, width: 1.5),
             ),
 
-            contentPadding:
-                const EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: 18,
               vertical: 17,
             ),
@@ -538,8 +544,7 @@ class GiveSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
 
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
@@ -554,30 +559,21 @@ class GiveSuccessScreen extends StatelessWidget {
 
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius:
-                  BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(28),
             ),
 
             child: Column(
               mainAxisSize: MainAxisSize.min,
 
               children: [
-                const Icon(
-                  Icons.favorite,
-                  size: 52,
-                  color: Color(0xFF2D160E),
-                ),
+                const Icon(Icons.favorite, size: 52, color: Color(0xFF2D160E)),
 
                 const SizedBox(height: 20),
 
                 const Text(
                   'YOU GAVE A MOMENT OF BLISS',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight:
-                        FontWeight.w900,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
                 ),
 
                 const SizedBox(height: 12),
@@ -588,8 +584,7 @@ class GiveSuccessScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     height: 1.5,
-                    color:
-                        Colors.grey.shade600,
+                    color: Colors.grey.shade600,
                   ),
                 ),
 
@@ -600,32 +595,18 @@ class GiveSuccessScreen extends StatelessWidget {
 
                   child: FilledButton(
                     onPressed: () {
-                      Navigator.of(context)
-                          .popUntil(
-                        (route) =>
-                            route.isFirst,
-                      );
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
 
-                    style:
-                        FilledButton.styleFrom(
-                      backgroundColor:
-                          Colors.black,
-                      foregroundColor:
-                          Colors.white,
-                      padding:
-                          const EdgeInsets
-                              .symmetric(
-                        vertical: 16,
-                      ),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
 
                     child: const Text(
                       'BACK TO NAIM',
-                      style: TextStyle(
-                        fontWeight:
-                            FontWeight.w900,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w900),
                     ),
                   ),
                 ),
