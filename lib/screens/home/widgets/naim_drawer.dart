@@ -7,6 +7,8 @@ import 'package:flutter_application_1/screens/home/views/todays_drop_screen.dart
 import 'package:flutter_application_1/screens/home/views/collection_screen.dart';
 import 'package:flutter_application_1/screens/home/views/favorites_screen.dart';
 import 'package:flutter_application_1/screens/orders/orders_screen.dart';
+import 'package:flutter_application_1/screens/account/account_screen.dart';
+
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -146,10 +148,12 @@ class NaimDrawer extends StatelessWidget {
                     icon: CupertinoIcons.person,
                     title: 'My Account',
                     onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'MY ACCOUNT',
-                        subtitle: 'Your Naim profile',
+                      Navigator.pop(context);
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AccountScreen(),
+                        ),
                       );
                     },
                   ),

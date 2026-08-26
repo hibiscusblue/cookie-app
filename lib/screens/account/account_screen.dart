@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/orders/orders_screen.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
+import 'package:flutter_application_1/screens/home/views/favorites_screen.dart';
+import 'package:flutter_application_1/screens/addresses/addresses_screen.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -138,13 +140,16 @@ class AccountScreen extends StatelessWidget {
                           );
                         },
                       ),
-
                       _AccountTile(
                         icon: Icons.favorite_border,
                         title: 'Favorites',
                         subtitle: 'Your saved cookies',
                         onTap: () {
-                          // Connect later.
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const FavoritesScreen(),
+                            ),
+                          );
                         },
                       ),
 
@@ -153,7 +158,11 @@ class AccountScreen extends StatelessWidget {
                         title: 'Addresses',
                         subtitle: 'Delivery and billing addresses',
                         onTap: () {
-                          // Connect later.
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const AddressesScreen(),
+                            ),
+                          );
                         },
                       ),
 
