@@ -52,9 +52,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     Positioned.fill(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(24),
-                        child: CookieImage(
-                          picture: cookie.picture,
-                          name: cookie.name,
+                        child: Center(
+                          child: FractionallySizedBox(
+                            widthFactor:
+                                (cookie.name == 'Nutella' ||
+                                    cookie.name == 'Marzipan')
+                                ? 0.72
+                                : 1.0,
+                            heightFactor:
+                                (cookie.name == 'Nutella' ||
+                                    cookie.name == 'Marzipan')
+                                ? 0.72
+                                : 1.0,
+                            child: CookieImage(
+                              picture: cookie.picture,
+                              name: cookie.name,
+                            ),
+                          ),
                         ),
                       ),
                     ),
