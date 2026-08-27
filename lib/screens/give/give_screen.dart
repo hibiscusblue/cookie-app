@@ -56,20 +56,20 @@ class GiveScreen extends StatelessWidget {
 
             const SizedBox(height: 18),
 
-            _GiveCard(
-              icon: Icons.card_giftcard,
-              title: 'Send a Gift',
-              description:
-                  'Choose cookies for someone you love and send them with a personal message.',
-              buttonText: 'SEND A GIFT',
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const GiftCookieScreen(),
-                  ),
-                );
-              },
-            ),
+            // _GiveCard(
+            //   icon: Icons.card_giftcard,
+            //   title: 'Send a Gift',
+            //   description:
+            //       'Choose cookies for someone you love and send them with a personal message.',
+            //   buttonText: 'SEND A GIFT',
+            //   onTap: () {
+            //     Navigator.of(context).push(
+            //       MaterialPageRoute(
+            //         builder: (_) => const GiftCookieScreen(),
+            //       ),
+            //     );
+            //   },
+            // ),
 
             const SizedBox(height: 34),
 

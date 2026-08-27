@@ -56,13 +56,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           child: FractionallySizedBox(
                             widthFactor:
                                 (cookie.name == 'Nutella' ||
-                                    cookie.name == 'Marzipan')
-                                ? 0.72
+                                    cookie.name == 'Marzipan' ||
+                                    cookie.name == 'Oreo')
+                                ? 0.55
                                 : 1.0,
                             heightFactor:
                                 (cookie.name == 'Nutella' ||
-                                    cookie.name == 'Marzipan')
-                                ? 0.72
+                                    cookie.name == 'Marzipan' ||
+                                    cookie.name == 'Oreo')
+                                ? 0.55
                                 : 1.0,
                             child: CookieImage(
                               picture: cookie.picture,

@@ -46,12 +46,18 @@ class CookieCard extends StatelessWidget {
                     child: SizedBox.expand(
                       child: Center(
                         child: FractionallySizedBox(
-                          widthFactor: cookie.name == 'Nutella'
-                              ? 0.55
-                              : cookie.imageScale,
-                          heightFactor: cookie.name == 'Nutella'
-                              ? 0.55
-                              : cookie.imageScale,
+                             widthFactor:
+                                (cookie.name == 'Nutella' ||
+                                    cookie.name == 'Marzipan' ||
+                                    cookie.name == 'Oreo')
+                                ? 0.55
+                                : 1.0,
+                            heightFactor:
+                                (cookie.name == 'Nutella' ||
+                                    cookie.name == 'Marzipan' ||
+                                    cookie.name == 'Oreo')
+                                ? 0.55
+                                : 1.0,
                           child: CookieImage(
                             picture: cookie.picture,
                             name: cookie.name,
