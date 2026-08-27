@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_application_1/screens/our_story/our_story_screen.dart';
 import 'package:flutter_application_1/screens/account/account_screen.dart';
 import 'package:flutter_application_1/screens/give/give_screen.dart';
 import 'package:flutter_application_1/screens/home/views/collection_screen.dart';
@@ -32,9 +32,7 @@ class NaimDrawer extends StatelessWidget {
           ),
           title: const Text(
             'Log out?',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900),
           ),
           content: const Text(
             'Are you sure you want to log out of your Naim account?',
@@ -62,9 +60,7 @@ class NaimDrawer extends StatelessWidget {
               ),
               child: const Text(
                 'LOG OUT',
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
           ],
@@ -85,9 +81,7 @@ class NaimDrawer extends StatelessWidget {
     }
 
     // Return to the first screen.
-    Navigator.of(context).popUntil(
-      (route) => route.isFirst,
-    );
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   // =========================================================================
@@ -99,9 +93,7 @@ class NaimDrawer extends StatelessWidget {
     return Drawer(
       backgroundColor: const Color(0xFFF8F8F8),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(
-          left: Radius.circular(28),
-        ),
+        borderRadius: BorderRadius.horizontal(left: Radius.circular(28)),
       ),
       child: SafeArea(
         child: Column(
@@ -109,20 +101,13 @@ class NaimDrawer extends StatelessWidget {
             // =================================================================
             // MAIN MENU
             // =================================================================
-
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  22,
-                  20,
-                  20,
-                ),
+                padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
                 children: [
                   // ===========================================================
                   // NAIM HEADER
                   // ===========================================================
-
                   Row(
                     children: [
                       Image.asset(
@@ -146,10 +131,7 @@ class NaimDrawer extends StatelessWidget {
                           ),
                           Text(
                             'Your Moment of Bliss',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -161,10 +143,7 @@ class NaimDrawer extends StatelessWidget {
                   // ===========================================================
                   // TODAY
                   // ===========================================================
-
-                  const _DrawerSectionTitle(
-                    title: 'TODAY',
-                  ),
+                  const _DrawerSectionTitle(title: 'TODAY'),
 
                   _DrawerItem(
                     icon: CupertinoIcons.sparkles,
@@ -174,8 +153,7 @@ class NaimDrawer extends StatelessWidget {
 
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const TodaysDropScreen(),
+                          builder: (_) => const TodaysDropScreen(),
                         ),
                       );
                     },
@@ -186,10 +164,7 @@ class NaimDrawer extends StatelessWidget {
                   // ===========================================================
                   // DISCOVER
                   // ===========================================================
-
-                  const _DrawerSectionTitle(
-                    title: 'DISCOVER',
-                  ),
+                  const _DrawerSectionTitle(title: 'DISCOVER'),
 
                   _DrawerItem(
                     icon: CupertinoIcons.square_grid_2x2,
@@ -199,8 +174,7 @@ class NaimDrawer extends StatelessWidget {
 
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const CollectionScreen(),
+                          builder: (_) => const CollectionScreen(),
                         ),
                       );
                     },
@@ -214,8 +188,7 @@ class NaimDrawer extends StatelessWidget {
 
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const FavoritesScreen(),
+                          builder: (_) => const FavoritesScreen(),
                         ),
                       );
                     },
@@ -229,8 +202,7 @@ class NaimDrawer extends StatelessWidget {
 
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const JournalScreen(),
+                          builder: (_) => const JournalScreen(),
                         ),
                       );
                     },
@@ -241,10 +213,7 @@ class NaimDrawer extends StatelessWidget {
                   // ===========================================================
                   // YOUR NAIM
                   // ===========================================================
-
-                  const _DrawerSectionTitle(
-                    title: 'YOUR NAIM',
-                  ),
+                  const _DrawerSectionTitle(title: 'YOUR NAIM'),
 
                   _DrawerItem(
                     icon: CupertinoIcons.bag,
@@ -253,10 +222,7 @@ class NaimDrawer extends StatelessWidget {
                       Navigator.pop(context);
 
                       Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const OrdersScreen(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const OrdersScreen()),
                       );
                     },
                   ),
@@ -269,8 +235,7 @@ class NaimDrawer extends StatelessWidget {
 
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const AccountScreen(),
+                          builder: (_) => const AccountScreen(),
                         ),
                       );
                     },
@@ -281,10 +246,7 @@ class NaimDrawer extends StatelessWidget {
                   // ===========================================================
                   // GIVE
                   // ===========================================================
-
-                  const _DrawerSectionTitle(
-                    title: 'GIVE',
-                  ),
+                  const _DrawerSectionTitle(title: 'GIVE'),
 
                   _DrawerItem(
                     icon: CupertinoIcons.gift,
@@ -293,10 +255,7 @@ class NaimDrawer extends StatelessWidget {
                       Navigator.pop(context);
 
                       Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const GiveScreen(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const GiveScreen()),
                       );
                     },
                   ),
@@ -306,19 +265,18 @@ class NaimDrawer extends StatelessWidget {
                   // ===========================================================
                   // ABOUT
                   // ===========================================================
-
-                  const _DrawerSectionTitle(
-                    title: 'ABOUT',
-                  ),
+                  const _DrawerSectionTitle(title: 'ABOUT'),
 
                   _DrawerItem(
                     icon: CupertinoIcons.heart_fill,
                     title: 'Our Story',
                     onTap: () {
-                      _openNaimPage(
-                        context,
-                        title: 'OUR STORY',
-                        subtitle: 'Why Naim exists',
+                      Navigator.pop(context);
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const OurStoryScreen(),
+                        ),
                       );
                     },
                   ),
@@ -330,8 +288,7 @@ class NaimDrawer extends StatelessWidget {
                       _openNaimPage(
                         context,
                         title: 'ABOUT NAIM',
-                        subtitle:
-                            'Small batch. Made with intention.',
+                        subtitle: 'Small batch. Made with intention.',
                       );
                     },
                   ),
@@ -342,14 +299,8 @@ class NaimDrawer extends StatelessWidget {
             // =================================================================
             // LOG OUT
             // =================================================================
-
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                20,
-                8,
-                20,
-                18,
-              ),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 18),
               child: Column(
                 children: [
                   const Divider(),
@@ -357,8 +308,7 @@ class NaimDrawer extends StatelessWidget {
                   const SizedBox(height: 6),
 
                   _DrawerItem(
-                    icon:
-                        CupertinoIcons.arrow_right_to_line,
+                    icon: CupertinoIcons.arrow_right_to_line,
                     title: 'Log out',
                     onTap: () {
                       _logOut(context);
@@ -379,19 +329,14 @@ class NaimDrawer extends StatelessWidget {
 // ============================================================================
 
 class _DrawerSectionTitle extends StatelessWidget {
-  const _DrawerSectionTitle({
-    required this.title,
-  });
+  const _DrawerSectionTitle({required this.title});
 
   final String title;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 12,
-        bottom: 7,
-      ),
+      padding: const EdgeInsets.only(left: 12, bottom: 7),
       child: Text(
         title,
         style: TextStyle(
@@ -423,29 +368,15 @@ class _DrawerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 12,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       minLeadingWidth: 48,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      leading: Icon(
-        icon,
-        size: 21,
-        color: const Color(0xFF2D160E),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      leading: Icon(icon, size: 21, color: const Color(0xFF2D160E)),
       title: Text(
         title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-        ),
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
       ),
-      trailing: const Icon(
-        CupertinoIcons.chevron_right,
-        size: 14,
-      ),
+      trailing: const Icon(CupertinoIcons.chevron_right, size: 14),
       onTap: onTap,
     );
   }
@@ -464,19 +395,13 @@ void _openNaimPage(
 
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => _NaimPage(
-        title: title,
-        subtitle: subtitle,
-      ),
+      builder: (_) => _NaimPage(title: title, subtitle: subtitle),
     ),
   );
 }
 
 class _NaimPage extends StatelessWidget {
-  const _NaimPage({
-    required this.title,
-    required this.subtitle,
-  });
+  const _NaimPage({required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
@@ -484,34 +409,23 @@ class _NaimPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor:
-            Theme.of(context).colorScheme.surface,
-      ),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.surface),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w900,
-              ),
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
             ),
 
             const SizedBox(height: 6),
 
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
             ),
 
             const SizedBox(height: 40),
@@ -519,10 +433,7 @@ class _NaimPage extends StatelessWidget {
             const Center(
               child: Text(
                 'Coming soon 🍪',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
             ),
           ],

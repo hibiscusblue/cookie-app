@@ -45,8 +45,13 @@ class CookieCard extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     child: SizedBox.expand(
                       child: Center(
-                        child: Transform.scale(
-                          scale: cookie.imageScale,
+                        child: FractionallySizedBox(
+                          widthFactor: cookie.name == 'Nutella'
+                              ? 0.55
+                              : cookie.imageScale,
+                          heightFactor: cookie.name == 'Nutella'
+                              ? 0.55
+                              : cookie.imageScale,
                           child: CookieImage(
                             picture: cookie.picture,
                             name: cookie.name,
@@ -84,12 +89,12 @@ class CookieCard extends StatelessWidget {
                 ],
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // FRUITY + BALANCE
                   Wrap(
                     spacing: 8,
                     runSpacing: 4,
@@ -107,7 +112,6 @@ class CookieCard extends StatelessWidget {
 
                   const SizedBox(height: 8),
 
-                  // COOKIE NAME
                   Text(
                     cookie.name,
                     maxLines: 1,
@@ -118,16 +122,8 @@ class CookieCard extends StatelessWidget {
                     ),
                   ),
 
-                  // DESCRIPTION
-                  // Text(
-                  //   cookie.description,
-                  //   maxLines: 1,
-                  //   overflow: TextOverflow.ellipsis,
-                  //   style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
-                  // ),
                   const SizedBox(height: 6),
 
-                  // PRICE + ADD BUTTON
                   Row(
                     children: [
                       Expanded(
@@ -238,11 +234,11 @@ class _CollectionQuantityButton extends StatelessWidget {
       child: Container(
         width: 27,
         height: 27,
-        decoration: BoxDecoration(
-          color: const Color(0xFFF2EEE9),
+        decoration: const BoxDecoration(
+          color: Color(0xFFF2EEE9),
           shape: BoxShape.circle,
         ),
-        child: Icon(icon, size: 14, color: const Color(0xFF2D160E)),
+        child: Icon(icon, size: 14, color: Color(0xFF2D160E)),
       ),
     );
   }
