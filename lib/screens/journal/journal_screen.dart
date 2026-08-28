@@ -4,6 +4,7 @@ import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'article_screen.dart';
 import 'journal_article.dart';
+import 'package:flutter_application_1/components/naim_footer.dart';
 
 class JournalScreen extends StatelessWidget {
   const JournalScreen({super.key});
@@ -133,6 +134,7 @@ class JournalScreen extends StatelessWidget {
                         child: _JournalArticleCard(article: article),
                       ),
                     ),
+                    const NaimFooter(),
                   ],
                 ],
               ),

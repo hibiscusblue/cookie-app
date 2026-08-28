@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cookie_repository/cookie_repository.dart';
+
 import 'package:flutter_application_1/favorites.dart';
+import 'package:flutter_application_1/components/naim_footer.dart';
+
 import 'cookie_card.dart';
 
 class CollectionSection extends StatefulWidget {
@@ -18,56 +21,78 @@ class CollectionSection extends StatefulWidget {
 
 class _CollectionSectionState
     extends State<CollectionSection> {
-
   @override
   void initState() {
     super.initState();
-
     Favorites.load();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'THE COLLECTION',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 0.5,
-          ),
-        ),
-
-        const SizedBox(height: 4),
-
-        Text(
-          'Our most-loved cookies',
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.grey.shade600,
-          ),
-        ),
-
-        const SizedBox(height: 14),
-
-        Expanded(
-          child: GridView.builder(
-            itemCount: widget.cookies.length,
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.68,
+    return CustomScrollView(
+      slivers: [
+        // COLLECTION TITLE
+        const SliverToBoxAdapter(
+          child: Text(
+            'THE COLLECTION',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.5,
             ),
-            itemBuilder: (context, index) {
+          ),
+        ),
+
+        // SUBTITLE
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              'Our most-loved cookies',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+        ),
+
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 14),
+        ),
+
+        // COOKIE GRID
+        SliverGrid(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
               return CookieCard(
                 cookie: widget.cookies[index],
               );
             },
+            childCount: widget.cookies.length,
           ),
+          gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.68,
+          ),
+        ),
+
+        // SPACE AFTER LAST ROW
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 28),
+        ),
+
+        // FOOTER
+        const SliverToBoxAdapter(
+          child: NaimFooter(),
+        ),
+
+        // SMALL BOTTOM SPACE
+        const SliverToBoxAdapter(
+          child: SizedBox(height: 8),
         ),
       ],
     );

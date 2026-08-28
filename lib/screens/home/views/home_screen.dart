@@ -6,15 +6,20 @@ import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/daily_drop/daily_drop_hero.dart';
 import 'package:flutter_application_1/screens/home/widgets/collection/collection_section.dart';
 
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      endDrawer: const NaimDrawer(),
-      appBar: const NaimAppBar(showBackButton: false),
+  backgroundColor: Theme.of(context).colorScheme.surface,
+  endDrawer: const NaimDrawer(),
+  appBar: const NaimAppBar(showBackButton: false),
+
+
+
+  
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: BlocBuilder<GetCookieBloc, GetCookieState>(

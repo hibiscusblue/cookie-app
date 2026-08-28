@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'journal_article.dart';
+import 'package:flutter_application_1/components/naim_footer.dart';
 
 class ArticleScreen extends StatelessWidget {
   final JournalArticle article;
@@ -163,6 +164,7 @@ class ArticleScreen extends StatelessWidget {
                 ],
               ),
             ),
+            const NaimFooter(),
           ],
         ),
       ),
