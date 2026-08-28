@@ -9,6 +9,7 @@ import 'package:flutter_application_1/screens/home/views/favorites_screen.dart';
 import 'package:flutter_application_1/screens/home/views/todays_drop_screen.dart';
 import 'package:flutter_application_1/screens/journal/journal_screen.dart';
 import 'package:flutter_application_1/screens/orders/orders_screen.dart';
+import 'package:flutter_application_1/screens/contact/contact_screen.dart';
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -281,6 +282,9 @@ class NaimDrawer extends StatelessWidget {
                     },
                   ),
 
+                  //  =================================================================
+                  // CONTACT
+                  // =================================================================
                   _DrawerItem(
                     icon: CupertinoIcons.info_circle,
                     title: 'About Naim',
@@ -294,6 +298,17 @@ class NaimDrawer extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            _DrawerItem(
+              icon: Icons.mail_outline,
+              title: 'Contact',
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ContactScreen()),
+                );
+              },
             ),
 
             // =================================================================

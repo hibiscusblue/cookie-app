@@ -225,12 +225,35 @@ class CheckoutScreen extends StatelessWidget {
                                   .collection('orders')
                                   .doc();
 
+                              final dailyDropQuery = await firestore
+                                  .collection('dailyDrops')
+                                  .where('active', isEqualTo: true)
+                                  .limit(1)
+                                  .get();
+
+                              DocumentReference<Map<String, dynamic>>?
+                              dailyDropRef;
+
+                              if (dailyDropQuery.docs.isNotEmpty) {
+                                dailyDropRef =
+                                    dailyDropQuery.docs.first.reference;
+                              }
+
                               await firestore.runTransaction((
                                 transaction,
                               ) async {
                                 final counterSnapshot = await transaction.get(
                                   counterRef,
                                 );
+
+                                DocumentSnapshot<Map<String, dynamic>>?
+                                dailyDropSnapshot;
+
+                                if (dailyDropRef != null) {
+                                  dailyDropSnapshot = await transaction.get(
+                                    dailyDropRef,
+                                  );
+                                }
 
                                 int nextNumber = 1;
 
@@ -253,10 +276,58 @@ class CheckoutScreen extends StatelessWidget {
                                   '$dateCode$sequence',
                                 );
 
+                                int dailyDropQuantity = 0;
+
+                                if (dailyDropSnapshot != null &&
+                                    dailyDropSnapshot.exists) {
+                                  final dropData = dailyDropSnapshot.data();
+
+                                  final dropCookieId = dropData?['cookieId']
+                                      ?.toString();
+
+                                  for (final item in orderItems) {
+                                    if (item['cookieId'] == dropCookieId) {
+                                      dailyDropQuantity =
+                                          (item['quantity'] as num).toInt();
+
+                                      break;
+                                    }
+                                  }
+
+                                  if (dailyDropQuantity > 0) {
+                                    final stock =
+                                        (dropData?['stock'] as num?)?.toInt() ??
+                                        0;
+
+                                    final sold =
+                                        (dropData?['sold'] as num?)?.toInt() ??
+                                        0;
+
+                                    final remaining = stock - sold;
+
+                                    if (dailyDropQuantity > remaining) {
+                                      throw Exception(
+                                        remaining <= 0
+                                            ? 'Today\'s Drop has sold out.'
+                                            : 'Only $remaining Today\'s Drop cookies are left.',
+                                      );
+                                    }
+                                  }
+                                }
+
                                 transaction.set(counterRef, {
                                   'lastNumber': nextNumber,
                                   'updatedAt': FieldValue.serverTimestamp(),
                                 });
+
+                                if (dailyDropRef != null &&
+                                    dailyDropQuantity > 0) {
+                                  transaction.update(dailyDropRef, {
+                                    'sold': FieldValue.increment(
+                                      dailyDropQuantity,
+                                    ),
+                                  });
+                                }
 
                                 transaction.set(orderRef, {
                                   'orderId': orderRef.id,
