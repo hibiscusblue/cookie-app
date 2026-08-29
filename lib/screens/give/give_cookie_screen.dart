@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/give/give_cookie_selection_screen.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
+import 'package:flutter_application_1/components/naim_footer.dart';
 
 class GiveCookieScreen extends StatefulWidget {
   const GiveCookieScreen({super.key});
@@ -159,6 +160,7 @@ class _GiveCookieScreenState extends State<GiveCookieScreen> {
                 ),
               ),
             ),
+           
           ],
         ),
       ),

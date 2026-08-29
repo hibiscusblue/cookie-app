@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/naim_footer.dart';
 
 class OurStoryScreen extends StatelessWidget {
   const OurStoryScreen({super.key});
@@ -153,6 +154,7 @@ class OurStoryScreen extends StatelessWidget {
                   color: Colors.grey.shade400,
                 ),
               ),
+              const NaimFooter(),
             ],
           ),
         ),
@@ -318,9 +320,15 @@ class _QuoteCard extends StatelessWidget {
               fontWeight: FontWeight.w900,
               letterSpacing: 1.7,
             ),
+            
           ),
+          
         ],
+        
       ),
+      
     );
+    
   }
+  
 }
