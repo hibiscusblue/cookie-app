@@ -30,48 +30,35 @@ class DailyDropHero extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const _DropMessage(
-            message: 'Unable to load today\'s drop.',
-          );
+          return const _DropMessage(message: 'Unable to load today\'s drop.');
         }
 
         if (!snapshot.hasData) {
           return const SizedBox(
             height: 280,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
+            child: Center(child: CircularProgressIndicator()),
           );
         }
 
         if (snapshot.data!.docs.isEmpty) {
-          return const _DropMessage(
-            message: 'No Daily Drop today 🍪',
-          );
+          return const _DropMessage(message: 'No Daily Drop today 🍪');
         }
 
         final dropDocument = snapshot.data!.docs.first;
 
-        final dropData =
-            dropDocument.data() as Map<String, dynamic>;
+        final dropData = dropDocument.data() as Map<String, dynamic>;
 
-        final String cookieId =
-            dropData['cookieId'] as String;
+        final String cookieId = dropData['cookieId'] as String;
 
-        final int stock =
-            (dropData['stock'] as num).toInt();
+        final int stock = (dropData['stock'] as num).toInt();
 
-        final int sold =
-            (dropData['sold'] as num).toInt();
+        final int sold = (dropData['sold'] as num).toInt();
 
-        final int remaining =
-            (stock - sold).clamp(0, stock);
+        final int remaining = (stock - sold).clamp(0, stock);
 
-        final Timestamp endTimestamp =
-            dropData['endTime'] as Timestamp;
+        final Timestamp endTimestamp = dropData['endTime'] as Timestamp;
 
-        final DateTime endTime =
-            endTimestamp.toDate();
+        final DateTime endTime = endTimestamp.toDate();
 
         Cookie? dropCookie;
 
@@ -83,39 +70,24 @@ class DailyDropHero extends StatelessWidget {
         }
 
         if (dropCookie == null) {
-          return const _DropMessage(
-            message: 'Daily Drop cookie not found.',
-          );
+          return const _DropMessage(message: 'Daily Drop cookie not found.');
         }
 
         final cookie = dropCookie;
 
-        final double stockProgress =
-            stock == 0 ? 0 : remaining / stock;
+        final double stockProgress = stock == 0 ? 0 : remaining / stock;
 
         final bool soldOut = remaining == 0;
 
         return TweenAnimationBuilder<double>(
-          tween: Tween<double>(
-            begin: 0,
-            end: 1,
-          ),
-          duration: const Duration(
-            milliseconds: 650,
-          ),
+          tween: Tween<double>(begin: 0, end: 1),
+          duration: const Duration(milliseconds: 650),
           curve: Curves.easeOutCubic,
-          builder: (
-            context,
-            value,
-            child,
-          ) {
+          builder: (context, value, child) {
             return Opacity(
               opacity: value,
               child: Transform.translate(
-                offset: Offset(
-                  0,
-                  24 * (1 - value),
-                ),
+                offset: Offset(0, 24 * (1 - value)),
                 child: child,
               ),
             );
@@ -127,37 +99,29 @@ class DailyDropHero extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(
-                    28,
-                  ),
+                  borderRadius: BorderRadius.circular(28),
                 ),
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // TOP LABEL
                     Row(
                       children: [
                         Container(
-                          padding:
-                              const EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
                             color: Colors.black,
-                            borderRadius:
-                                BorderRadius.circular(
-                              999,
-                            ),
+                            borderRadius: BorderRadius.circular(999),
                           ),
                           child: const Text(
                             'TODAY\'S DROP',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 11,
-                              fontWeight:
-                                  FontWeight.w900,
+                              fontWeight: FontWeight.w900,
                               letterSpacing: 1,
                             ),
                           ),
@@ -169,8 +133,7 @@ class DailyDropHero extends StatelessWidget {
                           '$remaining LEFT',
                           style: const TextStyle(
                             fontSize: 12,
-                            fontWeight:
-                                FontWeight.w900,
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
                       ],
@@ -180,8 +143,7 @@ class DailyDropHero extends StatelessWidget {
 
                     // IMAGE + DETAILS
                     Row(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
                           width: 130,
@@ -189,8 +151,7 @@ class DailyDropHero extends StatelessWidget {
                           child: Transform.scale(
                             scale: cookie.imageScale,
                             child: CookieImage(
-                              picture:
-                                  cookie.picture,
+                              picture: cookie.picture,
                               name: cookie.name,
                             ),
                           ),
@@ -200,92 +161,58 @@ class DailyDropHero extends StatelessWidget {
 
                         Expanded(
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment
-                                    .start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Wrap(
                                 spacing: 6,
                                 runSpacing: 6,
                                 children: [
                                   CookieBadge(
-                                    label:
-                                        cookie.label1,
-                                    color:
-                                        labelColor(
-                                      cookie.label1,
-                                    ),
+                                    label: cookie.label1,
+                                    color: labelColor(cookie.label1),
                                   ),
                                   CookieBadge(
-                                    label:
-                                        cookie.label2,
-                                    color:
-                                        labelColor(
-                                      cookie.label2,
-                                    ),
+                                    label: cookie.label2,
+                                    color: labelColor(cookie.label2),
                                   ),
                                 ],
                               ),
 
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              const SizedBox(height: 10),
 
                               Text(
                                 cookie.name,
-                                style:
-                                    const TextStyle(
+                                style: const TextStyle(
                                   fontSize: 24,
                                   height: 1.05,
-                                  fontWeight:
-                                      FontWeight
-                                          .w900,
-                                  color: Color(
-                                    0xFF2D160E,
-                                  ),
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF2D160E),
                                 ),
                               ),
 
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              const SizedBox(height: 10),
 
                               Row(
                                 children: [
                                   Text(
                                     '€${cookie.discount.toStringAsFixed(2)}',
-                                    style:
-                                        const TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 23,
-                                      fontWeight:
-                                          FontWeight
-                                              .w900,
-                                      color: Color(
-                                        0xFF2D160E,
-                                      ),
+                                      fontWeight: FontWeight.w900,
+                                      color: Color(0xFF2D160E),
                                     ),
                                   ),
 
-                                  const SizedBox(
-                                    width: 7,
-                                  ),
+                                  const SizedBox(width: 7),
 
-                                  if (cookie.discount >
-                                      0)
+                                  if (cookie.discount > 0)
                                     Text(
                                       '€${cookie.price.toStringAsFixed(2)}',
-                                      style:
-                                          TextStyle(
+                                      style: TextStyle(
                                         fontSize: 13,
-                                        fontWeight:
-                                            FontWeight
-                                                .w700,
-                                        color: Colors
-                                            .grey
-                                            .shade500,
-                                        decoration:
-                                            TextDecoration
-                                                .lineThrough,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.grey.shade500,
+                                        decoration: TextDecoration.lineThrough,
                                       ),
                                     ),
                                 ],
@@ -300,17 +227,12 @@ class DailyDropHero extends StatelessWidget {
 
                     // STOCK BAR
                     ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(100),
-                      child:
-                          LinearProgressIndicator(
+                      borderRadius: BorderRadius.circular(100),
+                      child: LinearProgressIndicator(
                         value: stockProgress,
                         minHeight: 7,
-                        backgroundColor:
-                            Colors.grey.shade200,
-                        color: soldOut
-                            ? Colors.grey
-                            : Colors.black,
+                        backgroundColor: Colors.grey.shade200,
+                        color: soldOut ? Colors.grey : Colors.black,
                       ),
                     ),
 
@@ -320,43 +242,35 @@ class DailyDropHero extends StatelessWidget {
                       soldOut
                           ? 'SOLD OUT'
                           : remaining <= 4
-                              ? 'Almost gone — only $remaining left'
-                              : '$remaining cookies available today',
+                          ? 'Almost gone — only $remaining left'
+                          : '$remaining cookies available today',
                       style: TextStyle(
                         fontSize: 12,
-                        fontWeight:
-                            FontWeight.w700,
+                        fontWeight: FontWeight.w700,
                         color: soldOut
                             ? Colors.grey
                             : remaining <= 4
-                                ? Colors
-                                    .red.shade700
-                                : Colors
-                                    .grey.shade700,
+                            ? Colors.red.shade700
+                            : Colors.grey.shade700,
                       ),
                     ),
 
                     const SizedBox(height: 16),
 
-                    _DropCountdown(
-                      endTime: endTime,
-                    ),
+                    _DropCountdown(endTime: endTime),
 
                     const SizedBox(height: 16),
 
                     // ADD BUTTON
-                    _DropPurchaseControls(
-                      cookie: cookie,
-                      remaining: remaining,
-                    ),
+                    _DropPurchaseControls(cookie: cookie, remaining: remaining),
                   ],
                 ),
               ),
 
-             if (showRules) ...[
-  const SizedBox(height: 28),
-  const _HowTheDropWorks(),
-],
+              if (showRules) ...[
+                const SizedBox(height: 28),
+                const _HowTheDropWorks(),
+              ],
             ],
           ),
         );
@@ -366,19 +280,15 @@ class DailyDropHero extends StatelessWidget {
 }
 
 class _DropCountdown extends StatefulWidget {
-  const _DropCountdown({
-    required this.endTime,
-  });
+  const _DropCountdown({required this.endTime});
 
   final DateTime endTime;
 
   @override
-  State<_DropCountdown> createState() =>
-      _DropCountdownState();
+  State<_DropCountdown> createState() => _DropCountdownState();
 }
 
-class _DropCountdownState
-    extends State<_DropCountdown> {
+class _DropCountdownState extends State<_DropCountdown> {
   Timer? _timer;
   Duration _remaining = Duration.zero;
 
@@ -388,18 +298,13 @@ class _DropCountdownState
 
     _updateRemaining();
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (_) {
-        _updateRemaining();
-      },
-    );
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _updateRemaining();
+    });
   }
 
   @override
-  void didUpdateWidget(
-    covariant _DropCountdown oldWidget,
-  ) {
+  void didUpdateWidget(covariant _DropCountdown oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.endTime != widget.endTime) {
@@ -408,24 +313,17 @@ class _DropCountdownState
   }
 
   void _updateRemaining() {
-    final difference =
-        widget.endTime.difference(
-      DateTime.now(),
-    );
+    final difference = widget.endTime.difference(DateTime.now());
 
     if (!mounted) return;
 
     setState(() {
-      _remaining = difference.isNegative
-          ? Duration.zero
-          : difference;
+      _remaining = difference.isNegative ? Duration.zero : difference;
     });
   }
 
   String _twoDigits(int value) {
-    return value
-        .toString()
-        .padLeft(2, '0');
+    return value.toString().padLeft(2, '0');
   }
 
   @override
@@ -438,32 +336,23 @@ class _DropCountdownState
   Widget build(BuildContext context) {
     final hours = _remaining.inHours;
 
-    final minutes =
-        _remaining.inMinutes.remainder(60);
+    final minutes = _remaining.inMinutes.remainder(60);
 
-    final seconds =
-        _remaining.inSeconds.remainder(60);
+    final seconds = _remaining.inSeconds.remainder(60);
 
-    final expired =
-        _remaining == Duration.zero;
+    final expired = _remaining == Duration.zero;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 14,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: const Color(0xFFF7F4F1),
-        borderRadius:
-            BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         children: [
           Text(
-            expired
-                ? 'DROP CLOSED'
-                : 'DROP CLOSES IN',
+            expired ? 'DROP CLOSED' : 'DROP CLOSES IN',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w900,
@@ -478,8 +367,8 @@ class _DropCountdownState
             expired
                 ? '00 : 00 : 00'
                 : '${_twoDigits(hours)} : '
-                    '${_twoDigits(minutes)} : '
-                    '${_twoDigits(seconds)}',
+                      '${_twoDigits(minutes)} : '
+                      '${_twoDigits(seconds)}',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w900,
@@ -493,27 +382,31 @@ class _DropCountdownState
   }
 }
 
-class _DropPurchaseControls
-    extends StatefulWidget {
-  const _DropPurchaseControls({
-    required this.cookie,
-    required this.remaining,
-  });
+class _DropPurchaseControls extends StatefulWidget {
+  const _DropPurchaseControls({required this.cookie, required this.remaining});
 
   final Cookie cookie;
   final int remaining;
 
   @override
-  State<_DropPurchaseControls> createState() =>
-      _DropPurchaseControlsState();
+  State<_DropPurchaseControls> createState() => _DropPurchaseControlsState();
 }
 
-class _DropPurchaseControlsState
-    extends State<_DropPurchaseControls> {
+class _DropPurchaseControlsState extends State<_DropPurchaseControls> {
   int quantity = 1;
 
+  int get alreadyInCart {
+    return Cart.quantityFor(widget.cookie);
+  }
+
+  int get availableToAdd {
+    final available = widget.remaining - alreadyInCart;
+
+    return available < 0 ? 0 : available;
+  }
+
   void _increase() {
-    if (quantity < widget.remaining) {
+    if (quantity < availableToAdd) {
       setState(() {
         quantity++;
       });
@@ -529,31 +422,47 @@ class _DropPurchaseControlsState
   }
 
   void _addToCart() {
-    for (int i = 0; i < quantity; i++) {
+    if (availableToAdd <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'You already have all remaining Drop cookies in your cart 🍪',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    final amountToAdd = quantity > availableToAdd ? availableToAdd : quantity;
+
+    for (int i = 0; i < amountToAdd; i++) {
       Cart.add(widget.cookie);
     }
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          '$quantity × ${widget.cookie.name} added to cart 🍪',
-        ),
-        duration: const Duration(
-          seconds: 1,
-        ),
+        content: Text('$amountToAdd × ${widget.cookie.name} added to cart 🍪'),
+        duration: const Duration(seconds: 1),
       ),
     );
+
+    setState(() {
+      quantity = 1;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final soldOut =
-        widget.remaining == 0;
+    final soldOut = widget.remaining == 0;
 
-    final total =
-        widget.cookie.discount *
-            quantity;
+    final allRemainingInCart = availableToAdd == 0 && !soldOut;
+
+    final unitPrice = widget.cookie.discount > 0
+        ? widget.cookie.discount
+        : widget.cookie.price;
+
+    final total = unitPrice * quantity;
 
     if (soldOut) {
       return SizedBox(
@@ -563,12 +472,34 @@ class _DropPurchaseControlsState
           onPressed: null,
           child: const Text(
             'SOLD OUT',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.8,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 0.8),
           ),
         ),
+      );
+    }
+
+    if (allRemainingInCart) {
+      return Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF7F4F1),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: const Text(
+              'IN YOUR CART 🍪',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                // letterSpacing: 0.5,
+                color: Color(0xFF2D160E),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
@@ -608,12 +539,28 @@ class _DropPurchaseControlsState
 
             _DropQuantityButton(
               icon: CupertinoIcons.plus,
-              enabled:
-                  quantity < widget.remaining,
+              enabled: quantity < availableToAdd,
               onPressed: _increase,
             ),
           ],
         ),
+
+        if (alreadyInCart > 0) ...[
+          const SizedBox(height: 8),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              '$alreadyInCart already in your cart • '
+              '$availableToAdd more available',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+        ],
 
         const SizedBox(height: 14),
 
@@ -622,23 +569,17 @@ class _DropPurchaseControlsState
           height: 50,
           child: FilledButton(
             onPressed: _addToCart,
-            style:
-                FilledButton.styleFrom(
-              backgroundColor:
-                  Colors.black,
-              foregroundColor:
-                  Colors.white,
-              shape:
-                  RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(15),
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
               ),
             ),
             child: Text(
               'ADD $quantity TO CART  •  €${total.toStringAsFixed(2)}',
               style: const TextStyle(
-                fontWeight:
-                    FontWeight.w900,
+                fontWeight: FontWeight.w900,
                 letterSpacing: 0.5,
               ),
             ),
@@ -649,8 +590,7 @@ class _DropPurchaseControlsState
   }
 }
 
-class _DropQuantityButton
-    extends StatelessWidget {
+class _DropQuantityButton extends StatelessWidget {
   const _DropQuantityButton({
     required this.icon,
     required this.onPressed,
@@ -664,36 +604,27 @@ class _DropQuantityButton
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap:
-          enabled ? onPressed : null,
-      borderRadius:
-          BorderRadius.circular(100),
+      onTap: enabled ? onPressed : null,
+      borderRadius: BorderRadius.circular(100),
       child: Container(
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: enabled
-              ? const Color(0xFFF2EEE9)
-              : Colors.grey.shade100,
+          color: enabled ? const Color(0xFFF2EEE9) : Colors.grey.shade100,
           shape: BoxShape.circle,
         ),
         child: Icon(
           icon,
           size: 17,
-          color: enabled
-              ? const Color(0xFF2D160E)
-              : Colors.grey.shade400,
+          color: enabled ? const Color(0xFF2D160E) : Colors.grey.shade400,
         ),
       ),
     );
   }
 }
 
-class _DropMessage
-    extends StatelessWidget {
-  const _DropMessage({
-    required this.message,
-  });
+class _DropMessage extends StatelessWidget {
+  const _DropMessage({required this.message});
 
   final String message;
 
@@ -701,23 +632,20 @@ class _DropMessage
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding:
-          const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius:
-            BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Text(
         message,
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontWeight: FontWeight.w700,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.w700),
       ),
     );
   }
 }
+
 class _HowTheDropWorks extends StatelessWidget {
   const _HowTheDropWorks();
 
@@ -752,8 +680,7 @@ class _HowTheDropWorks extends StatelessWidget {
           const _DropRule(
             number: '02',
             title: 'WHEN IT\'S GONE, IT\'S GONE',
-            description:
-                'Once the last cookie is claimed, the drop closes.',
+            description: 'Once the last cookie is claimed, the drop closes.',
           ),
 
           const SizedBox(height: 12),
@@ -802,10 +729,7 @@ class _DropRule extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 18,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       decoration: BoxDecoration(
         color: const Color(0xFFF7F4F1),
         borderRadius: BorderRadius.circular(18),
