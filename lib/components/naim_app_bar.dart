@@ -37,7 +37,7 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('assets/blueberry-vanilla.png', width: 42, height: 42),
+            Image.asset('assets/blueberry-vanilla.png', width: 38, height: 38),
             const SizedBox(width: 2),
             const Text(
               'NAIM',
@@ -121,7 +121,7 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
               ),
               child: const Text(
                 'MENU',
@@ -135,7 +135,7 @@ class NaimAppBar extends StatelessWidget implements PreferredSizeWidget {
           },
         ),
 
-        const SizedBox(width: 10),
+        const SizedBox(width: 4),
       ],
     );
   }

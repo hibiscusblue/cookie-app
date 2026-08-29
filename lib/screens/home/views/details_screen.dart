@@ -57,14 +57,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             widthFactor:
                                 (cookie.name == 'Nutella' ||
                                     cookie.name == 'Marzipan' ||
+                                    cookie.name == 'Dubai Chocolate' ||
                                     cookie.name == 'Oreo')
-                                ? 0.55
+                                ? 0.51
                                 : 1.0,
                             heightFactor:
                                 (cookie.name == 'Nutella' ||
                                     cookie.name == 'Marzipan' ||
+                                    cookie.name == 'Dubai Chocolate' ||
                                     cookie.name == 'Oreo')
-                                ? 0.55
+                                ? 0.51
                                 : 1.0,
                             child: CookieImage(
                               picture: cookie.picture,

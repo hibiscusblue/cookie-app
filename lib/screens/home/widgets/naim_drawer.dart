@@ -11,6 +11,7 @@ import 'package:flutter_application_1/screens/journal/journal_screen.dart';
 import 'package:flutter_application_1/screens/orders/orders_screen.dart';
 import 'package:flutter_application_1/screens/contact/contact_screen.dart';
 import 'package:flutter_application_1/screens/faq/faq_screen.dart';
+import 'package:flutter_application_1/screens/admin/admin_cookie_screen.dart';
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -318,7 +319,19 @@ class NaimDrawer extends StatelessWidget {
               ),
             ),
 
-            
+            _DrawerItem(
+              icon: Icons.admin_panel_settings_outlined,
+              title: 'Cookie Creator',
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AdminCookieScreen()),
+                );
+              },
+            ),
+
             // =================================================================
             // LOG OUT
             // =================================================================

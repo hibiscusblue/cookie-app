@@ -19,7 +19,7 @@ class CookieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       elevation: 3,
-      color: Colors.white,
+      color: const Color.fromARGB(255, 255, 255, 255),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
@@ -49,14 +49,16 @@ class CookieCard extends StatelessWidget {
                              widthFactor:
                                 (cookie.name == 'Nutella' ||
                                     cookie.name == 'Marzipan' ||
+                                    cookie.name == 'Dubai Chocolate' ||
                                     cookie.name == 'Oreo')
-                                ? 0.55
+                                ? 0.51
                                 : 1.0,
                             heightFactor:
                                 (cookie.name == 'Nutella' ||
                                     cookie.name == 'Marzipan' ||
+                                    cookie.name == 'Dubai Chocolate' ||
                                     cookie.name == 'Oreo')
-                                ? 0.55
+                                ? 0.51
                                 : 1.0,
                           child: CookieImage(
                             picture: cookie.picture,

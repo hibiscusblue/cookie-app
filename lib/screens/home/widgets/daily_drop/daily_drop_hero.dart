@@ -146,8 +146,8 @@ class DailyDropHero extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 130,
-                          height: 130,
+                          width: 118,
+                          height: 118,
                           child: Transform.scale(
                             scale: cookie.imageScale,
                             child: CookieImage(
@@ -157,7 +157,7 @@ class DailyDropHero extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(width: 18),
+                        const SizedBox(width: 12),
 
                         Expanded(
                           child: Column(
@@ -192,7 +192,10 @@ class DailyDropHero extends StatelessWidget {
 
                               const SizedBox(height: 10),
 
-                              Row(
+                              Wrap(
+                                spacing: 7,
+                                runSpacing: 2,
+                                crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   Text(
                                     '€${cookie.discount.toStringAsFixed(2)}',
@@ -202,8 +205,6 @@ class DailyDropHero extends StatelessWidget {
                                       color: Color(0xFF2D160E),
                                     ),
                                   ),
-
-                                  const SizedBox(width: 7),
 
                                   if (cookie.discount > 0)
                                     Text(
