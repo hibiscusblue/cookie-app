@@ -12,6 +12,8 @@ import 'package:flutter_application_1/screens/orders/orders_screen.dart';
 import 'package:flutter_application_1/screens/contact/contact_screen.dart';
 import 'package:flutter_application_1/screens/faq/faq_screen.dart';
 import 'package:flutter_application_1/screens/admin/admin_cookie_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/screens/admin/admin_cookie_screen.dart';
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -93,6 +95,9 @@ class NaimDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    final bool isAdmin = user?.email?.toLowerCase() == 'katka1136@gmail.com';
     return Drawer(
       backgroundColor: const Color(0xFFF8F8F8),
       shape: const RoundedRectangleBorder(
@@ -299,6 +304,22 @@ class NaimDrawer extends StatelessWidget {
                     },
                   ),
 
+                  if (isAdmin)
+                    _DrawerItem(
+                      icon: CupertinoIcons.settings,
+                      title: 'Cookie Creator',
+                      onTap: () {
+                        Navigator.pop(context);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AdminCookieScreen(),
+                          ),
+                        );
+                      },
+                    ),
+
                   // ===========================================================
                   // CONTACT
                   // ===========================================================
@@ -319,19 +340,7 @@ class NaimDrawer extends StatelessWidget {
               ),
             ),
 
-            _DrawerItem(
-              icon: Icons.admin_panel_settings_outlined,
-              title: 'Cookie Creator',
-              onTap: () {
-                Navigator.pop(context);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AdminCookieScreen()),
-                );
-              },
-            ),
-
+            
             // =================================================================
             // LOG OUT
             // =================================================================
