@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
+import 'package:flutter_application_1/screens/give/give_cookie_selection_screen.dart';
 
 class GiftCookieScreen extends StatefulWidget {
   const GiftCookieScreen({super.key});
@@ -11,15 +12,7 @@ class GiftCookieScreen extends StatefulWidget {
 }
 
 class _GiftCookieScreenState extends State<GiftCookieScreen> {
-  final recipientController = TextEditingController();
-  final messageController = TextEditingController();
-
-  @override
-  void dispose() {
-    recipientController.dispose();
-    messageController.dispose();
-    super.dispose();
-  }
+  int quantity = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -43,61 +36,119 @@ class _GiftCookieScreenState extends State<GiftCookieScreen> {
             const SizedBox(height: 8),
 
             Text(
-              'A Naim moment, chosen especially for someone.',
+              'Choose how many moments of Naim you would like to send.',
               style: TextStyle(
                 fontSize: 15,
+                height: 1.5,
                 color: Colors.grey.shade600,
               ),
             ),
 
             const SizedBox(height: 30),
 
-            _GiftField(
-              label: 'RECIPIENT',
-              hint: 'Their name',
-              controller: recipientController,
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(26),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(26),
+                border: Border.all(
+                  color: Colors.black.withOpacity(0.04),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: 58,
+                    height: 58,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF2EEE9),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: const Icon(
+                      Icons.card_giftcard_outlined,
+                      size: 28,
+                      color: Color(0xFF2D160E),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  const Text(
+                    'How many cookies?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _QuantityButton(
+                        icon: Icons.remove,
+                        onTap: quantity > 1
+                            ? () {
+                                setState(() {
+                                  quantity--;
+                                });
+                              }
+                            : null,
+                      ),
+
+                      SizedBox(
+                        width: 90,
+                        child: Center(
+                          child: Text(
+                            '$quantity',
+                            style: const TextStyle(
+                              fontSize: 34,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      _QuantityButton(
+                        icon: Icons.add,
+                        onTap: quantity < 12
+                            ? () {
+                                setState(() {
+                                  quantity++;
+                                });
+                              }
+                            : null,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Text(
+                    quantity == 1
+                        ? '1 cookie to gift'
+                        : '$quantity cookies to gift',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  Text(
+                    'Maximum 12 cookies per gift',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             const SizedBox(height: 20),
-
-            const Text(
-              'YOUR MESSAGE',
-              style: TextStyle(
-                fontSize: 11,
-                letterSpacing: 1,
-                fontWeight: FontWeight.w900,
-                color: Colors.grey,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            TextField(
-              controller: messageController,
-              maxLines: 5,
-              maxLength: 200,
-              decoration: InputDecoration(
-                hintText: 'A little message for them...',
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 22),
 
             Container(
               width: double.infinity,
@@ -106,21 +157,24 @@ class _GiftCookieScreenState extends State<GiftCookieScreen> {
                 color: const Color(0xFFF2EEE9),
                 borderRadius: BorderRadius.circular(22),
               ),
-              child: const Row(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.card_giftcard,
+                  const Icon(
+                    Icons.favorite_outline,
                     color: Color(0xFF2D160E),
                   ),
 
-                  SizedBox(width: 14),
+                  const SizedBox(width: 14),
 
                   Expanded(
                     child: Text(
-                      'Next you will choose the cookies and the delivery address.',
+                      'After choosing the cookies, you can add the '
+                      'recipient, delivery address and a personal message.',
                       style: TextStyle(
+                        fontSize: 13,
                         height: 1.5,
+                        color: Colors.grey.shade800,
                       ),
                     ),
                   ),
@@ -134,11 +188,18 @@ class _GiftCookieScreenState extends State<GiftCookieScreen> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () {
-                  // We will connect cookie selection next.
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => GiveCookieSelectionScreen(
+                        quantity: quantity,
+                      ),
+                    ),
+                  );
                 },
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
+                  elevation: 0,
                   padding: const EdgeInsets.symmetric(
                     vertical: 17,
                   ),
@@ -150,6 +211,7 @@ class _GiftCookieScreenState extends State<GiftCookieScreen> {
                   'CHOOSE COOKIES',
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
+                    letterSpacing: 0.3,
                   ),
                 ),
               ),
@@ -161,57 +223,26 @@ class _GiftCookieScreenState extends State<GiftCookieScreen> {
   }
 }
 
-class _GiftField extends StatelessWidget {
-  const _GiftField({
-    required this.label,
-    required this.hint,
-    required this.controller,
+class _QuantityButton extends StatelessWidget {
+  const _QuantityButton({
+    required this.icon,
+    required this.onTap,
   });
 
-  final String label;
-  final String hint;
-  final TextEditingController controller;
+  final IconData icon;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            letterSpacing: 1,
-            fontWeight: FontWeight.w900,
-            color: Colors.grey,
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hint,
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-      ],
+    return IconButton.filled(
+      onPressed: onTap,
+      style: IconButton.styleFrom(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        disabledBackgroundColor: Colors.grey.shade300,
+        disabledForegroundColor: Colors.white,
+      ),
+      icon: Icon(icon),
     );
   }
 }

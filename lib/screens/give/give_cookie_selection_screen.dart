@@ -5,10 +5,18 @@ import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 
 class GiveCookieSelectionScreen extends StatefulWidget {
-  const GiveCookieSelectionScreen({super.key, required this.quantity});
+  const GiveCookieSelectionScreen({
+    super.key,
+    required this.quantity,
+    this.charityName,
+    this.recipientName,
+    this.giftMessage,
+  });
 
   final int quantity;
-
+  final String? charityName;
+  final String? recipientName;
+  final String? giftMessage;
   @override
   State<GiveCookieSelectionScreen> createState() =>
       _GiveCookieSelectionScreenState();
@@ -119,11 +127,14 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
                 ),
 
                 const SizedBox(height: 8),
-
                 Text(
-                  widget.quantity == 1
-                      ? 'Choose 1 cookie to give.'
-                      : 'Choose ${widget.quantity} cookies to give. Mix flavours or let Naim choose.',
+                  widget.charityName != null
+                      ? widget.quantity == 1
+                            ? 'Choose 1 cookie for ${widget.charityName}.'
+                            : 'Choose ${widget.quantity} cookies for ${widget.charityName}. Mix flavours or let Naim choose.'
+                      : widget.quantity == 1
+                      ? 'Choose 1 cookie for ${widget.recipientName}.'
+                      : 'Choose ${widget.quantity} cookies for ${widget.recipientName}. Mix flavours or let Naim choose.',
                   style: TextStyle(
                     fontSize: 15,
                     height: 1.4,
@@ -393,7 +404,7 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
 
                     child: Text(
                       selectionComplete
-                          ? 'CONTINUE TO GIFT'
+                          ? 'REVIEW DONATION'
                           : 'CHOOSE ${widget.quantity - totalSelected} MORE',
                       style: const TextStyle(fontWeight: FontWeight.w900),
                     ),

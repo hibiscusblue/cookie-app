@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/components/naim_footer.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'package:flutter_application_1/screens/give/give_cookie_screen.dart';
@@ -21,47 +20,60 @@ class GiveScreen extends StatelessWidget {
           children: [
             const Text(
               'GIVE',
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w900,
+              ),
             ),
 
             const SizedBox(height: 8),
 
             Text(
-              'A little sweetness for someone else.',
-              style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
+              'Share a little moment of Naim.',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.grey.shade600,
+              ),
             ),
 
             const SizedBox(height: 32),
 
+            /// SEND TO SOMEONE
             _GiveCard(
-              icon: Icons.favorite_outline,
-              title: 'Give a Cookie',
+              icon: Icons.card_giftcard_outlined,
+              title: 'Send a Gift',
               description:
-                  'Buy a cookie for someone who could use a little moment of joy.',
-              buttonText: 'GIVE A COOKIE',
+                  'Choose cookies for someone you care about, add their address '
+                  'and include a personal message.',
+              buttonText: 'SEND A GIFT',
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const GiveCookieScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const GiftCookieScreen(),
+                  ),
                 );
               },
             ),
 
             const SizedBox(height: 18),
 
-            // _GiveCard(
-            //   icon: Icons.card_giftcard,
-            //   title: 'Send a Gift',
-            //   description:
-            //       'Choose cookies for someone you love and send them with a personal message.',
-            //   buttonText: 'SEND A GIFT',
-            //   onTap: () {
-            //     Navigator.of(context).push(
-            //       MaterialPageRoute(
-            //         builder: (_) => const GiftCookieScreen(),
-            //       ),
-            //     );
-            //   },
-            // ),
+            /// DONATE TO CHARITY
+            _GiveCard(
+              icon: Icons.volunteer_activism_outlined,
+              title: 'Donate Cookies',
+              description:
+                  'Choose cookies and give them to one of the organisations '
+                  'supported by Naim.',
+              buttonText: 'DONATE COOKIES',
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const GiveCookieScreen(),
+                  ),
+                );
+              },
+            ),
+
             const SizedBox(height: 34),
 
             Container(
@@ -86,8 +98,9 @@ class GiveScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   Text(
-                    'Instead of simply giving money, you can give something real: '
-                    'a cookie made for another person to enjoy.',
+                    'A cookie can be more than a treat. Send one to someone '
+                    'you love, or help us share a little moment of joy with '
+                    'someone who may need it.',
                     style: TextStyle(
                       fontSize: 14,
                       height: 1.5,
@@ -97,7 +110,6 @@ class GiveScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // const NaimFooter(),
           ],
         ),
       ),
@@ -128,6 +140,9 @@ class _GiveCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(26),
+        border: Border.all(
+          color: Colors.black.withOpacity(0.04),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,14 +154,21 @@ class _GiveCard extends StatelessWidget {
               color: const Color(0xFFF2EEE9),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: const Color(0xFF2D160E)),
+            child: Icon(
+              icon,
+              color: const Color(0xFF2D160E),
+              size: 25,
+            ),
           ),
 
           const SizedBox(height: 20),
 
           Text(
             title,
-            style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w900),
+            style: const TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.w900,
+            ),
           ),
 
           const SizedBox(height: 8),
@@ -169,6 +191,7 @@ class _GiveCard extends StatelessWidget {
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
+                elevation: 0,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
@@ -176,7 +199,11 @@ class _GiveCard extends StatelessWidget {
               ),
               child: Text(
                 buttonText,
-                style: const TextStyle(fontWeight: FontWeight.w900),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.3,
+                ),
               ),
             ),
           ),
