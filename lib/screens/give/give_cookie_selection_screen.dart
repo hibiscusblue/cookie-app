@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_application_1/screens/give/give_summary_screen.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
@@ -14,15 +15,23 @@ class GiveCookieSelectionScreen extends StatefulWidget {
   });
 
   final int quantity;
+
+  // If this has a value, this is a charity donation.
   final String? charityName;
+
+  // These can be used for personal gifts.
   final String? recipientName;
   final String? giftMessage;
+
+  bool get isDonation => charityName != null;
+
   @override
   State<GiveCookieSelectionScreen> createState() =>
       _GiveCookieSelectionScreenState();
 }
 
-class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
+class _GiveCookieSelectionScreenState
+    extends State<GiveCookieSelectionScreen> {
   final Map<String, int> selectedCookies = {};
 
   int chefChoiceCount = 0;
@@ -47,12 +56,14 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
     }
 
     setState(() {
-      selectedCookies[cookieId] = (selectedCookies[cookieId] ?? 0) + 1;
+      selectedCookies[cookieId] =
+          (selectedCookies[cookieId] ?? 0) + 1;
     });
   }
 
   void _removeCookie(String cookieId) {
-    final currentCount = selectedCookies[cookieId] ?? 0;
+    final currentCount =
+        selectedCookies[cookieId] ?? 0;
 
     if (currentCount <= 0) {
       return;
@@ -62,7 +73,8 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
       if (currentCount == 1) {
         selectedCookies.remove(cookieId);
       } else {
-        selectedCookies[cookieId] = currentCount - 1;
+        selectedCookies[cookieId] =
+            currentCount - 1;
       }
     });
   }
@@ -90,17 +102,24 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor:
+          Theme.of(context).colorScheme.surface,
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
 
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('cookies').snapshots(),
+      body: StreamBuilder<
+          QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection('cookies')
+            .snapshots(),
 
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState ==
+              ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(color: Colors.black),
+              child: CircularProgressIndicator(
+                color: Colors.black,
+              ),
             );
           }
 
@@ -108,33 +127,42 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
             return const Center(
               child: Text(
                 'Unable to load cookies.',
-                style: TextStyle(fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             );
           }
 
-          final cookies = snapshot.data?.docs ?? [];
+          final cookies =
+              snapshot.data?.docs ?? [];
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 18, 24, 40),
-
+            padding:
+                const EdgeInsets.fromLTRB(
+              24,
+              18,
+              24,
+              40,
+            ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'CHOOSE YOUR COOKIES',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
+                Text(
+                  widget.isDonation
+                      ? 'CHOOSE YOUR DONATION'
+                      : 'CHOOSE YOUR COOKIES',
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
 
                 const SizedBox(height: 8),
+
                 Text(
-                  widget.charityName != null
-                      ? widget.quantity == 1
-                            ? 'Choose 1 cookie for ${widget.charityName}.'
-                            : 'Choose ${widget.quantity} cookies for ${widget.charityName}. Mix flavours or let Naim choose.'
-                      : widget.quantity == 1
-                      ? 'Choose 1 cookie for ${widget.recipientName}.'
-                      : 'Choose ${widget.quantity} cookies for ${widget.recipientName}. Mix flavours or let Naim choose.',
+                  _subtitleText(),
                   style: TextStyle(
                     fontSize: 15,
                     height: 1.4,
@@ -144,32 +172,40 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
 
                 const SizedBox(height: 22),
 
-                // =========================================================
+                // =====================================================
                 // SELECTION COUNTER
-                // =========================================================
+                // =====================================================
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
+                  padding:
+                      const EdgeInsets.symmetric(
                     horizontal: 18,
                     vertical: 15,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius:
+                        BorderRadius.circular(20),
                   ),
-
                   child: Row(
                     children: [
-                      const Icon(
-                        Icons.favorite_outline,
-                        color: Color(0xFF2D160E),
+                      Icon(
+                        widget.isDonation
+                            ? Icons
+                                  .volunteer_activism_outlined
+                            : Icons.favorite_outline,
+                        color:
+                            const Color(0xFF2D160E),
                       ),
 
                       const SizedBox(width: 12),
 
                       const Text(
                         'Selected',
-                        style: TextStyle(fontWeight: FontWeight.w800),
+                        style: TextStyle(
+                          fontWeight:
+                              FontWeight.w800,
+                        ),
                       ),
 
                       const Spacer(),
@@ -178,7 +214,8 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
                         '$totalSelected / ${widget.quantity}',
                         style: const TextStyle(
                           fontSize: 18,
-                          fontWeight: FontWeight.w900,
+                          fontWeight:
+                              FontWeight.w900,
                         ),
                       ),
                     ],
@@ -187,17 +224,19 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
 
                 const SizedBox(height: 22),
 
-                // =========================================================
+                // =====================================================
                 // CHEF'S CHOICE
-                // =========================================================
+                // =====================================================
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(20),
+                  padding:
+                      const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF2EEE9),
-                    borderRadius: BorderRadius.circular(24),
+                    color:
+                        const Color(0xFFF2EEE9),
+                    borderRadius:
+                        BorderRadius.circular(24),
                   ),
-
                   child: Row(
                     children: [
                       Container(
@@ -205,48 +244,39 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
                         height: 64,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius:
+                              BorderRadius.circular(18),
                         ),
-
                         child: const Icon(
                           Icons.auto_awesome,
                           size: 30,
-                          color: Color(0xFF2D160E),
+                          color:
+                              Color(0xFF2D160E),
                         ),
                       ),
 
                       const SizedBox(width: 16),
 
                       const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Chef\'s Choice',
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-
-                            SizedBox(height: 4),
-
-                            // Text(
-                            //   'Picked by the chef herself.',
-                            //   style: TextStyle(
-                            //     fontSize: 13,
-                            //     color: Colors.grey,
-                            //   ),
-                            // ),
-                          ],
+                        child: Text(
+                          'Chef\'s Choice',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight:
+                                FontWeight.w900,
+                          ),
                         ),
                       ),
 
                       _QuantitySelector(
                         count: chefChoiceCount,
-                        canAdd: totalSelected < widget.quantity,
-                        onAdd: _addChefChoice,
-                        onRemove: _removeChefChoice,
+                        canAdd:
+                            totalSelected <
+                            widget.quantity,
+                        onAdd:
+                            _addChefChoice,
+                        onRemove:
+                            _removeChefChoice,
                       ),
                     ],
                   ),
@@ -258,106 +288,160 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
                   'OR CHOOSE THE FLAVOURS',
                   style: TextStyle(
                     fontSize: 11,
-                    fontWeight: FontWeight.w900,
+                    fontWeight:
+                        FontWeight.w900,
                     letterSpacing: 1.2,
-                    color: Colors.grey.shade500,
+                    color:
+                        Colors.grey.shade500,
                   ),
                 ),
 
                 const SizedBox(height: 12),
 
-                // =========================================================
+                // =====================================================
                 // COOKIE LIST
-                // =========================================================
+                // =====================================================
                 ...cookies.map((document) {
-                  final data = document.data();
+                  final data =
+                      document.data();
 
-                  final name = data['name']?.toString() ?? 'Naim Cookie';
+                  final name =
+                      data['name']
+                              ?.toString() ??
+                          'Naim Cookie';
 
-                  final picture = data['picture']?.toString() ?? '';
+                  final picture =
+                      data['picture']
+                              ?.toString() ??
+                          '';
 
                   final imageScale =
-                      (data['imageScale'] as num?)?.toDouble() ?? 1.0;
+                      (data['imageScale']
+                                  as num?)
+                              ?.toDouble() ??
+                          1.0;
 
-                  final count = selectedCookies[document.id] ?? 0;
+                  final count =
+                      selectedCookies[
+                              document.id] ??
+                          0;
 
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 14),
-
+                    padding:
+                        const EdgeInsets.only(
+                      bottom: 14,
+                    ),
                     child: Container(
-                      padding: const EdgeInsets.all(18),
-
-                      decoration: BoxDecoration(
+                      padding:
+                          const EdgeInsets.all(
+                        18,
+                      ),
+                      decoration:
+                          BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-
+                        borderRadius:
+                            BorderRadius.circular(
+                          24,
+                        ),
                         border: Border.all(
-                          color: count > 0 ? Colors.black : Colors.transparent,
-                          width: count > 0 ? 1.5 : 1,
+                          color: count > 0
+                              ? Colors.black
+                              : Colors
+                                    .transparent,
+                          width:
+                              count > 0
+                              ? 1.5
+                              : 1,
                         ),
                       ),
-
                       child: Row(
                         children: [
-                          // COOKIE IMAGE
                           Container(
                             width: 72,
                             height: 72,
-
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF2EEE9),
-                              borderRadius: BorderRadius.circular(18),
+                            decoration:
+                                BoxDecoration(
+                              color:
+                                  const Color(
+                                    0xFFF2EEE9,
+                                  ),
+                              borderRadius:
+                                  BorderRadius.circular(
+                                    18,
+                                  ),
                             ),
-
-                            child: picture.isEmpty
+                            child:
+                                picture.isEmpty
                                 ? const Icon(
-                                    Icons.cookie_outlined,
+                                    Icons
+                                        .cookie_outlined,
                                     size: 34,
-                                    color: Color(0xFF2D160E),
+                                    color: Color(
+                                      0xFF2D160E,
+                                    ),
                                   )
                                 : Padding(
-                                    padding: const EdgeInsets.all(7),
-
-                                    child: Transform.scale(
-                                      scale: imageScale,
-
-                                      child: Image.network(
+                                    padding:
+                                        const EdgeInsets.all(
+                                          7,
+                                        ),
+                                    child:
+                                        Transform.scale(
+                                      scale:
+                                          imageScale,
+                                      child:
+                                          Image.network(
                                         picture,
-                                        fit: BoxFit.contain,
-
+                                        fit: BoxFit
+                                            .contain,
                                         errorBuilder:
-                                            (context, error, stackTrace) {
-                                              return const Icon(
-                                                Icons.cookie_outlined,
-                                                size: 34,
-                                              );
-                                            },
+                                            (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                          return const Icon(
+                                            Icons
+                                                .cookie_outlined,
+                                            size: 34,
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),
                           ),
 
-                          const SizedBox(width: 18),
+                          const SizedBox(
+                            width: 18,
+                          ),
 
                           Expanded(
                             child: Text(
                               name,
-                              style: const TextStyle(
+                              style:
+                                  const TextStyle(
                                 fontSize: 17,
-                                fontWeight: FontWeight.w900,
+                                fontWeight:
+                                    FontWeight
+                                        .w900,
                               ),
                             ),
                           ),
 
-                          // QUANTITY SELECTOR
                           _QuantitySelector(
                             count: count,
-                            canAdd: totalSelected < widget.quantity,
+                            canAdd:
+                                totalSelected <
+                                widget.quantity,
                             onAdd: () {
-                              _addCookie(document.id);
+                              _addCookie(
+                                document.id,
+                              );
                             },
                             onRemove: () {
-                              _removeCookie(document.id);
+                              _removeCookie(
+                                document.id,
+                              );
                             },
                           ),
                         ],
@@ -368,45 +452,79 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
 
                 const SizedBox(height: 18),
 
-                // =========================================================
+                // =====================================================
                 // CONTINUE
-                // =========================================================
+                // =====================================================
                 SizedBox(
                   width: double.infinity,
-
                   child: FilledButton(
-                    onPressed: selectionComplete
+                    onPressed:
+                        selectionComplete
                         ? () {
-                            Navigator.of(context).push(
+                            Navigator.of(
+                              context,
+                            ).push(
                               MaterialPageRoute(
-                                builder: (_) => GiveSummaryScreen(
-                                  selectedCookies: Map<String, int>.from(
-                                    selectedCookies,
-                                  ),
-                                  chefChoiceCount: chefChoiceCount,
+                                builder: (_) =>
+                                    GiveSummaryScreen(
+                                  selectedCookies:
+                                      Map<
+                                        String,
+                                        int
+                                      >.from(
+                                        selectedCookies,
+                                      ),
+                                  chefChoiceCount:
+                                      chefChoiceCount,
+
+                                  // VERY IMPORTANT:
+                                  // Carry the route information forward.
+                                  charityName:
+                                      widget
+                                          .charityName,
+                                  recipientName:
+                                      widget
+                                          .recipientName,
+                                  giftMessage:
+                                      widget
+                                          .giftMessage,
                                 ),
                               ),
                             );
                           }
                         : null,
 
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      disabledBackgroundColor: Colors.grey.shade300,
-                      foregroundColor: Colors.white,
-
-                      padding: const EdgeInsets.symmetric(vertical: 17),
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
+                    style:
+                        FilledButton.styleFrom(
+                      backgroundColor:
+                          Colors.black,
+                      disabledBackgroundColor:
+                          Colors.grey.shade300,
+                      foregroundColor:
+                          Colors.white,
+                      padding:
+                          const EdgeInsets.symmetric(
+                        vertical: 17,
+                      ),
+                      shape:
+                          RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(
+                          18,
+                        ),
                       ),
                     ),
 
                     child: Text(
                       selectionComplete
-                          ? 'REVIEW DONATION'
+                          ? widget.isDonation
+                                ? 'REVIEW DONATION'
+                                : 'REVIEW GIFT'
                           : 'CHOOSE ${widget.quantity - totalSelected} MORE',
-                      style: const TextStyle(fontWeight: FontWeight.w900),
+                      style: const TextStyle(
+                        fontWeight:
+                            FontWeight.w900,
+                      ),
                     ),
                   ),
                 ),
@@ -416,6 +534,24 @@ class _GiveCookieSelectionScreenState extends State<GiveCookieSelectionScreen> {
         },
       ),
     );
+  }
+
+  String _subtitleText() {
+    if (widget.isDonation) {
+      if (widget.quantity == 1) {
+        return 'Choose 1 cookie for ${widget.charityName}.';
+      }
+
+      return 'Choose ${widget.quantity} cookies for '
+          '${widget.charityName}. Mix flavours or let Naim choose.';
+    }
+
+    if (widget.quantity == 1) {
+      return 'Choose 1 cookie to send as a gift.';
+    }
+
+    return 'Choose ${widget.quantity} cookies to send as a gift. '
+        'Mix flavours or let Naim choose.';
   }
 }
 
@@ -441,7 +577,11 @@ class _QuantitySelector extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (count > 0) _SmallButton(icon: Icons.remove, onTap: onRemove),
+        if (count > 0)
+          _SmallButton(
+            icon: Icons.remove,
+            onTap: onRemove,
+          ),
 
         if (count > 0) ...[
           const SizedBox(width: 8),
@@ -451,14 +591,20 @@ class _QuantitySelector extends StatelessWidget {
             child: Text(
               '$count',
               textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 16,
+              ),
             ),
           ),
 
           const SizedBox(width: 8),
         ],
 
-        _SmallButton(icon: Icons.add, onTap: canAdd ? onAdd : null),
+        _SmallButton(
+          icon: Icons.add,
+          onTap: canAdd ? onAdd : null,
+        ),
       ],
     );
   }
@@ -469,7 +615,10 @@ class _QuantitySelector extends StatelessWidget {
 // ==========================================================================
 
 class _SmallButton extends StatelessWidget {
-  const _SmallButton({required this.icon, required this.onTap});
+  const _SmallButton({
+    required this.icon,
+    required this.onTap,
+  });
 
   final IconData icon;
   final VoidCallback? onTap;
@@ -478,23 +627,22 @@ class _SmallButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-
       borderRadius: BorderRadius.circular(30),
-
       child: Container(
         width: 34,
         height: 34,
-
         decoration: BoxDecoration(
-          color: onTap == null ? Colors.grey.shade200 : Colors.black,
-
+          color: onTap == null
+              ? Colors.grey.shade200
+              : Colors.black,
           shape: BoxShape.circle,
         ),
-
         child: Icon(
           icon,
           size: 18,
-          color: onTap == null ? Colors.grey : Colors.white,
+          color: onTap == null
+              ? Colors.grey
+              : Colors.white,
         ),
       ),
     );
