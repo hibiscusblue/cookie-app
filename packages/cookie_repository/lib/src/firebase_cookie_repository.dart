@@ -13,7 +13,9 @@ class FirebaseCookieRepo implements CookieRepo {
   @override
   Future<List<Cookie>> getCookies() async {
     try {
-      final snapshot = await cookieCollection.get();
+      final snapshot = await cookieCollection
+    .where('isActive', isEqualTo: true)
+    .get();
 
       return snapshot.docs
           .map((document) {
