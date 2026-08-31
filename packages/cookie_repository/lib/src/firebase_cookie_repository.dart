@@ -14,25 +14,24 @@ class FirebaseCookieRepo implements CookieRepo {
   Future<List<Cookie>> getCookies() async {
     try {
       final snapshot = await cookieCollection
-    .where('isActive', isEqualTo: true)
-    .get();
+          .where('isActive', isEqualTo: true)
+          .orderBy('displayOrder')
+          .get();
 
-      return snapshot.docs
-          .map((document) {
-            try {
-              return Cookie.fromEntity(
-                CookieEntity.fromDocument(
-                  document.data(),
-                  documentId: document.id,
-                ),
-              );
-            } on FormatException catch (error) {
-              throw FormatException(
-                'Cookie document "${document.id}": ${error.message}',
-              );
-            }
-          })
-          .toList();
+      return snapshot.docs.map((document) {
+        try {
+          return Cookie.fromEntity(
+            CookieEntity.fromDocument(
+              document.data(),
+              documentId: document.id,
+            ),
+          );
+        } on FormatException catch (error) {
+          throw FormatException(
+            'Cookie document "${document.id}": ${error.message}',
+          );
+        }
+      }).toList();
     } catch (error) {
       log(error.toString());
       rethrow;
