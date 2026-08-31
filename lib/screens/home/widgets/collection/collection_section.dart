@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookie_repository/cookie_repository.dart';
 
 import 'package:flutter_application_1/favorites.dart';
@@ -19,8 +20,7 @@ class CollectionSection extends StatefulWidget {
       _CollectionSectionState();
 }
 
-class _CollectionSectionState
-    extends State<CollectionSection> {
+class _CollectionSectionState extends State<CollectionSection> {
   @override
   void initState() {
     super.initState();
@@ -29,72 +29,91 @@ class _CollectionSectionState
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        // COLLECTION TITLE
-        const SliverToBoxAdapter(
-          child: Text(
-            'THE COLLECTION',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.5,
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('appSettings')
+          .doc('shop')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: SelectableText(
+              'Firestore error:\n${snapshot.error}',
+              textAlign: TextAlign.center,
             ),
-          ),
-        ),
+          );
+        }
 
-        // SUBTITLE
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              'Our most-loved cookies',
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.grey.shade600,
+        final data = snapshot.data?.data();
+
+        final bool purchasingEnabled =
+            data?['collectionPurchasingEnabled'] == true;
+
+        return CustomScrollView(
+          slivers: [
+            const SliverToBoxAdapter(
+              child: Text(
+                'THE COLLECTION',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
-          ),
-        ),
 
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 14),
-        ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Our most-loved cookies',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ),
+            ),
 
-        // COOKIE GRID
-        SliverGrid(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return CookieCard(
-                cookie: widget.cookies[index],
-              );
-            },
-            childCount: widget.cookies.length,
-          ),
-          gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.68,
-          ),
-        ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 14),
+            ),
 
-        // SPACE AFTER LAST ROW
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 28),
-        ),
+            SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final cookie = widget.cookies[index];
 
-        // FOOTER
-        const SliverToBoxAdapter(
-          child: NaimFooter(),
-        ),
+                  return CookieCard(
+                    cookie: cookie,
+                    purchasingEnabled: purchasingEnabled,
+                  );
+                },
+                childCount: widget.cookies.length,
+              ),
+              gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 0.68,
+              ),
+            ),
 
-        // SMALL BOTTOM SPACE
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 8),
-        ),
-      ],
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 28),
+            ),
+
+            const SliverToBoxAdapter(
+              child: NaimFooter(),
+            ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 8),
+            ),
+          ],
+        );
+      },
     );
   }
 }

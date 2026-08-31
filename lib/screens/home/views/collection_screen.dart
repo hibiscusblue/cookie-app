@@ -28,18 +28,12 @@ class _CollectionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).colorScheme.surface,
-
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const NaimAppBar(),
-
       endDrawer: const NaimDrawer(),
-
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: BlocBuilder<
-            GetCookieBloc,
-            GetCookieState>(
+        child: BlocBuilder<GetCookieBloc, GetCookieState>(
           builder: (context, state) {
             if (state is GetCookieSuccess) {
               if (state.cookies.isEmpty) {

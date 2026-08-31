@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,32 +35,32 @@ class _FavoritesView extends StatelessWidget {
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
 
-      body: BlocBuilder<GetCookieBloc, GetCookieState>(
-        builder: (context, state) {
-          if (state is GetCookieFailure) {
-            return Center(
-              child: Text(
-                state.message,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            );
-          }
+      body: StreamBuilder<
+          DocumentSnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection('appSettings')
+            .doc('shop')
+            .snapshots(),
+        builder: (context, shopSnapshot) {
+          final shopData = shopSnapshot.data?.data();
 
-          if (state is! GetCookieSuccess) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.black,
-              ),
-            );
-          }
+          final bool purchasingEnabled =
+              shopData?['collectionPurchasingEnabled'] == true;
 
-          return FutureBuilder<void>(
-            future: Favorites.load(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState ==
-                  ConnectionState.waiting) {
+          return BlocBuilder<GetCookieBloc, GetCookieState>(
+            builder: (context, state) {
+              if (state is GetCookieFailure) {
+                return Center(
+                  child: Text(
+                    state.message,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              }
+
+              if (state is! GetCookieSuccess) {
                 return const Center(
                   child: CircularProgressIndicator(
                     color: Colors.black,
@@ -67,103 +68,128 @@ class _FavoritesView extends StatelessWidget {
                 );
               }
 
-              return ValueListenableBuilder<int>(
-                valueListenable: Favorites.changes,
-                builder: (context, _, _) {
-                  final favoriteCookies = state.cookies
-                      .where(
-                        (cookie) => Favorites.contains(cookie),
-                      )
-                      .toList();
-
-                  return CustomScrollView(
-                    slivers: [
-                      // PAGE PADDING + TITLE
-                      SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(
-                          16,
-                          16,
-                          16,
-                          0,
-                        ),
-                        sliver: SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              const Text(
-                                'FAVORITES',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-
-                              const SizedBox(height: 4),
-
-                              Text(
-                                'The ones you couldn\'t forget',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-
-                              const SizedBox(height: 18),
-                            ],
-                          ),
-                        ),
+              return FutureBuilder<void>(
+                future: Favorites.load(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.black,
                       ),
+                    );
+                  }
 
-                      // EMPTY FAVORITES
-                      if (favoriteCookies.isEmpty)
-                        const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: _EmptyFavorites(),
-                        ),
+                  return ValueListenableBuilder<int>(
+                    valueListenable: Favorites.changes,
+                    builder: (context, _, _) {
+                      final favoriteCookies = state.cookies
+                          .where(
+                            (cookie) =>
+                                Favorites.contains(cookie),
+                          )
+                          .toList();
 
-                      // FAVORITES GRID
-                      if (favoriteCookies.isNotEmpty)
-                        SliverPadding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
-                          sliver: SliverGrid(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return CookieCard(
-                                  cookie: favoriteCookies[index],
-                                );
-                              },
-                              childCount: favoriteCookies.length,
+                      return CustomScrollView(
+                        slivers: [
+                          // PAGE PADDING + TITLE
+                          SliverPadding(
+                            padding:
+                                const EdgeInsets.fromLTRB(
+                              16,
+                              16,
+                              16,
+                              0,
                             ),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.68,
+                            sliver: SliverList(
+                              delegate:
+                                  SliverChildListDelegate(
+                                [
+                                  const Text(
+                                    'FAVORITES',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight:
+                                          FontWeight.w900,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 4),
+
+                                  Text(
+                                    'The ones you couldn\'t forget',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color:
+                                          Colors.grey.shade600,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 18),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
 
-                      // SPACE BEFORE FOOTER
-                      if (favoriteCookies.isNotEmpty)
-                        const SliverToBoxAdapter(
-                          child: SizedBox(height: 28),
-                        ),
+                          // EMPTY FAVORITES
+                          if (favoriteCookies.isEmpty)
+                            const SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: _EmptyFavorites(),
+                            ),
 
-                      // FOOTER
-                      if (favoriteCookies.isNotEmpty)
-                        const SliverToBoxAdapter(
-                          child: NaimFooter(),
-                        ),
+                          // FAVORITES GRID
+                          if (favoriteCookies.isNotEmpty)
+                            SliverPadding(
+                              padding:
+                                  const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              sliver: SliverGrid(
+                                delegate:
+                                    SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    return CookieCard(
+                                      cookie:
+                                          favoriteCookies[index],
+                                      purchasingEnabled:
+                                          purchasingEnabled,
+                                    );
+                                  },
+                                  childCount:
+                                      favoriteCookies.length,
+                                ),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16,
+                                  childAspectRatio: 0.68,
+                                ),
+                              ),
+                            ),
 
-                      // SMALL SPACE UNDER FOOTER
-                      if (favoriteCookies.isNotEmpty)
-                        const SliverToBoxAdapter(
-                          child: SizedBox(height: 8),
-                        ),
-                    ],
+                          // SPACE BEFORE FOOTER
+                          if (favoriteCookies.isNotEmpty)
+                            const SliverToBoxAdapter(
+                              child: SizedBox(height: 28),
+                            ),
+
+                          // FOOTER
+                          if (favoriteCookies.isNotEmpty)
+                            const SliverToBoxAdapter(
+                              child: NaimFooter(),
+                            ),
+
+                          // SMALL SPACE UNDER FOOTER
+                          if (favoriteCookies.isNotEmpty)
+                            const SliverToBoxAdapter(
+                              child: SizedBox(height: 8),
+                            ),
+                        ],
+                      );
+                    },
                   );
                 },
               );
