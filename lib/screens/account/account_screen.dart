@@ -95,7 +95,7 @@ class AccountScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     name.isNotEmpty
-                                        ? 'Welcome, $name'
+                                        ? 'Welcome, ${name.split(' ').first}'
                                         : 'Welcome to Naim',
                                     style: const TextStyle(
                                       fontSize: 19,
@@ -170,8 +170,8 @@ class AccountScreen extends StatelessWidget {
                         icon: Icons.person_outline,
                         title: 'Personal Details',
                         subtitle: 'Name, email and account information',
-                        onTap: () {
-                          _showPersonalDetails(
+                        onTap: () async {
+                          await _showPersonalDetails(
                             context,
                             userId: authUser.uid,
                             name: name,
@@ -219,306 +219,348 @@ class AccountScreen extends StatelessWidget {
   // PERSONAL DETAILS
   // =============================================================
 
-  void _showPersonalDetails(
+  Future<void> _showPersonalDetails(
     BuildContext context, {
     required String userId,
     required String name,
     required String email,
-  }) {
-    showModalBottomSheet(
+  }) async {
+    final cleanName = name.trim();
+    final nameParts = cleanName.isEmpty
+        ? <String>[]
+        : cleanName.split(RegExp(r'\s+'));
+
+    final firstNameController = TextEditingController(
+      text: nameParts.isNotEmpty ? nameParts.first : '',
+    );
+
+    final lastNameController = TextEditingController(
+      text: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
+    );
+
+    await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 34),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-          ),
-          child: SafeArea(
-            top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Little drag handle
-                Center(
-                  child: Container(
-                    width: 42,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+      builder: (sheetContext) {
+        bool isSaving = false;
+
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 34),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
                 ),
-
-                const SizedBox(height: 24),
-
-                const Text(
-                  'PERSONAL DETAILS',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
-                ),
-
-                const SizedBox(height: 24),
-
-                // ===========================================================
-                // PROFILE
-                // ===========================================================
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 29,
-                      backgroundColor: const Color(0xFFF2EEE9),
-                      child: Text(
-                        _initialFor(name),
-                        style: const TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFF2D160E),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 16),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            name.isNotEmpty ? name : 'Naim customer',
-                            style: const TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-
-                          const SizedBox(height: 3),
-
-                          Text(
-                            email,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 28),
-
-                Divider(color: Colors.grey.shade200),
-
-                const SizedBox(height: 22),
-
-                // ===========================================================
-                // DEFAULT ADDRESS
-                // ===========================================================
-                Row(
-                  children: [
-                    Text(
-                      'DEFAULT DELIVERY ADDRESS',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1,
-                        color: Colors.grey.shade500,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-
-                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(userId)
-                      .collection('addresses')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Center(
-                          child: CircularProgressIndicator(color: Colors.black),
-                        ),
-                      );
-                    }
-
-                    final addresses = snapshot.data?.docs ?? [];
-
-                    QueryDocumentSnapshot<Map<String, dynamic>>? defaultAddress;
-
-                    for (final address in addresses) {
-                      if (address.data()['isDefault'] == true) {
-                        defaultAddress = address;
-                        break;
-                      }
-                    }
-
-                    if (defaultAddress == null) {
-                      return Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(18),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF7F5F3),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on_outlined,
-                              color: Color(0xFF2D160E),
-                            ),
-
-                            const SizedBox(width: 12),
-
-                            Text(
-                              'No default address selected',
-                              style: TextStyle(color: Colors.grey.shade600),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    final data = defaultAddress.data();
-
-                    final street = data['street']?.toString() ?? '';
-
-                    final houseNumber = data['houseNumber']?.toString() ?? '';
-
-                    final postalCode = data['postalCode']?.toString() ?? '';
-
-                    final city = data['city']?.toString() ?? '';
-
-                    final country = data['country']?.toString() ?? '';
-
-                    return Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF7F5F3),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
+                child: SafeArea(
+                  top: false,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Container(
                             width: 42,
-                            height: 42,
+                            height: 4,
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(13),
-                            ),
-                            child: const Icon(
-                              Icons.location_on_outlined,
-                              color: Color(0xFF2D160E),
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
+                        ),
 
-                          const SizedBox(width: 14),
+                        const SizedBox(height: 24),
 
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '$street $houseNumber',
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
+                        const Text(
+                          'PERSONAL DETAILS',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
 
-                                const SizedBox(height: 4),
+                        const SizedBox(height: 6),
 
-                                Text(
-                                  '$postalCode $city',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade700,
-                                  ),
-                                ),
+                        Text(
+                          'Update your Naim account information.',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
 
-                                const SizedBox(height: 2),
+                        const SizedBox(height: 28),
 
-                                Text(
-                                  country,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ),
-                              ],
+                        Text(
+                          'FIRST NAME',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        TextField(
+                          controller: firstNameController,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: InputDecoration(
+                            hintText: 'First name',
+                            filled: true,
+                            fillColor: const Color(0xFFF7F5F3),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(color: Colors.black),
                             ),
                           ),
+                        ),
 
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 9,
-                              vertical: 5,
+                        const SizedBox(height: 18),
+
+                        Text(
+                          'SURNAME',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        TextField(
+                          controller: lastNameController,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: InputDecoration(
+                            hintText: 'Surname',
+                            filled: true,
+                            fillColor: const Color(0xFFF7F5F3),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide.none,
                             ),
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(20),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide.none,
                             ),
-                            child: const Text(
-                              'DEFAULT',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 9,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.7,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(color: Colors.black),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        Text(
+                          'EMAIL',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 17,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF7F5F3),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            email,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        Text(
+                          'Email editing will be available separately.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+
+                        const SizedBox(height: 28),
+
+                        SizedBox(
+                          width: double.infinity,
+                          height: 54,
+                          child: FilledButton(
+                            onPressed: isSaving
+                                ? null
+                                : () async {
+                                    final firstName = firstNameController.text
+                                        .trim();
+                                    final lastName = lastNameController.text
+                                        .trim();
+
+                                    if (firstName.isEmpty) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Please enter your first name.',
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    final fullName = [firstName, lastName]
+                                        .where((part) => part.isNotEmpty)
+                                        .join(' ');
+
+                                    setModalState(() {
+                                      isSaving = true;
+                                    });
+
+                                    try {
+                                      await FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(userId)
+                                          .set({
+                                            'firstName': firstName,
+                                            'lastName': lastName,
+                                            'name': fullName,
+                                            'updatedAt':
+                                                FieldValue.serverTimestamp(),
+                                          }, SetOptions(merge: true));
+
+                                      final currentUser =
+                                          FirebaseAuth.instance.currentUser;
+
+                                      if (currentUser != null) {
+                                        await currentUser.updateDisplayName(
+                                          fullName,
+                                        );
+                                      }
+
+                                      if (!context.mounted) return;
+
+                                      Navigator.pop(context);
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Personal details updated ♡',
+                                          ),
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      if (!context.mounted) return;
+
+                                      setModalState(() {
+                                        isSaving = false;
+                                      });
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Could not update details: $e',
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              disabledBackgroundColor: Colors.grey.shade400,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
                             ),
+                            child: isSaving
+                                ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'SAVE CHANGES',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 18),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const AddressesScreen(),
                         ),
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      side: const BorderSide(color: Colors.black),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      'MANAGE ADDRESSES',
-                      style: TextStyle(fontWeight: FontWeight.w900),
+
+                        const SizedBox(height: 12),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: isSaving
+                                ? null
+                                : () {
+                                    Navigator.pop(context);
+                                  },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.black,
+                              side: const BorderSide(color: Colors.black),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: const Text(
+                              'CANCEL',
+                              style: TextStyle(fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
+
+    firstNameController.dispose();
+    lastNameController.dispose();
   }
 
   // =============================================================
@@ -660,42 +702,6 @@ class _AccountTile extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-// ===============================================================
-// PERSONAL DETAIL ROW
-// ===============================================================
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.title, required this.value});
-
-  final String title;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title.toUpperCase(),
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1,
-            color: Colors.grey.shade500,
-          ),
-        ),
-
-        const SizedBox(height: 5),
-
-        Text(
-          value,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-        ),
-      ],
     );
   }
 }

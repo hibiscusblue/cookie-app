@@ -333,7 +333,11 @@ class CheckoutScreen extends StatelessWidget {
                                   'orderId': orderRef.id,
                                   'orderNumber': orderNumber,
                                   'userId': user.uid,
-                                  'email': user.email,
+                                  'customerName': name,
+                                  'customerEmail': email,
+
+                                  // Kept for backwards compatibility with your existing code
+                                  'email': email,
                                   'items': orderItems,
                                   'total': Cart.total,
                                   'orderStatus': 'pending',
