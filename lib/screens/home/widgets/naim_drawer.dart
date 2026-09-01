@@ -254,21 +254,21 @@ class NaimDrawer extends StatelessWidget {
                   // ===========================================================
                   // GIVE
                   // ===========================================================
-                  const _DrawerSectionTitle(title: 'GIVE'),
+                  // const _DrawerSectionTitle(title: 'GIVE'),
 
-                  _DrawerItem(
-                    icon: CupertinoIcons.gift,
-                    title: 'Give',
-                    onTap: () {
-                      Navigator.pop(context);
+                  // _DrawerItem(
+                  //   icon: CupertinoIcons.gift,
+                  //   title: 'Give',
+                  //   onTap: () {
+                  //     Navigator.pop(context);
 
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const GiveScreen()),
-                      );
-                    },
-                  ),
+                  //     Navigator.of(context).push(
+                  //       MaterialPageRoute(builder: (_) => const GiveScreen()),
+                  //     );
+                  //   },
+                  // ),
 
-                  const SizedBox(height: 18),
+                  // const SizedBox(height: 18),
 
                   // ===========================================================
                   // ABOUT

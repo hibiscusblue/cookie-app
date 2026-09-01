@@ -88,21 +88,21 @@ class FaqScreen extends StatelessWidget {
                         'added as Naim grows.',
                   ),
 
-                  const _FaqItem(
-                    question: 'Can I send cookies to someone else?',
-                    answer:
-                        'Yes. Through Give, you can choose cookies for '
-                        'someone else and include a personal message.',
-                  ),
+                  // const _FaqItem(
+                  //   question: 'Can I send cookies to someone else?',
+                  //   answer:
+                  //       'Yes. Through Give, you can choose cookies for '
+                  //       'someone else and include a personal message.',
+                  // ),
 
-                  const _FaqItem(
-                    question: 'What is Give?',
-                    answer:
-                        'Give is Naim\'s gifting and charity feature. '
-                        'It allows you to share cookies with another '
-                        'person and turn a small treat into a small act '
-                        'of kindness.',
-                  ),
+                  // const _FaqItem(
+                  //   question: 'What is Give?',
+                  //   answer:
+                  //       'Give is Naim\'s gifting and charity feature. '
+                  //       'It allows you to share cookies with another '
+                  //       'person and turn a small treat into a small act '
+                  //       'of kindness.',
+                  // ),
 
                   const _FaqItem(
                     question: 'Can I save my favourite cookies?',

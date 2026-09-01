@@ -171,13 +171,13 @@ class _ContactScreenState extends State<ContactScreen> {
 
                   const SizedBox(height: 14),
 
-                  const _ContactCard(
-                    icon: Icons.location_on_outlined,
-                    title: 'LOCATION',
-                    value: 'Venlo, The Netherlands',
-                  ),
+                  // const _ContactCard(
+                  //   icon: Icons.location_on_outlined,
+                  //   title: 'LOCATION',
+                  //   value: 'Venlo, The Netherlands',
+                  // ),
 
-                  const SizedBox(height: 14),
+                  // const SizedBox(height: 14),
 
                   const _ContactCard(
                     icon: Icons.schedule_outlined,

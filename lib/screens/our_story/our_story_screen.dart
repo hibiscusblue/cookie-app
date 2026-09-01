@@ -93,22 +93,22 @@ class OurStoryScreen extends StatelessWidget {
                 title: 'A little world of flavours.',
                 text:
                     'Blueberry vanilla. Raspberry cacao. Apple cinnamon. '
-                    'Marzipan. Matcha. Each flavour has its own personality, '
+                    'Marzipan. Nutella. Each flavour has its own personality, '
                     'its own colours and its own story. The collection is '
                     'always allowed to grow, change and surprise you.',
               ),
 
-              const _StorySection(
-                eyebrow: 'GIVE',
-                title: 'Bliss is better when shared.',
-                text:
-                    'Naim is not only about receiving something beautiful. '
-                    'It is also about giving. Through Naim Give, a cookie can '
-                    'become a small act of kindness — sent to someone simply '
-                    'to make their day a little brighter.',
-              ),
+              // const _StorySection(
+              //   eyebrow: 'GIVE',
+              //   title: 'Bliss is better when shared.',
+              //   text:
+              //       'Naim is not only about receiving something beautiful. '
+              //       'It is also about giving. Through Naim Give, a cookie can '
+              //       'become a small act of kindness — sent to someone simply '
+              //       'to make their day a little brighter.',
+              // ),
 
-              const SizedBox(height: 10),
+              // const SizedBox(height: 10),
 
               Center(
                 child: Image.asset(
