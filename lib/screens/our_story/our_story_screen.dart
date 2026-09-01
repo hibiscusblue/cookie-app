@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/components/naim_footer.dart';
+import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 
 class OurStoryScreen extends StatelessWidget {
   const OurStoryScreen({super.key});
@@ -8,12 +11,11 @@ class OurStoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F7),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F7),
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        foregroundColor: Colors.black,
-      ),
+
+      appBar: const NaimAppBar(),
+
+      endDrawer: const NaimDrawer(),
+
       body: SafeArea(
         top: false,
         child: SingleChildScrollView(
@@ -58,7 +60,7 @@ class OurStoryScreen extends StatelessWidget {
 
               const SizedBox(height: 42),
 
-              _StoryImage(),
+              const _StoryImage(),
 
               const SizedBox(height: 44),
 
@@ -97,18 +99,6 @@ class OurStoryScreen extends StatelessWidget {
                     'its own colours and its own story. The collection is '
                     'always allowed to grow, change and surprise you.',
               ),
-
-              // const _StorySection(
-              //   eyebrow: 'GIVE',
-              //   title: 'Bliss is better when shared.',
-              //   text:
-              //       'Naim is not only about receiving something beautiful. '
-              //       'It is also about giving. Through Naim Give, a cookie can '
-              //       'become a small act of kindness — sent to someone simply '
-              //       'to make their day a little brighter.',
-              // ),
-
-              // const SizedBox(height: 10),
 
               Center(
                 child: Image.asset(
@@ -154,6 +144,9 @@ class OurStoryScreen extends StatelessWidget {
                   color: Colors.grey.shade400,
                 ),
               ),
+
+              const SizedBox(height: 24),
+
               const NaimFooter(),
             ],
           ),
@@ -320,15 +313,9 @@ class _QuoteCard extends StatelessWidget {
               fontWeight: FontWeight.w900,
               letterSpacing: 1.7,
             ),
-            
           ),
-          
         ],
-        
       ),
-      
     );
-    
   }
-  
 }
