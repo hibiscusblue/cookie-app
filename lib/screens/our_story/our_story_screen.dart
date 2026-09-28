@@ -19,136 +19,143 @@ class OurStoryScreen extends StatelessWidget {
       body: SafeArea(
         top: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 48),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'OUR STORY',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2.2,
-                  color: Color(0xFF9B9895),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 48),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'OUR STORY',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2.2,
+                        color: Color(0xFF9B9895),
+                      ),
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    const Text(
+                      'More than\na cookie.',
+                      style: TextStyle(
+                        fontSize: 42,
+                        height: 1.05,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1.3,
+                      ),
+                    ),
+
+                    const SizedBox(height: 22),
+
+                    Text(
+                      'Naim began with a simple idea: that something small '
+                      'can create a beautiful moment.',
+                      style: TextStyle(
+                        fontSize: 18,
+                        height: 1.55,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade800,
+                      ),
+                    ),
+
+                    const SizedBox(height: 42),
+
+                    const _StoryImage(),
+
+                    const SizedBox(height: 44),
+
+                    const _StorySection(
+                      eyebrow: 'THE BEGINNING',
+                      title: 'Made from curiosity.',
+                      text:
+                          'Naim grew from experimenting in the kitchen — '
+                          'discovering new flavours, rethinking familiar recipes '
+                          'and asking whether a cookie could be delicious, '
+                          'beautiful and made with more thoughtful ingredients '
+                          'at the same time.',
+                    ),
+
+                    const _StorySection(
+                      eyebrow: 'OUR PHILOSOPHY',
+                      title: 'Small batch. Big intention.',
+                      text:
+                          'We believe food does not need to be complicated to feel '
+                          'special. Naim cookies are made in small batches, with '
+                          'carefully chosen ingredients and flavours designed to '
+                          'turn an ordinary part of the day into something worth '
+                          'remembering.',
+                    ),
+
+                    const _QuoteCard(),
+
+                    const SizedBox(height: 44),
+
+                    const _StorySection(
+                      eyebrow: 'THE COLLECTION',
+                      title: 'A little world of flavours.',
+                      text:
+                          'Blueberry vanilla. Raspberry cacao. Apple cinnamon. '
+                          'Marzipan. Nutella. Each flavour has its own personality, '
+                          'its own colours and its own story. The collection is '
+                          'always allowed to grow, change and surprise you.',
+                    ),
+
+                    Center(
+                      child: Image.asset(
+                        'assets/blueberry-vanilla.png',
+                        width: 90,
+                        height: 90,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    const Center(
+                      child: Text(
+                        'NAIM',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Center(
+                      child: Text(
+                        'Your Moment of Bliss',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey.shade600,
+                          letterSpacing: 0.4,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 42),
+
+                    Center(
+                      child: Container(
+                        width: 38,
+                        height: 1,
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    const NaimFooter(),
+                  ],
                 ),
               ),
-
-              const SizedBox(height: 18),
-
-              const Text(
-                'More than\na cookie.',
-                style: TextStyle(
-                  fontSize: 42,
-                  height: 1.05,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -1.3,
-                ),
-              ),
-
-              const SizedBox(height: 22),
-
-              Text(
-                'Naim began with a simple idea: that something small '
-                'can create a beautiful moment.',
-                style: TextStyle(
-                  fontSize: 18,
-                  height: 1.55,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade800,
-                ),
-              ),
-
-              const SizedBox(height: 42),
-
-              const _StoryImage(),
-
-              const SizedBox(height: 44),
-
-              const _StorySection(
-                eyebrow: 'THE BEGINNING',
-                title: 'Made from curiosity.',
-                text:
-                    'Naim grew from experimenting in the kitchen — '
-                    'discovering new flavours, rethinking familiar recipes '
-                    'and asking whether a cookie could be delicious, '
-                    'beautiful and made with more thoughtful ingredients '
-                    'at the same time.',
-              ),
-
-              const _StorySection(
-                eyebrow: 'OUR PHILOSOPHY',
-                title: 'Small batch. Big intention.',
-                text:
-                    'We believe food does not need to be complicated to feel '
-                    'special. Naim cookies are made in small batches, with '
-                    'carefully chosen ingredients and flavours designed to '
-                    'turn an ordinary part of the day into something worth '
-                    'remembering.',
-              ),
-
-              const _QuoteCard(),
-
-              const SizedBox(height: 44),
-
-              const _StorySection(
-                eyebrow: 'THE COLLECTION',
-                title: 'A little world of flavours.',
-                text:
-                    'Blueberry vanilla. Raspberry cacao. Apple cinnamon. '
-                    'Marzipan. Nutella. Each flavour has its own personality, '
-                    'its own colours and its own story. The collection is '
-                    'always allowed to grow, change and surprise you.',
-              ),
-
-              Center(
-                child: Image.asset(
-                  'assets/blueberry-vanilla.png',
-                  width: 90,
-                  height: 90,
-                  fit: BoxFit.contain,
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              const Center(
-                child: Text(
-                  'NAIM',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              Center(
-                child: Text(
-                  'Your Moment of Bliss',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey.shade600,
-                    letterSpacing: 0.4,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 42),
-
-              Center(
-                child: Container(
-                  width: 38,
-                  height: 1,
-                  color: Colors.grey.shade400,
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              const NaimFooter(),
-            ],
+            ),
           ),
         ),
       ),
@@ -271,10 +278,7 @@ class _QuoteCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 48),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 26,
-        vertical: 36,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 36),
       decoration: BoxDecoration(
         color: const Color(0xFF2D160E),
         borderRadius: BorderRadius.circular(26),
@@ -284,11 +288,7 @@ class _QuoteCard extends StatelessWidget {
         children: [
           Text(
             '“',
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 54,
-              height: 0.8,
-            ),
+            style: TextStyle(color: Colors.white54, fontSize: 54, height: 0.8),
           ),
 
           SizedBox(height: 12),

@@ -56,87 +56,94 @@ class JournalScreen extends StatelessWidget {
                 .toList();
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 18, 24, 50),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Stories, ingredients\n& inspiration.',
-                    style: TextStyle(
-                      fontSize: 34,
-                      height: 1.05,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF2D160E),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  Text(
-                    'A quiet corner of Naim for recipes, ingredients, '
-                    'ideas and the stories behind what we create.',
-                    style: TextStyle(
-                      fontSize: 15,
-                      height: 1.5,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-
-                  const SizedBox(height: 34),
-
-                  const Text(
-                    'FEATURED',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.6,
-                      color: Colors.grey,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  _FeaturedArticleCard(article: featured),
-
-                  if (latestArticles.isNotEmpty) ...[
-                    const SizedBox(height: 42),
-
-                    const Row(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 18, 24, 50),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            'Latest stories',
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF2D160E),
-                            ),
+                        const Text(
+                          'Stories, ingredients\n& inspiration.',
+                          style: TextStyle(
+                            fontSize: 34,
+                            height: 1.05,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF2D160E),
                           ),
                         ),
+
+                        const SizedBox(height: 12),
+
+                        Text(
+                          'A quiet corner of Naim for recipes, ingredients, '
+                          'ideas and the stories behind what we create.',
+                          style: TextStyle(
+                            fontSize: 15,
+                            height: 1.5,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+
+                        const SizedBox(height: 34),
+
+                        const Text(
+                          'FEATURED',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.6,
+                            color: Colors.grey,
+                          ),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        _FeaturedArticleCard(article: featured),
+
+                        if (latestArticles.isNotEmpty) ...[
+                          const SizedBox(height: 42),
+
+                          const Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Latest stories',
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF2D160E),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 6),
+
+                          Text(
+                            'From the Naim kitchen and beyond.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          ...latestArticles.map(
+                            (article) => Padding(
+                              padding: const EdgeInsets.only(bottom: 18),
+                              child: _JournalArticleCard(article: article),
+                            ),
+                          ),
+                          const NaimFooter(),
+                        ],
                       ],
                     ),
-
-                    const SizedBox(height: 6),
-
-                    Text(
-                      'From the Naim kitchen and beyond.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    ...latestArticles.map(
-                      (article) => Padding(
-                        padding: const EdgeInsets.only(bottom: 18),
-                        child: _JournalArticleCard(article: article),
-                      ),
-                    ),
-                    const NaimFooter(),
-                  ],
-                ],
+                  ),
+                ),
               ),
             );
           },
