@@ -16,22 +16,21 @@ class HomeScreen extends StatelessWidget {
       endDrawer: const NaimDrawer(),
       appBar: const NaimAppBar(showBackButton: false),
 
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.sizeOf(context).width >= 900 ? 1080 : 500,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: BlocBuilder<GetCookieBloc, GetCookieState>(
-              builder: (context, state) {
-                return switch (state) {
-                  GetCookieSuccess() when state.cookies.isEmpty => const Center(
-                    child: Text('No cookies have been added yet.'),
-                  ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: BlocBuilder<GetCookieBloc, GetCookieState>(
+                builder: (context, state) {
+                  return switch (state) {
+                    GetCookieSuccess() when state.cookies.isEmpty =>
+                      const Center(
+                        child: Text('No cookies have been added yet.'),
+                      ),
 
-                  GetCookieSuccess() => SingleChildScrollView(
-                    child: Column(
+                    GetCookieSuccess() => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // DAILY DROP
@@ -46,13 +45,13 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
 
-                  GetCookieFailure() => _FailureView(message: state.message),
+                    GetCookieFailure() => _FailureView(message: state.message),
 
-                  _ => const Center(child: CircularProgressIndicator()),
-                };
-              },
+                    _ => const Center(child: CircularProgressIndicator()),
+                  };
+                },
+              ),
             ),
           ),
         ),

@@ -67,18 +67,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     try {
       final firestore = FirebaseFirestore.instance;
 
-      final userSnapshot =
-          await firestore.collection('users').doc(user.uid).get();
+      final userSnapshot = await firestore
+          .collection('users')
+          .doc(user.uid)
+          .get();
 
       final data = userSnapshot.data();
 
       final fullName = data?['name']?.toString().trim() ?? '';
 
-      final storedFirstName =
-          data?['firstName']?.toString().trim() ?? '';
+      final storedFirstName = data?['firstName']?.toString().trim() ?? '';
 
-      final storedLastName =
-          data?['lastName']?.toString().trim() ?? '';
+      final storedLastName = data?['lastName']?.toString().trim() ?? '';
 
       String firstName = storedFirstName;
       String lastName = storedLastName;
@@ -93,10 +93,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         }
       }
 
-      final email =
-          data?['email']?.toString().trim() ??
-          user.email ??
-          '';
+      final email = data?['email']?.toString().trim() ?? user.email ?? '';
 
       final addressesSnapshot = await firestore
           .collection('users')
@@ -110,10 +107,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         final address = doc.data();
 
         if (address['isDefault'] == true) {
-          defaultAddress = {
-            ...address,
-            'addressId': doc.id,
-          };
+          defaultAddress = {...address, 'addressId': doc.id};
           break;
         }
       }
@@ -142,25 +136,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not load checkout details: $e'),
-        ),
+        SnackBar(content: Text('Could not load checkout details: $e')),
       );
     }
   }
 
   void _fillAddressControllers(Map<String, dynamic> address) {
     _streetController.text = address['street']?.toString() ?? '';
-    _houseNumberController.text =
-        address['houseNumber']?.toString() ?? '';
-    _postalCodeController.text =
-        address['postalCode']?.toString() ?? '';
+    _houseNumberController.text = address['houseNumber']?.toString() ?? '';
+    _postalCodeController.text = address['postalCode']?.toString() ?? '';
     _cityController.text = address['city']?.toString() ?? '';
 
     final country = address['country']?.toString() ?? '';
 
-    _countryController.text =
-        country.isNotEmpty ? country : 'Netherlands';
+    _countryController.text = country.isNotEmpty ? country : 'Netherlands';
   }
 
   void _clearAddressControllers() {
@@ -171,9 +160,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _countryController.text = 'Netherlands';
   }
 
-  Future<void> _saveAddressAsDefault({
-    required String userId,
-  }) async {
+  Future<void> _saveAddressAsDefault({required String userId}) async {
     final firestore = FirebaseFirestore.instance;
 
     final addressesRef = firestore
@@ -211,10 +198,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     await batch.commit();
 
-    _defaultAddress = {
-      ...newAddress,
-      'addressId': newAddressRef.id,
-    };
+    _defaultAddress = {...newAddress, 'addressId': newAddressRef.id};
   }
 
   bool _validateCheckout() {
@@ -253,9 +237,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _placeOrder() async {
@@ -294,8 +278,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       final orderItems = uniqueCookies.map((cookie) {
         final quantity = Cart.quantityFor(cookie);
 
-        final unitPrice =
-            cookie.discount > 0 ? cookie.discount : cookie.price;
+        final unitPrice = cookie.discount > 0 ? cookie.discount : cookie.price;
 
         return {
           'cookieId': cookie.cookieId,
@@ -317,8 +300,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
       final dateCode = '$year$month$day';
 
-      final counterRef =
-          firestore.collection('orderCounters').doc(dateCode);
+      final counterRef = firestore.collection('orderCounters').doc(dateCode);
 
       final orderRef = firestore.collection('orders').doc();
 
@@ -342,22 +324,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               'city': _cityController.text.trim(),
               'country': _countryController.text.trim(),
               'usedDefaultAddress': _useDefaultAddress,
-              if (_useDefaultAddress &&
-                  _defaultAddress?['addressId'] != null)
+              if (_useDefaultAddress && _defaultAddress?['addressId'] != null)
                 'addressId': _defaultAddress!['addressId'],
             }
           : null;
 
       await firestore.runTransaction((transaction) async {
-        final counterSnapshot =
-            await transaction.get(counterRef);
+        final counterSnapshot = await transaction.get(counterRef);
 
-        DocumentSnapshot<Map<String, dynamic>>?
-            dailyDropSnapshot;
+        DocumentSnapshot<Map<String, dynamic>>? dailyDropSnapshot;
 
         if (dailyDropRef != null) {
-          dailyDropSnapshot =
-              await transaction.get(dailyDropRef);
+          dailyDropSnapshot = await transaction.get(dailyDropRef);
         }
 
         int nextNumber = 1;
@@ -365,41 +343,33 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         if (counterSnapshot.exists) {
           final data = counterSnapshot.data();
 
-          final currentNumber =
-              (data?['lastNumber'] as num?)?.toInt() ?? 0;
+          final currentNumber = (data?['lastNumber'] as num?)?.toInt() ?? 0;
 
           nextNumber = currentNumber + 1;
         }
 
-        final sequence =
-            nextNumber.toString().padLeft(3, '0');
+        final sequence = nextNumber.toString().padLeft(3, '0');
 
-        final orderNumber =
-            int.parse('$dateCode$sequence');
+        final orderNumber = int.parse('$dateCode$sequence');
 
         int dailyDropQuantity = 0;
 
-        if (dailyDropSnapshot != null &&
-            dailyDropSnapshot.exists) {
+        if (dailyDropSnapshot != null && dailyDropSnapshot.exists) {
           final dropData = dailyDropSnapshot.data();
 
-          final dropCookieId =
-              dropData?['cookieId']?.toString();
+          final dropCookieId = dropData?['cookieId']?.toString();
 
           for (final item in orderItems) {
             if (item['cookieId'] == dropCookieId) {
-              dailyDropQuantity =
-                  (item['quantity'] as num).toInt();
+              dailyDropQuantity = (item['quantity'] as num).toInt();
               break;
             }
           }
 
           if (dailyDropQuantity > 0) {
-            final stock =
-                (dropData?['stock'] as num?)?.toInt() ?? 0;
+            final stock = (dropData?['stock'] as num?)?.toInt() ?? 0;
 
-            final sold =
-                (dropData?['sold'] as num?)?.toInt() ?? 0;
+            final sold = (dropData?['sold'] as num?)?.toInt() ?? 0;
 
             final remaining = stock - sold;
 
@@ -418,12 +388,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           'updatedAt': FieldValue.serverTimestamp(),
         });
 
-        if (dailyDropRef != null &&
-            dailyDropQuantity > 0) {
+        if (dailyDropRef != null && dailyDropQuantity > 0) {
           transaction.update(dailyDropRef, {
-            'sold': FieldValue.increment(
-              dailyDropQuantity,
-            ),
+            'sold': FieldValue.increment(dailyDropQuantity),
           });
         }
 
@@ -449,8 +416,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
           'fulfilmentMethod': _fulfilmentMethod,
 
-          if (_fulfilmentMethod == 'pickup')
-            'pickupLocation': 'Venlo',
+          if (_fulfilmentMethod == 'pickup') 'pickupLocation': 'Venlo',
 
           if (_fulfilmentMethod == 'delivery')
             'deliveryAddress': deliveryAddress,
@@ -470,23 +436,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Your Naim order has been created 🍪',
-          ),
-        ),
+        const SnackBar(content: Text('Your Naim order has been created 🍪')),
       );
 
-      Navigator.of(context)
-          .popUntil((route) => route.isFirst);
+      Navigator.of(context).popUntil((route) => route.isFirst);
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not place order: $e'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not place order: $e')));
 
       debugPrint('ORDER ERROR: $e');
     } finally {
@@ -503,37 +462,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final authUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      backgroundColor:
-          Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
       body: authUser == null
           ? const Center(
               child: Text(
                 'Please sign in to continue with checkout.',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             )
           : _isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ),
-                )
-              : SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.fromLTRB(
-                    20,
-                    12,
-                    20,
-                    32,
-                  ),
+          ? const Center(child: CircularProgressIndicator(color: Colors.black))
+          : Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         'CHECKOUT',
@@ -556,9 +503,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                       const SizedBox(height: 28),
 
-                      const _SectionTitle(
-                        title: 'YOUR ORDER',
-                      ),
+                      const _SectionTitle(title: 'YOUR ORDER'),
 
                       const SizedBox(height: 12),
 
@@ -571,16 +516,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       const SizedBox(height: 10),
 
                       Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment
-                                .spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
                             'TOTAL',
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight:
-                                  FontWeight.w900,
+                              fontWeight: FontWeight.w900,
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -588,11 +530,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             '€${Cart.total.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 24,
-                              fontWeight:
-                                  FontWeight.w900,
-                              color: Color(
-                                0xFF2D160E,
-                              ),
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF2D160E),
                             ),
                           ),
                         ],
@@ -600,9 +539,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                       const SizedBox(height: 30),
 
-                      const _SectionTitle(
-                        title: 'CONTACT',
-                      ),
+                      const _SectionTitle(title: 'CONTACT'),
 
                       const SizedBox(height: 12),
 
@@ -613,24 +550,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               Expanded(
                                 child: _CheckoutField(
                                   label: 'First name',
-                                  controller:
-                                      _firstNameController,
+                                  controller: _firstNameController,
                                   hintText: 'First name',
-                                  textCapitalization:
-                                      TextCapitalization
-                                          .words,
+                                  textCapitalization: TextCapitalization.words,
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: _CheckoutField(
                                   label: 'Surname',
-                                  controller:
-                                      _lastNameController,
+                                  controller: _lastNameController,
                                   hintText: 'Surname',
-                                  textCapitalization:
-                                      TextCapitalization
-                                          .words,
+                                  textCapitalization: TextCapitalization.words,
                                 ),
                               ),
                             ],
@@ -638,36 +569,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                           const SizedBox(height: 18),
 
-                          const _MiniLabel(
-                            text: 'EMAIL',
-                          ),
+                          const _MiniLabel(text: 'EMAIL'),
 
                           const SizedBox(height: 8),
 
                           Container(
                             width: double.infinity,
-                            padding:
-                                const EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 15,
                               vertical: 15,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(
-                                0xFFF7F5F3,
-                              ),
-                              borderRadius:
-                                  BorderRadius.circular(
-                                15,
-                              ),
+                              color: const Color(0xFFF7F5F3),
+                              borderRadius: BorderRadius.circular(15),
                             ),
                             child: Text(
-                              _email.isNotEmpty
-                                  ? _email
-                                  : 'Not available',
+                              _email.isNotEmpty ? _email : 'Not available',
                               style: const TextStyle(
                                 fontSize: 15,
-                                fontWeight:
-                                    FontWeight.w700,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ),
@@ -676,9 +596,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                       const SizedBox(height: 28),
 
-                      const _SectionTitle(
-                        title: 'FULFILMENT',
-                      ),
+                      const _SectionTitle(title: 'FULFILMENT'),
 
                       const SizedBox(height: 12),
 
@@ -686,15 +604,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         children: [
                           _ChoiceTile(
                             title: 'Pickup',
-                            subtitle:
-                                'Collect your order in Venlo',
-                            selected:
-                                _fulfilmentMethod ==
-                                    'pickup',
+                            subtitle: 'Collect your order in Venlo',
+                            selected: _fulfilmentMethod == 'pickup',
                             onTap: () {
                               setState(() {
-                                _fulfilmentMethod =
-                                    'pickup';
+                                _fulfilmentMethod = 'pickup';
                               });
                             },
                           ),
@@ -703,69 +617,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                           _ChoiceTile(
                             title: 'Delivery',
-                            subtitle:
-                                'Have your order delivered',
-                            selected:
-                                _fulfilmentMethod ==
-                                    'delivery',
+                            subtitle: 'Have your order delivered',
+                            selected: _fulfilmentMethod == 'delivery',
                             onTap: () {
                               setState(() {
-                                _fulfilmentMethod =
-                                    'delivery';
+                                _fulfilmentMethod = 'delivery';
                               });
                             },
                           ),
                         ],
                       ),
 
-                      if (_fulfilmentMethod ==
-                          'pickup') ...[
+                      if (_fulfilmentMethod == 'pickup') ...[
                         const SizedBox(height: 18),
 
                         const _InfoCard(
                           children: [
-                            _InfoRow(
-                              label: 'Method',
-                              value: 'Pickup',
-                            ),
+                            _InfoRow(label: 'Method', value: 'Pickup'),
                             SizedBox(height: 14),
-                            _InfoRow(
-                              label: 'Location',
-                              value: 'Venlo',
-                            ),
+                            _InfoRow(label: 'Location', value: 'Venlo'),
                           ],
                         ),
                       ],
 
-                      if (_fulfilmentMethod ==
-                          'delivery') ...[
+                      if (_fulfilmentMethod == 'delivery') ...[
                         const SizedBox(height: 18),
 
                         _InfoCard(
                           children: [
                             _ChoiceTile(
-                              title:
-                                  'Use my default address',
-                              subtitle:
-                                  _defaultAddress !=
-                                          null
-                                      ? _formatAddress(
-                                          _defaultAddress!,
-                                        )
-                                      : 'No default address saved',
-                              selected:
-                                  _useDefaultAddress,
-                              enabled:
-                                  _defaultAddress !=
-                                      null,
+                              title: 'Use my default address',
+                              subtitle: _defaultAddress != null
+                                  ? _formatAddress(_defaultAddress!)
+                                  : 'No default address saved',
+                              selected: _useDefaultAddress,
+                              enabled: _defaultAddress != null,
                               onTap: () {
                                 if (_defaultAddress == null) {
                                   return;
                                 }
 
-                                _fillAddressControllers(
-                                  _defaultAddress!,
-                                );
+                                _fillAddressControllers(_defaultAddress!);
 
                                 setState(() {
                                   _useDefaultAddress = true;
@@ -776,12 +668,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             const SizedBox(height: 10),
 
                             _ChoiceTile(
-                              title:
-                                  'Enter another address',
+                              title: 'Enter another address',
                               subtitle:
                                   'Use a different address for this order',
-                              selected:
-                                  !_useDefaultAddress,
+                              selected: !_useDefaultAddress,
                               onTap: () {
                                 if (_useDefaultAddress) {
                                   _clearAddressControllers();
@@ -801,14 +691,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           children: [
                             _CheckoutField(
                               label: 'Street',
-                              controller:
-                                  _streetController,
+                              controller: _streetController,
                               hintText: 'Street',
-                              enabled:
-                                  !_useDefaultAddress,
-                              textCapitalization:
-                                  TextCapitalization
-                                      .words,
+                              enabled: !_useDefaultAddress,
+                              textCapitalization: TextCapitalization.words,
                             ),
 
                             const SizedBox(height: 16),
@@ -817,34 +703,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               children: [
                                 Expanded(
                                   flex: 2,
-                                  child:
-                                      _CheckoutField(
-                                    label:
-                                        'House number',
-                                    controller:
-                                        _houseNumberController,
+                                  child: _CheckoutField(
+                                    label: 'House number',
+                                    controller: _houseNumberController,
                                     hintText: '12A',
-                                    enabled:
-                                        !_useDefaultAddress,
+                                    enabled: !_useDefaultAddress,
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
+                                const SizedBox(width: 12),
                                 Expanded(
                                   flex: 3,
-                                  child:
-                                      _CheckoutField(
+                                  child: _CheckoutField(
                                     label: 'Postcode',
-                                    controller:
-                                        _postalCodeController,
-                                    hintText:
-                                        '5911 AA',
-                                    enabled:
-                                        !_useDefaultAddress,
+                                    controller: _postalCodeController,
+                                    hintText: '5911 AA',
+                                    enabled: !_useDefaultAddress,
                                     textCapitalization:
-                                        TextCapitalization
-                                            .characters,
+                                        TextCapitalization.characters,
                                   ),
                                 ),
                               ],
@@ -854,29 +729,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                             _CheckoutField(
                               label: 'City',
-                              controller:
-                                  _cityController,
+                              controller: _cityController,
                               hintText: 'Venlo',
-                              enabled:
-                                  !_useDefaultAddress,
-                              textCapitalization:
-                                  TextCapitalization
-                                      .words,
+                              enabled: !_useDefaultAddress,
+                              textCapitalization: TextCapitalization.words,
                             ),
 
                             const SizedBox(height: 16),
 
                             _CheckoutField(
                               label: 'Country',
-                              controller:
-                                  _countryController,
-                              hintText:
-                                  'Netherlands',
-                              enabled:
-                                  !_useDefaultAddress,
-                              textCapitalization:
-                                  TextCapitalization
-                                      .words,
+                              controller: _countryController,
+                              hintText: 'Netherlands',
+                              enabled: !_useDefaultAddress,
+                              textCapitalization: TextCapitalization.words,
                             ),
 
                             if (!_useDefaultAddress) ...[
@@ -889,20 +755,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         !_saveNewAddressAsDefault;
                                   });
                                 },
-                                borderRadius:
-                                    BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(12),
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 4,
                                   ),
                                   child: Row(
                                     children: [
                                       Checkbox(
-                                        value:
-                                            _saveNewAddressAsDefault,
-                                        activeColor:
-                                            Colors.black,
+                                        value: _saveNewAddressAsDefault,
+                                        activeColor: Colors.black,
                                         onChanged: (value) {
                                           setState(() {
                                             _saveNewAddressAsDefault =
@@ -916,8 +778,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           'Save this as my default address',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            fontWeight:
-                                                FontWeight.w700,
+                                            fontWeight: FontWeight.w700,
                                           ),
                                         ),
                                       ),
@@ -932,25 +793,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                       const SizedBox(height: 28),
 
-                      const _SectionTitle(
-                        title: 'PAYMENT',
-                      ),
+                      const _SectionTitle(title: 'PAYMENT'),
 
                       const SizedBox(height: 12),
 
                       const _InfoCard(
                         children: [
-                          _InfoRow(
-                            label: 'Method',
-                            value: 'Tikkie',
-                          ),
+                          _InfoRow(label: 'Method', value: 'Tikkie'),
                           SizedBox(height: 6),
                           Text(
                             'Tikkie payment connection will be added next.',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 13, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -961,46 +814,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         width: double.infinity,
                         height: 56,
                         child: FilledButton(
-                          onPressed:
-                              _isPlacingOrder
-                                  ? null
-                                  : _placeOrder,
-                          style:
-                              FilledButton.styleFrom(
-                            backgroundColor:
-                                Colors.black,
-                            foregroundColor:
-                                Colors.white,
-                            disabledBackgroundColor:
-                                Colors.grey.shade400,
-                            shape:
-                                RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(
-                                16,
-                              ),
+                          onPressed: _isPlacingOrder ? null : _placeOrder,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
+                            disabledBackgroundColor: Colors.grey.shade400,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
                           child: _isPlacingOrder
                               ? const SizedBox(
                                   width: 22,
                                   height: 22,
-                                  child:
-                                      CircularProgressIndicator(
+                                  child: CircularProgressIndicator(
                                     strokeWidth: 2,
                                     color: Colors.white,
                                   ),
                                 )
                               : Text(
                                   'PLACE ORDER  •  €${Cart.total.toStringAsFixed(2)}',
-                                  style:
-                                      const TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 16,
-                                    fontWeight:
-                                        FontWeight
-                                            .w900,
-                                    letterSpacing:
-                                        0.5,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.5,
                                   ),
                                 ),
                         ),
@@ -1008,6 +845,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ],
                   ),
                 ),
+              ),
+            ),
     );
   }
 
@@ -1027,10 +866,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return uniqueCookies.map<Widget>((cookie) {
       final quantity = Cart.quantityFor(cookie);
 
-      final unitPrice =
-          cookie.discount > 0
-              ? cookie.discount
-              : cookie.price;
+      final unitPrice = cookie.discount > 0 ? cookie.discount : cookie.price;
 
       final subtotal = unitPrice * quantity;
 
@@ -1049,18 +885,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
             Text(
               '× $quantity',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
             const SizedBox(width: 18),
             Text(
               '€${subtotal.toStringAsFixed(2)}',
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w900,
-              ),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
             ),
           ],
         ),
@@ -1068,27 +898,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }).toList();
   }
 
-  String _formatAddress(
-    Map<String, dynamic> address,
-  ) {
-    final street =
-        address['street']?.toString().trim() ?? '';
-    final houseNumber =
-        address['houseNumber']?.toString().trim() ?? '';
-    final postalCode =
-        address['postalCode']?.toString().trim() ?? '';
-    final city =
-        address['city']?.toString().trim() ?? '';
+  String _formatAddress(Map<String, dynamic> address) {
+    final street = address['street']?.toString().trim() ?? '';
+    final houseNumber = address['houseNumber']?.toString().trim() ?? '';
+    final postalCode = address['postalCode']?.toString().trim() ?? '';
+    final city = address['city']?.toString().trim() ?? '';
 
-    final firstLine =
-        '$street $houseNumber'.trim();
-    final secondLine =
-        '$postalCode $city'.trim();
+    final firstLine = '$street $houseNumber'.trim();
+    final secondLine = '$postalCode $city'.trim();
 
-    return [
-      firstLine,
-      secondLine,
-    ].where((line) => line.isNotEmpty).join(' • ');
+    return [firstLine, secondLine].where((line) => line.isNotEmpty).join(' • ');
   }
 }
 
@@ -1134,10 +953,7 @@ class _InfoCard extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _InfoRow({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -1151,10 +967,7 @@ class _InfoRow extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ],
     );
@@ -1210,32 +1023,25 @@ class _CheckoutField extends StatelessWidget {
             hintText: hintText,
             filled: true,
             fillColor: const Color(0xFFF7F5F3),
-            contentPadding:
-                const EdgeInsets.symmetric(
+            contentPadding: const EdgeInsets.symmetric(
               horizontal: 15,
               vertical: 15,
             ),
             border: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15),
               borderSide: BorderSide.none,
             ),
             disabledBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(15),
-              borderSide: const BorderSide(
-                color: Colors.black,
-              ),
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(color: Colors.black),
             ),
           ),
         ),
@@ -1271,37 +1077,27 @@ class _ChoiceTile extends StatelessWidget {
           color: const Color(0xFFF7F5F3),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selected
-                ? Colors.black
-                : Colors.transparent,
+            color: selected ? Colors.black : Colors.transparent,
             width: 1.5,
           ),
         ),
         child: Row(
           children: [
             Icon(
-              selected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_off,
-              color: enabled
-                  ? Colors.black
-                  : Colors.grey.shade400,
+              selected ? Icons.radio_button_checked : Icons.radio_button_off,
+              color: enabled ? Colors.black : Colors.grey.shade400,
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight:
-                          FontWeight.w800,
-                      color: enabled
-                          ? Colors.black
-                          : Colors.grey,
+                      fontWeight: FontWeight.w800,
+                      color: enabled ? Colors.black : Colors.grey,
                     ),
                   ),
                   const SizedBox(height: 3),

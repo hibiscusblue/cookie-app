@@ -53,7 +53,7 @@ class _SignInScreenState extends State<SignInScreen> {
       },
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 620),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Form(
             key: _formKey,
             child: Padding(

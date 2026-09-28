@@ -39,18 +39,23 @@ class _TodaysDropView extends StatelessWidget {
             }
 
             return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: DailyDropHero(
-                      cookies: state.cookies,
-                      showRules: true,
-                    ),
-                  ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: DailyDropHero(
+                          cookies: state.cookies,
+                          showRules: true,
+                        ),
+                      ),
 
-                  const NaimFooter(),
-                ],
+                      const NaimFooter(),
+                    ],
+                  ),
+                ),
               ),
             );
           }

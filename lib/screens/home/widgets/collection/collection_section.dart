@@ -89,7 +89,7 @@ class _CollectionSectionState extends State<CollectionSection> {
                 );
               }, childCount: widget.cookies.length),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: MediaQuery.sizeOf(context).width >= 900 ? 4 : 2,
+                crossAxisCount: MediaQuery.sizeOf(context).width >= 600 ? 3 : 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 childAspectRatio: 0.68,

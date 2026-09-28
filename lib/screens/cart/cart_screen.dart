@@ -36,269 +36,276 @@ class _CartScreenState extends State<CartScreen> {
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
 
-      body: Cart.items.isEmpty
-          ? const Center(
-              child: Text(
-                'Your cart is empty 🍪',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-              ),
-            )
-          : Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: uniqueCookies.length,
-                    itemBuilder: (context, index) {
-                      final cookie = uniqueCookies[index];
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Cart.items.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Your cart is empty 🍪',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                )
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: uniqueCookies.length,
+                        itemBuilder: (context, index) {
+                          final cookie = uniqueCookies[index];
 
-                      final quantity = Cart.quantityFor(cookie);
+                          final quantity = Cart.quantityFor(cookie);
 
-                      final unitPrice = cookie.discount > 0
-                          ? cookie.discount
-                          : cookie.price;
+                          final unitPrice = cookie.discount > 0
+                              ? cookie.discount
+                              : cookie.price;
 
-                      final subtotal = unitPrice * quantity;
+                          final subtotal = unitPrice * quantity;
 
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 14),
-                        padding: const EdgeInsets.all(14),
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 14),
+                            padding: const EdgeInsets.all(14),
 
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(22),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 82,
-                              height: 82,
-                              child: Transform.scale(
-                                scale: cookie.imageScale,
-                                child: CookieImage(
-                                  picture: cookie.picture,
-                                  name: cookie.name,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(22),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
                                 ),
-                              ),
+                              ],
                             ),
 
-                            const SizedBox(width: 14),
-
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    cookie.name,
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w900,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 82,
+                                  height: 82,
+                                  child: Transform.scale(
+                                    scale: cookie.imageScale,
+                                    child: CookieImage(
+                                      picture: cookie.picture,
+                                      name: cookie.name,
                                     ),
                                   ),
+                                ),
 
-                                  const SizedBox(height: 5),
+                                const SizedBox(width: 14),
 
-                                  Text(
-                                    '€${unitPrice.toStringAsFixed(2)} each',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 12),
-
-                                  Row(
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      _CartQuantityButton(
-                                        icon: CupertinoIcons.minus,
-                                        onPressed: () {
-                                          setState(() {
-                                            Cart.removeOne(cookie);
-                                          });
-                                        },
-                                      ),
-
-                                      SizedBox(
-                                        width: 36,
-                                        child: Text(
-                                          '$quantity',
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w900,
-                                          ),
+                                      Text(
+                                        cookie.name,
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w900,
                                         ),
                                       ),
 
-                                      _CartQuantityButton(
-                                        icon: CupertinoIcons.plus,
-                                        onPressed: () {
-                                          setState(() {
-                                            Cart.add(cookie);
-                                          });
-                                        },
+                                      const SizedBox(height: 5),
+
+                                      Text(
+                                        '€${unitPrice.toStringAsFixed(2)} each',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 12),
+
+                                      Row(
+                                        children: [
+                                          _CartQuantityButton(
+                                            icon: CupertinoIcons.minus,
+                                            onPressed: () {
+                                              setState(() {
+                                                Cart.removeOne(cookie);
+                                              });
+                                            },
+                                          ),
+
+                                          SizedBox(
+                                            width: 36,
+                                            child: Text(
+                                              '$quantity',
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
+                                          ),
+
+                                          _CartQuantityButton(
+                                            icon: CupertinoIcons.plus,
+                                            onPressed: () {
+                                              setState(() {
+                                                Cart.add(cookie);
+                                              });
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
+                                ),
 
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '€${subtotal.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                        color: Color(0xFF2D160E),
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 12),
+
+                                    IconButton(
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () {
+                                        setState(() {
+                                          while (Cart.quantityFor(cookie) > 0) {
+                                            Cart.removeOne(cookie);
+                                          }
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        CupertinoIcons.trash,
+                                        size: 19,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(28),
+                        ),
+                      ),
+
+                      child: SafeArea(
+                        top: false,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '€${subtotal.toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF2D160E),
+                                  '${Cart.totalItems} cookies',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
                                   ),
                                 ),
 
-                                const SizedBox(height: 12),
-
-                                IconButton(
-                                  visualDensity: VisualDensity.compact,
-                                  onPressed: () {
-                                    setState(() {
-                                      while (Cart.quantityFor(cookie) > 0) {
-                                        Cart.removeOne(cookie);
-                                      }
-                                    });
-                                  },
-                                  icon: const Icon(
-                                    CupertinoIcons.trash,
-                                    size: 19,
+                                const Text(
+                                  'TOTAL',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.5,
                                   ),
                                 ),
                               ],
                             ),
+
+                            const SizedBox(height: 5),
+
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                '€${Cart.total.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF2D160E),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 18),
+
+                            SizedBox(
+                              width: double.infinity,
+                              height: 54,
+                              child: FilledButton(
+                                onPressed: () async {
+                                  final user =
+                                      FirebaseAuth.instance.currentUser;
+
+                                  // Already logged in → go straight to checkout
+                                  if (user != null) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => const CheckoutScreen(),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  // Guest → open sign in / sign up
+                                  final signedIn = await Navigator.of(context)
+                                      .push<bool>(
+                                        MaterialPageRoute(
+                                          builder: (_) => const WelcomeScreen(),
+                                        ),
+                                      );
+
+                                  if (!context.mounted) return;
+
+                                  // Successful authentication → continue checkout
+                                  if (signedIn == true) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => const CheckoutScreen(),
+                                      ),
+                                    );
+                                  }
+                                },
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'CHECKOUT',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.8,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                      );
-                    },
-                  ),
-                ),
-
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(28),
+                      ),
                     ),
-                  ),
-
-                  child: SafeArea(
-                    top: false,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '${Cart.totalItems} cookies',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-
-                            const Text(
-                              'TOTAL',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 5),
-
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            '€${Cart.total.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF2D160E),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 18),
-
-                        SizedBox(
-                          width: double.infinity,
-                          height: 54,
-                          child: FilledButton(
-                            onPressed: () async {
-                              final user = FirebaseAuth.instance.currentUser;
-
-                              // Already logged in → go straight to checkout
-                              if (user != null) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => const CheckoutScreen(),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              // Guest → open sign in / sign up
-                              final signedIn = await Navigator.of(context)
-                                  .push<bool>(
-                                    MaterialPageRoute(
-                                      builder: (_) => const WelcomeScreen(),
-                                    ),
-                                  );
-
-                              if (!context.mounted) return;
-
-                              // Successful authentication → continue checkout
-                              if (signedIn == true) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => const CheckoutScreen(),
-                                  ),
-                                );
-                              }
-                            },
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: const Text(
-                              'CHECKOUT',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.8,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+        ),
+      ),
     );
   }
 }
