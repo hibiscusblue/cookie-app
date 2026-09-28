@@ -6,9 +6,107 @@ import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'package:flutter_application_1/screens/home/views/favorites_screen.dart';
 import 'package:flutter_application_1/screens/addresses/addresses_screen.dart';
+import 'package:flutter_application_1/screens/auth/views/welcome_screen.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
+
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  Future<void> _openSignIn() async {
+    await Navigator.of(
+      context,
+    ).push<bool>(MaterialPageRoute(builder: (_) => const WelcomeScreen()));
+
+    if (!mounted) return;
+
+    setState(() {});
+  }
+
+  String _initialFor(String name) {
+    final cleanName = name.trim();
+
+    if (cleanName.isNotEmpty) {
+      return cleanName[0].toUpperCase();
+    }
+
+    return 'N';
+  }
+
+  Future<void> _showPersonalDetails(
+    BuildContext context, {
+    required String userId,
+    required String name,
+    required String email,
+  }) async {
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return _PersonalDetailsSheet(userId: userId, name: name, email: email);
+      },
+    );
+  }
+
+  Future<void> _logOut(BuildContext context) async {
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          title: const Text(
+            'Log out?',
+            style: TextStyle(fontWeight: FontWeight.w900),
+          ),
+          content: const Text(
+            'Are you sure you want to log out of your Naim account?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext, false);
+              },
+              child: const Text(
+                'CANCEL',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(dialogContext, true);
+              },
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text(
+                'LOG OUT',
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldLogout != true) return;
+
+    await FirebaseAuth.instance.signOut();
+
+    if (!mounted) return;
+
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +118,40 @@ class AccountScreen extends StatelessWidget {
       endDrawer: const NaimDrawer(),
 
       body: authUser == null
-          ? const Center(
-              child: Text(
-                'Please sign in to view your account.',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Please sign in to view your account.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  FilledButton(
+                    onPressed: _openSignIn,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text(
+                      'SIGN IN',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             )
           : StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -66,9 +194,6 @@ class AccountScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // =================================================
-                            // USER CARD
-                            // =================================================
                             Container(
                               width: double.infinity,
                               padding: const EdgeInsets.all(22),
@@ -130,9 +255,6 @@ class AccountScreen extends StatelessWidget {
 
                             const SizedBox(height: 30),
 
-                            // =================================================
-                            // ACCOUNT OPTIONS
-                            // =================================================
                             _AccountTile(
                               icon: Icons.receipt_long_outlined,
                               title: 'My Orders',
@@ -145,6 +267,7 @@ class AccountScreen extends StatelessWidget {
                                 );
                               },
                             ),
+
                             _AccountTile(
                               icon: Icons.favorite_border,
                               title: 'Favorites',
@@ -187,9 +310,6 @@ class AccountScreen extends StatelessWidget {
 
                             const SizedBox(height: 20),
 
-                            // =================================================
-                            // LOG OUT
-                            // =================================================
                             _AccountTile(
                               icon: Icons.logout,
                               title: 'Log out',
@@ -207,104 +327,6 @@ class AccountScreen extends StatelessWidget {
               },
             ),
     );
-  }
-
-  // =============================================================
-  // PROFILE INITIAL
-  // =============================================================
-
-  String _initialFor(String name) {
-    final cleanName = name.trim();
-
-    if (cleanName.isNotEmpty) {
-      return cleanName[0].toUpperCase();
-    }
-
-    return 'N';
-  }
-
-  // =============================================================
-  // PERSONAL DETAILS
-  // =============================================================
-
-  Future<void> _showPersonalDetails(
-    BuildContext context, {
-    required String userId,
-    required String name,
-    required String email,
-  }) async {
-    await showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        return _PersonalDetailsSheet(userId: userId, name: name, email: email);
-      },
-    );
-  }
-
-  // =============================================================
-  // LOG OUT
-  // =============================================================
-
-  Future<void> _logOut(BuildContext context) async {
-    final shouldLogout = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          title: const Text(
-            'Log out?',
-            style: TextStyle(fontWeight: FontWeight.w900),
-          ),
-          content: const Text(
-            'Are you sure you want to log out of your Naim account?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext, false);
-              },
-              child: const Text(
-                'CANCEL',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            FilledButton(
-              onPressed: () {
-                Navigator.pop(dialogContext, true);
-              },
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text(
-                'LOG OUT',
-                style: TextStyle(fontWeight: FontWeight.w800),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (shouldLogout != true) {
-      return;
-    }
-
-    await FirebaseAuth.instance.signOut();
-
-    if (!context.mounted) {
-      return;
-    }
-
-    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }
 

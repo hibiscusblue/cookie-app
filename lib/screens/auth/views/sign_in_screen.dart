@@ -64,7 +64,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   const SizedBox(height: 28),
 
                   const Text(
-                    'WELCOME BACK',
+                    'WELCOME',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 24,

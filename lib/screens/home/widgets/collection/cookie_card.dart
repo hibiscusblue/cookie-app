@@ -2,7 +2,8 @@ import 'package:cookie_repository/cookie_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/screens/auth/views/welcome_screen.dart';
 import 'package:flutter_application_1/screens/home/blocs/get_cookie_bloc/get_cookie_bloc.dart';
 import 'package:flutter_application_1/cart.dart';
 import 'package:flutter_application_1/components/cookie_badge.dart';
@@ -26,15 +27,12 @@ class CookieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unitPrice =
-        cookie.discount > 0 ? cookie.discount : cookie.price;
+    final unitPrice = cookie.discount > 0 ? cookie.discount : cookie.price;
 
     return Material(
       elevation: 3,
       color: const Color.fromARGB(255, 255, 255, 255),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
 
@@ -91,18 +89,41 @@ class CookieCard extends StatelessWidget {
                   ),
 
                   // FAVORITE BUTTON
+                  // FAVORITE BUTTON
                   Positioned(
                     top: 8,
                     right: 8,
                     child: ValueListenableBuilder<int>(
                       valueListenable: Favorites.changes,
                       builder: (context, _, _) {
-                        final isFavorite =
-                            Favorites.contains(cookie);
+                        final isFavorite = Favorites.contains(cookie);
 
                         return IconButton(
-                          onPressed: () {
-                            Favorites.toggle(cookie);
+                          onPressed: () async {
+                            final user = FirebaseAuth.instance.currentUser;
+
+                            // Logged in → favorite normally.
+                            if (user != null) {
+                              Favorites.toggle(cookie);
+                              return;
+                            }
+
+                            // Guest → open Sign In / Sign Up.
+                            final signedIn = await Navigator.of(context)
+                                .push<bool>(
+                                  MaterialPageRoute(
+                                    builder: (_) => const WelcomeScreen(),
+                                  ),
+                                );
+
+                            if (!context.mounted) return;
+
+                            // Successful authentication → favorite the cookie.
+                            if (signedIn == true) {
+                              if (!Favorites.contains(cookie)) {
+                                Favorites.toggle(cookie);
+                              }
+                            }
                           },
                           icon: Icon(
                             isFavorite
@@ -123,8 +144,7 @@ class CookieCard extends StatelessWidget {
 
             // COOKIE INFO
             Padding(
-              padding:
-                  const EdgeInsets.fromLTRB(14, 0, 14, 10),
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -166,8 +186,7 @@ class CookieCard extends StatelessWidget {
                         Expanded(
                           child: Wrap(
                             spacing: 5,
-                            crossAxisAlignment:
-                                WrapCrossAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
                               // SELLING PRICE
                               Text(
@@ -187,8 +206,7 @@ class CookieCard extends StatelessWidget {
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.grey.shade500,
-                                    decoration:
-                                        TextDecoration.lineThrough,
+                                    decoration: TextDecoration.lineThrough,
                                   ),
                                 ),
                             ],
@@ -199,19 +217,16 @@ class CookieCard extends StatelessWidget {
                         ValueListenableBuilder<int>(
                           valueListenable: Cart.changes,
                           builder: (context, _, _) {
-                            final quantity =
-                                Cart.quantityFor(cookie);
+                            final quantity = Cart.quantityFor(cookie);
 
                             if (quantity == 0) {
                               return IconButton(
-                                visualDensity:
-                                    VisualDensity.compact,
+                                visualDensity: VisualDensity.compact,
                                 onPressed: () {
                                   Cart.add(cookie);
                                 },
                                 icon: const Icon(
-                                  CupertinoIcons
-                                      .add_circled_solid,
+                                  CupertinoIcons.add_circled_solid,
                                   size: 28,
                                   color: Colors.black,
                                 ),
@@ -232,11 +247,9 @@ class CookieCard extends StatelessWidget {
                                   width: 26,
                                   child: Text(
                                     '$quantity',
-                                    textAlign:
-                                        TextAlign.center,
+                                    textAlign: TextAlign.center,
                                     style: const TextStyle(
-                                      fontWeight:
-                                          FontWeight.w900,
+                                      fontWeight: FontWeight.w900,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -254,7 +267,6 @@ class CookieCard extends StatelessWidget {
                         ),
                       ],
                     )
-
                   // CATALOGUE MODE
                   else
                     Text(
@@ -276,8 +288,7 @@ class CookieCard extends StatelessWidget {
   }
 }
 
-class _CollectionQuantityButton
-    extends StatelessWidget {
+class _CollectionQuantityButton extends StatelessWidget {
   const _CollectionQuantityButton({
     required this.icon,
     required this.onPressed,
@@ -298,11 +309,7 @@ class _CollectionQuantityButton
           color: Color(0xFFF2EEE9),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          icon,
-          size: 14,
-          color: const Color(0xFF2D160E),
-        ),
+        child: Icon(icon, size: 14, color: const Color(0xFF2D160E)),
       ),
     );
   }

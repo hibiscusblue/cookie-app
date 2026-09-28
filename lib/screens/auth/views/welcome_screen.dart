@@ -42,15 +42,16 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           child: Column(
             children: [
               // ─────────────────────────────
-              // NAIM BRAND
+              // NAIM HEADER
               // ─────────────────────────────
               Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 580),
+                  constraints: const BoxConstraints(maxWidth: 500),
                   child: SizedBox(
                     width: double.infinity,
                     height: 52,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         IconButton(
                           onPressed: () {
@@ -58,6 +59,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           },
                           padding: EdgeInsets.zero,
                           alignment: Alignment.centerLeft,
+                          constraints: const BoxConstraints(
+                            minWidth: 40,
+                            minHeight: 40,
+                          ),
                           icon: const Icon(
                             Icons.arrow_back_ios_new_rounded,
                             size: 20,
@@ -65,7 +70,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           tooltip: 'Back',
                         ),
 
-                        const SizedBox(width: 18),
+                        const SizedBox(width: 22),
 
                         Image.asset(
                           'assets/blueberry-vanilla.png',
@@ -90,21 +95,46 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 ),
               ),
 
+              const SizedBox(height: 24),
+
+              // ─────────────────────────────
+              // YOUR NAIM
+              // ─────────────────────────────
+              const Column(
+                children: [
+                  Text(
+                    'YOUR NAIM',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.2,
+                      color: Colors.black,
+                    ),
+                  ),
+
+                  SizedBox(height: 8),
+
+                  Text(
+                    'Sign in or create an account to continue.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.black54),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 24),
+
               // ─────────────────────────────
               // AUTHENTICATION CARD
               // ─────────────────────────────
               Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 500),
-
                   child: Container(
                     width: double.infinity,
-
                     decoration: BoxDecoration(
                       color: Colors.white,
-
                       borderRadius: BorderRadius.circular(30),
-
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.08),
@@ -123,17 +153,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         // ─────────────────────
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
-
                           child: TabBar(
                             controller: tabController,
-
                             labelColor: Colors.black,
-
                             unselectedLabelColor: Colors.grey.shade400,
-
                             indicatorColor: Colors.black,
                             indicatorWeight: 3,
-
                             dividerColor: Colors.grey.shade200,
 
                             labelStyle: const TextStyle(
@@ -165,22 +190,17 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         // ─────────────────────
                         SizedBox(
                           height: 560,
-
                           child: TabBarView(
                             controller: tabController,
-
                             children: [
-                              // Sign In
                               const SignInScreen(),
 
-                              // Sign Up
                               BlocProvider<SignUpBloc>(
                                 create: (context) => SignUpBloc(
                                   context
                                       .read<AuthenticationBloc>()
                                       .userRepository,
                                 ),
-
                                 child: const SignUpScreen(),
                               ),
                             ],

@@ -11,6 +11,7 @@ import 'package:flutter_application_1/screens/orders/orders_screen.dart';
 import 'package:flutter_application_1/screens/contact/contact_screen.dart';
 import 'package:flutter_application_1/screens/faq/faq_screen.dart';
 import 'package:flutter_application_1/screens/admin/admin_cookie_screen.dart';
+import 'package:flutter_application_1/screens/auth/views/welcome_screen.dart';
 
 class NaimDrawer extends StatelessWidget {
   const NaimDrawer({super.key});
@@ -235,14 +236,33 @@ class NaimDrawer extends StatelessWidget {
                   _DrawerItem(
                     icon: CupertinoIcons.person,
                     title: 'My Account',
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
 
-                      Navigator.of(context).push(
+                      if (user != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const AccountScreen(),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final signedIn = await Navigator.of(context).push<bool>(
                         MaterialPageRoute(
-                          builder: (_) => const AccountScreen(),
+                          builder: (_) => const WelcomeScreen(),
                         ),
                       );
+
+                      if (!context.mounted) return;
+
+                      if (signedIn == true) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const AccountScreen(),
+                          ),
+                        );
+                      }
                     },
                   ),
 
@@ -337,7 +357,6 @@ class NaimDrawer extends StatelessWidget {
               ),
             ),
 
-            
             // =================================================================
             // LOG OUT
             // =================================================================
@@ -349,13 +368,27 @@ class NaimDrawer extends StatelessWidget {
 
                   const SizedBox(height: 6),
 
-                  _DrawerItem(
-                    icon: CupertinoIcons.arrow_right_to_line,
-                    title: 'Log out',
-                    onTap: () {
-                      _logOut(context);
-                    },
-                  ),
+                  user != null
+                      ? _DrawerItem(
+                          icon: CupertinoIcons.arrow_right_to_line,
+                          title: 'Log out',
+                          onTap: () {
+                            _logOut(context);
+                          },
+                        )
+                      : _DrawerItem(
+                          icon: CupertinoIcons.person,
+                          title: 'Sign in',
+                          onTap: () async {
+                            Navigator.pop(context);
+
+                            await Navigator.of(context).push<bool>(
+                              MaterialPageRoute(
+                                builder: (_) => const WelcomeScreen(),
+                              ),
+                            );
+                          },
+                        ),
                 ],
               ),
             ),

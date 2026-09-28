@@ -1,12 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_application_1/screens/auth/views/welcome_screen.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
+
+  @override
+  State<OrdersScreen> createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  Future<void> _openSignIn() async {
+    await Navigator.of(
+      context,
+    ).push<bool>(MaterialPageRoute(builder: (_) => const WelcomeScreen()));
+
+    if (!mounted) return;
+
+    // Rebuild the screen after returning from authentication.
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +32,42 @@ class OrdersScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
+
       body: user == null
-          ? const Center(
-              child: Text(
-                'Please sign in to view your orders.',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Please sign in to view your orders.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  FilledButton(
+                    onPressed: _openSignIn,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text(
+                      'SIGN IN',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             )
           : StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
