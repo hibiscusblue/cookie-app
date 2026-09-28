@@ -6,47 +6,55 @@ import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/daily_drop/daily_drop_hero.dart';
 import 'package:flutter_application_1/screens/home/widgets/collection/collection_section.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  backgroundColor: Theme.of(context).colorScheme.surface,
-  endDrawer: const NaimDrawer(),
-  appBar: const NaimAppBar(showBackButton: false),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      endDrawer: const NaimDrawer(),
+      appBar: const NaimAppBar(showBackButton: false),
 
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.sizeOf(context).width >= 900 ? 1080 : 500,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: BlocBuilder<GetCookieBloc, GetCookieState>(
+              builder: (context, state) {
+                return switch (state) {
+                  GetCookieSuccess() when state.cookies.isEmpty => const Center(
+                    child: Text('No cookies have been added yet.'),
+                  ),
 
+                  GetCookieSuccess() => SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // DAILY DROP
+                        DailyDropHero(cookies: state.cookies),
 
-  
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocBuilder<GetCookieBloc, GetCookieState>(
-          builder: (context, state) {
-            return switch (state) {
-              GetCookieSuccess() when state.cookies.isEmpty => const Center(
-                child: Text('No cookies have been added yet.'),
-              ),
+                        const SizedBox(height: 24),
 
-              GetCookieSuccess() => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // DAILY DROP
-                  DailyDropHero(cookies: state.cookies),
+                        // COLLECTION
+                        CollectionSection(
+                          cookies: state.cookies,
+                          scrollable: false,
+                        ),
+                      ],
+                    ),
+                  ),
 
-                  const SizedBox(height: 24),
+                  GetCookieFailure() => _FailureView(message: state.message),
 
-                  // COLLECTION
-                  Expanded(child: CollectionSection(cookies: state.cookies)),
-                ],
-              ),
-
-              GetCookieFailure() => _FailureView(message: state.message),
-
-              _ => const Center(child: CircularProgressIndicator()),
-            };
-          },
+                  _ => const Center(child: CircularProgressIndicator()),
+                };
+              },
+            ),
+          ),
         ),
       ),
     );

@@ -53,7 +53,7 @@ class _GiftCookieScreenState extends State<GiftCookieScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(26),
                 border: Border.all(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                 ),
               ),
               child: Column(

@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/our_story/our_story_screen.dart';
 import 'package:flutter_application_1/screens/account/account_screen.dart';
-import 'package:flutter_application_1/screens/give/give_screen.dart';
 import 'package:flutter_application_1/screens/home/views/collection_screen.dart';
 import 'package:flutter_application_1/screens/home/views/favorites_screen.dart';
 import 'package:flutter_application_1/screens/home/views/todays_drop_screen.dart';
@@ -11,8 +10,6 @@ import 'package:flutter_application_1/screens/journal/journal_screen.dart';
 import 'package:flutter_application_1/screens/orders/orders_screen.dart';
 import 'package:flutter_application_1/screens/contact/contact_screen.dart';
 import 'package:flutter_application_1/screens/faq/faq_screen.dart';
-import 'package:flutter_application_1/screens/admin/admin_cookie_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/screens/admin/admin_cookie_screen.dart';
 
 class NaimDrawer extends StatelessWidget {

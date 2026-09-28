@@ -110,7 +110,7 @@ class _GiveCookieScreenState extends State<GiveCookieScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(26),
-                    border: Border.all(color: Colors.black.withOpacity(0.04)),
+                    border: Border.all(color: Colors.black.withValues(alpha: 0.04)),
                   ),
                   child: Column(
                     children: [
@@ -324,7 +324,7 @@ class _CharityCard extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(22),
               border: Border.all(
-                color: selected ? Colors.black : Colors.black.withOpacity(0.05),
+                color: selected ? Colors.black : Colors.black.withValues(alpha: 0.05),
                 width: selected ? 1.5 : 1,
               ),
             ),

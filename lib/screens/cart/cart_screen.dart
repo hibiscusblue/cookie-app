@@ -5,6 +5,8 @@ import 'package:flutter_application_1/components/cookie_image.dart';
 import 'package:flutter_application_1/components/naim_app_bar.dart';
 import 'package:flutter_application_1/screens/home/widgets/naim_drawer.dart';
 import 'package:flutter_application_1/screens/checkout/checkout_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/screens/auth/views/welcome_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -243,12 +245,37 @@ class _CartScreenState extends State<CartScreen> {
                           width: double.infinity,
                           height: 54,
                           child: FilledButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => const CheckoutScreen(),
-                                ),
-                              );
+                            onPressed: () async {
+                              final user = FirebaseAuth.instance.currentUser;
+
+                              // Already logged in → go straight to checkout
+                              if (user != null) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const CheckoutScreen(),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              // Guest → open sign in / sign up
+                              final signedIn = await Navigator.of(context)
+                                  .push<bool>(
+                                    MaterialPageRoute(
+                                      builder: (_) => const WelcomeScreen(),
+                                    ),
+                                  );
+
+                              if (!context.mounted) return;
+
+                              // Successful authentication → continue checkout
+                              if (signedIn == true) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const CheckoutScreen(),
+                                  ),
+                                );
+                              }
                             },
                             style: FilledButton.styleFrom(
                               backgroundColor: Colors.black,

@@ -10,9 +10,7 @@ import 'package:flutter/foundation.dart'
 abstract final class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'Firebase is not configured for web. Run FlutterFire configure first.',
-      );
+      return web;
     }
 
     switch (defaultTargetPlatform) {
@@ -33,12 +31,11 @@ abstract final class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyC5xEpORsSFJAo7La5cZtub_AJwcbcON78',
-    appId: '1:336761803850:android:556e67e973f217680b82b3',
+    appId: '1:336761803850:android:36e12d7a03deb6620b82b3',
     messagingSenderId: '336761803850',
     projectId: 'naim-cookies',
     storageBucket: 'naim-cookies.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyABK6WirmDkONBCaestEAXHzCz-tQfc_1c',
     appId: '1:336761803850:ios:2e059afb64ac87820b82b3',
@@ -46,5 +43,14 @@ abstract final class DefaultFirebaseOptions {
     projectId: 'naim-cookies',
     storageBucket: 'naim-cookies.firebasestorage.app',
     iosBundleId: 'com.example.flutterApplication1',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBCGKrUici4aQK0OzIwFBiRaYCqTyMiZWE',
+    appId: '1:336761803850:web:fac486504839d61c0b82b3',
+    messagingSenderId: '336761803850',
+    projectId: 'naim-cookies',
+    authDomain: 'naim-cookies.firebaseapp.com',
+    storageBucket: 'naim-cookies.firebasestorage.app',
   );
 }

@@ -1,0 +1,36 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "naim-cookies",
+          "appId": "1:336761803850:android:36e12d7a03deb6620b82b3",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "naim-cookies",
+          "configurations": {
+            "android": "1:336761803850:android:36e12d7a03deb6620b82b3",
+            "web": "1:336761803850:web:fac486504839d61c0b82b3"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

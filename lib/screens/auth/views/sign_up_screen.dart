@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repository/user_repository.dart';
-
 import '../../../components/my_text_field.dart';
 import '../blocs/sign_up_bloc/sign_up_bloc.dart';
 
@@ -46,8 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       containsUpperCase = value.contains(RegExp(r'[A-Z]'));
       containsLowerCase = value.contains(RegExp(r'[a-z]'));
       containsNumber = value.contains(RegExp(r'[0-9]'));
-      containsSpecialChar =
-          value.contains(RegExp(r'[!@#$%^&*()~_+{}|:"<>?]'));
+      containsSpecialChar = value.contains(RegExp(r'[!@#$%^&*()~_+{}|:"<>?]'));
       containsMinLength = value.length >= 8;
     });
   }
@@ -62,11 +60,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       context.read<SignUpBloc>().add(
-            SignUpRequired(
-              myUser,
-              passwordController.text,
-            ),
-          );
+        SignUpRequired(myUser, passwordController.text),
+      );
     }
   }
 
@@ -75,10 +70,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return BlocListener<SignUpBloc, SignUpState>(
       listener: (context, state) {
         if (state is SignUpSuccess) {
-          setState(() {
-            signUpRequired = false;
-            _errorMsg = null;
-          });
+          debugPrint('🔥 SIGN UP SUCCESS RECEIVED BY SCREEN');
+          Navigator.of(context).pop(true);
         } else if (state is SignUpLoading) {
           setState(() {
             signUpRequired = true;
@@ -96,9 +89,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         key: _formKey,
 
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -121,10 +112,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Text(
                 'Create your account and discover your favorites',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               ),
 
               const SizedBox(height: 28),
@@ -181,10 +169,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           : CupertinoIcons.eye_slash_fill;
                     });
                   },
-                  icon: Icon(
-                    iconPassword,
-                    color: const Color(0xFF2D160E),
-                  ),
+                  icon: Icon(iconPassword, color: const Color(0xFF2D160E)),
                 ),
                 validator: (value) {
                   final password = value ?? '';
@@ -197,9 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       !password.contains(RegExp(r'[A-Z]')) ||
                       !password.contains(RegExp(r'[a-z]')) ||
                       !password.contains(RegExp(r'[0-9]')) ||
-                      !password.contains(
-                        RegExp(r'[!@#$%^&*()~_+{}|:"<>?]'),
-                      )) {
+                      !password.contains(RegExp(r'[!@#$%^&*()~_+{}|:"<>?]'))) {
                     return 'Please meet all password requirements';
                   }
 
@@ -314,9 +297,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 )
               else
                 const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ),
+                  child: CircularProgressIndicator(color: Colors.black),
                 ),
 
               const SizedBox(height: 30),
@@ -329,10 +310,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 }
 
 class _PasswordRequirement extends StatelessWidget {
-  const _PasswordRequirement({
-    required this.text,
-    required this.completed,
-  });
+  const _PasswordRequirement({required this.text, required this.completed});
 
   final String text;
   final bool completed;
@@ -340,9 +318,7 @@ class _PasswordRequirement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 3,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
           Icon(
@@ -350,9 +326,7 @@ class _PasswordRequirement extends StatelessWidget {
                 ? CupertinoIcons.check_mark_circled_solid
                 : CupertinoIcons.circle,
             size: 15,
-            color: completed
-                ? const Color(0xFF2D160E)
-                : Colors.grey.shade400,
+            color: completed ? const Color(0xFF2D160E) : Colors.grey.shade400,
           ),
 
           const SizedBox(width: 8),
@@ -361,11 +335,8 @@ class _PasswordRequirement extends StatelessWidget {
             text,
             style: TextStyle(
               fontSize: 12,
-              fontWeight:
-                  completed ? FontWeight.w700 : FontWeight.w500,
-              color: completed
-                  ? const Color(0xFF2D160E)
-                  : Colors.grey.shade600,
+              fontWeight: completed ? FontWeight.w700 : FontWeight.w500,
+              color: completed ? const Color(0xFF2D160E) : Colors.grey.shade600,
             ),
           ),
         ],

@@ -21,11 +21,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   void initState() {
     super.initState();
 
-    tabController = TabController(
-      initialIndex: 0,
-      length: 2,
-      vsync: this,
-    );
+    tabController = TabController(initialIndex: 0, length: 2, vsync: this);
   }
 
   @override
@@ -41,150 +37,158 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            24,
-            36,
-            24,
-            30,
-          ),
+          padding: const EdgeInsets.fromLTRB(24, 36, 24, 30),
 
           child: Column(
             children: [
+              // ─────────────────────────────
               // NAIM BRAND
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/blueberry-vanilla.png',
-                    width: 48,
-                    height: 48,
-                  ),
+              // ─────────────────────────────
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 580),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          padding: EdgeInsets.zero,
+                          alignment: Alignment.centerLeft,
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 20,
+                          ),
+                          tooltip: 'Back',
+                        ),
 
-                  const SizedBox(width: 0.1),
+                        const SizedBox(width: 18),
 
-                  const Text(
-                    'NAIM',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1,
-                      color: Colors.black,
+                        Image.asset(
+                          'assets/blueberry-vanilla.png',
+                          width: 42,
+                          height: 42,
+                        ),
+
+                        const SizedBox(width: 4),
+
+                        const Text(
+                          'NAIM',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-
-              const SizedBox(height: 8),
-
-              Text(
-                'Your Moment of Bliss',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey.shade600,
                 ),
               ),
 
-              const SizedBox(height: 44),
+              // ─────────────────────────────
+              // AUTHENTICATION CARD
+              // ─────────────────────────────
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
 
-              // AUTH CARD
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(
-                        alpha: 0.08,
-                      ),
-                      blurRadius: 18,
-                      offset: const Offset(0, 6),
+                  child: Container(
+                    width: double.infinity,
+
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+
+                      borderRadius: BorderRadius.circular(30),
+
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 18,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
 
-                child: Column(
-                  children: [
-                    const SizedBox(height: 18),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 18),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                      ),
-                      child: TabBar(
-                        controller: tabController,
+                        // ─────────────────────
+                        // SIGN IN / SIGN UP TABS
+                        // ─────────────────────
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
 
-                        labelColor: Colors.black,
+                          child: TabBar(
+                            controller: tabController,
 
-                        unselectedLabelColor:
-                            Colors.grey.shade400,
+                            labelColor: Colors.black,
 
-                        indicatorColor: Colors.black,
-                        indicatorWeight: 3,
+                            unselectedLabelColor: Colors.grey.shade400,
 
-                        dividerColor:
-                            Colors.grey.shade200,
+                            indicatorColor: Colors.black,
+                            indicatorWeight: 3,
 
-                        labelStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                            dividerColor: Colors.grey.shade200,
+
+                            labelStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                            ),
+
+                            unselectedLabelStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+
+                            tabs: const [
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                                child: Text('Sign In'),
+                              ),
+
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                                child: Text('Sign Up'),
+                              ),
+                            ],
+                          ),
                         ),
 
-                        unselectedLabelStyle:
-                            const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                        // ─────────────────────
+                        // TAB CONTENT
+                        // ─────────────────────
+                        SizedBox(
+                          height: 560,
+
+                          child: TabBarView(
+                            controller: tabController,
+
+                            children: [
+                              // Sign In
+                              const SignInScreen(),
+
+                              // Sign Up
+                              BlocProvider<SignUpBloc>(
+                                create: (context) => SignUpBloc(
+                                  context
+                                      .read<AuthenticationBloc>()
+                                      .userRepository,
+                                ),
+
+                                child: const SignUpScreen(),
+                              ),
+                            ],
+                          ),
                         ),
-
-                        tabs: const [
-                          Padding(
-                            padding:
-                                EdgeInsets.symmetric(
-                              vertical: 14,
-                            ),
-                            child: Text(
-                              'Sign In',
-                            ),
-                          ),
-
-                          Padding(
-                            padding:
-                                EdgeInsets.symmetric(
-                              vertical: 14,
-                            ),
-                            child: Text(
-                              'Sign Up',
-                            ),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
-
-                    SizedBox(
-                      height: 500,
-                      child: TabBarView(
-                        controller: tabController,
-
-                        children: [
-                          // SignInBloc is already
-                          // provided globally in app.dart
-                          const SignInScreen(),
-
-                          BlocProvider<SignUpBloc>(
-                            create: (context) =>
-                                SignUpBloc(
-                              context
-                                  .read<
-                                      AuthenticationBloc>()
-                                  .userRepository,
-                            ),
-                            child:
-                                const SignUpScreen(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],
