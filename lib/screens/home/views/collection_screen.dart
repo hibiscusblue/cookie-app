@@ -14,9 +14,7 @@ class CollectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => GetCookieBloc(
-        FirebaseCookieRepo(),
-      )..add(GetCookie()),
+      create: (_) => GetCookieBloc(FirebaseCookieRepo())..add(GetCookie()),
       child: const _CollectionView(),
     );
   }
@@ -31,34 +29,31 @@ class _CollectionView extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: BlocBuilder<GetCookieBloc, GetCookieState>(
-          builder: (context, state) {
-            if (state is GetCookieSuccess) {
-              if (state.cookies.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'No cookies have been added yet.',
-                  ),
-                );
-              }
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: BlocBuilder<GetCookieBloc, GetCookieState>(
+              builder: (context, state) {
+                if (state is GetCookieSuccess) {
+                  if (state.cookies.isEmpty) {
+                    return const Center(
+                      child: Text('No cookies have been added yet.'),
+                    );
+                  }
 
-              return CollectionSection(
-                cookies: state.cookies,
-              );
-            }
+                  return CollectionSection(cookies: state.cookies);
+                }
 
-            if (state is GetCookieFailure) {
-              return Center(
-                child: Text(state.message),
-              );
-            }
+                if (state is GetCookieFailure) {
+                  return Center(child: Text(state.message));
+                }
 
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
+          ),
         ),
       ),
     );
