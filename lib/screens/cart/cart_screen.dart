@@ -38,7 +38,7 @@ class _CartScreenState extends State<CartScreen> {
 
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 900),
+          constraints: const BoxConstraints(maxWidth: 700),
           child: Cart.items.isEmpty
               ? const Center(
                   child: Text(

@@ -476,7 +476,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ? const Center(child: CircularProgressIndicator(color: Colors.black))
           : Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 900),
+                constraints: const BoxConstraints(maxWidth: 700),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                   child: Column(
