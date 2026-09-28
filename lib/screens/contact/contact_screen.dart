@@ -78,13 +78,13 @@ class _ContactScreenState extends State<ContactScreen> {
             .collection('subscribers')
             .doc(email)
             .set({
-          'email': email,
-          'name': name,
-          'userId': user?.uid,
-          'source': 'contactForm',
-          'marketingConsent': true,
-          'createdAt': FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
+              'email': email,
+              'name': name,
+              'userId': user?.uid,
+              'source': 'contactForm',
+              'marketingConsent': true,
+              'createdAt': FieldValue.serverTimestamp(),
+            }, SetOptions(merge: true));
       }
 
       if (!mounted) return;
@@ -97,20 +97,14 @@ class _ContactScreenState extends State<ContactScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Your message has been sent ♡',
-          ),
-        ),
+        const SnackBar(content: Text('Your message has been sent ♡')),
       );
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Something went wrong. Please try again.',
-          ),
+          content: Text('Something went wrong. Please try again.'),
         ),
       );
     } finally {
@@ -129,262 +123,243 @@ class _ContactScreenState extends State<ContactScreen> {
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                20,
-                24,
-                20,
-                32,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'CONTACT',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-
-                  const SizedBox(height: 6),
-
-                  Text(
-                    'We would love to hear from you.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  const _ContactCard(
-                    icon: Icons.email_outlined,
-                    title: 'EMAIL',
-                    value: 'hello@naimcookies.com',
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  // const _ContactCard(
-                  //   icon: Icons.location_on_outlined,
-                  //   title: 'LOCATION',
-                  //   value: 'Venlo, The Netherlands',
-                  // ),
-
-                  // const SizedBox(height: 14),
-
-                  const _ContactCard(
-                    icon: Icons.schedule_outlined,
-                    title: 'RESPONSE TIME',
-                    value: 'Usually within 1–2 business days',
-                  ),
-
-                  const SizedBox(height: 36),
-
-                  const Text(
-                    'SEND US A MESSAGE',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.4,
-                    ),
-                  ),
-
-                  const SizedBox(height: 6),
-
-                  Text(
-                    'Questions, collaborations, orders or just a little hello.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 1.5,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-
-                  const SizedBox(height: 22),
-
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        _NaimTextField(
-                          controller: _nameController,
-                          label: 'NAME',
-                          hint: 'Your name',
-                          validator: (value) {
-                            if (value == null ||
-                                value.trim().isEmpty) {
-                              return 'Please enter your name';
-                            }
-
-                            return null;
-                          },
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'CONTACT',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
                         ),
+                      ),
 
-                        const SizedBox(height: 14),
+                      const SizedBox(height: 6),
 
-                        _NaimTextField(
-                          controller: _emailController,
-                          label: 'EMAIL',
-                          hint: 'you@example.com',
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            final email =
-                                value?.trim() ?? '';
-
-                            if (email.isEmpty) {
-                              return 'Please enter your email';
-                            }
-
-                            if (!email.contains('@') ||
-                                !email.contains('.')) {
-                              return 'Please enter a valid email';
-                            }
-
-                            return null;
-                          },
+                      Text(
+                        'We would love to hear from you.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
                         ),
+                      ),
 
-                        const SizedBox(height: 14),
+                      const SizedBox(height: 32),
 
-                        _NaimTextField(
-                          controller: _subjectController,
-                          label: 'SUBJECT',
-                          hint: 'What can we help you with?',
-                          validator: (value) {
-                            if (value == null ||
-                                value.trim().isEmpty) {
-                              return 'Please enter a subject';
-                            }
+                      const _ContactCard(
+                        icon: Icons.email_outlined,
+                        title: 'EMAIL',
+                        value: 'hello@naimcookies.com',
+                      ),
 
-                            return null;
-                          },
+                      const SizedBox(height: 14),
+
+                      // const _ContactCard(
+                      //   icon: Icons.location_on_outlined,
+                      //   title: 'LOCATION',
+                      //   value: 'Venlo, The Netherlands',
+                      // ),
+
+                      // const SizedBox(height: 14),
+                      const _ContactCard(
+                        icon: Icons.schedule_outlined,
+                        title: 'RESPONSE TIME',
+                        value: 'Usually within 1–2 business days',
+                      ),
+
+                      const SizedBox(height: 36),
+
+                      const Text(
+                        'SEND US A MESSAGE',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.4,
                         ),
+                      ),
 
-                        const SizedBox(height: 14),
+                      const SizedBox(height: 6),
 
-                        _NaimTextField(
-                          controller: _messageController,
-                          label: 'MESSAGE',
-                          hint: 'Write your message here...',
-                          maxLines: 6,
-                          validator: (value) {
-                            if (value == null ||
-                                value.trim().isEmpty) {
-                              return 'Please write a message';
-                            }
-
-                            return null;
-                          },
+                      Text(
+                        'Questions, collaborations, orders or just a little hello.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: Colors.grey.shade600,
                         ),
+                      ),
 
-                        const SizedBox(height: 16),
+                      const SizedBox(height: 22),
 
-                        InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {
-                            setState(() {
-                              _marketingConsent =
-                                  !_marketingConsent;
-                            });
-                          },
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(
-                              vertical: 6,
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            _NaimTextField(
+                              controller: _nameController,
+                              label: 'NAME',
+                              hint: 'Your name',
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please enter your name';
+                                }
+
+                                return null;
+                              },
                             ),
-                            child: Row(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                              children: [
-                                Checkbox(
-                                  value: _marketingConsent,
-                                  activeColor:
-                                      const Color(0xFF2D160E),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _marketingConsent =
-                                          value ?? false;
-                                    });
-                                  },
+
+                            const SizedBox(height: 14),
+
+                            _NaimTextField(
+                              controller: _emailController,
+                              label: 'EMAIL',
+                              hint: 'you@example.com',
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                final email = value?.trim() ?? '';
+
+                                if (email.isEmpty) {
+                                  return 'Please enter your email';
+                                }
+
+                                if (!email.contains('@') ||
+                                    !email.contains('.')) {
+                                  return 'Please enter a valid email';
+                                }
+
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            _NaimTextField(
+                              controller: _subjectController,
+                              label: 'SUBJECT',
+                              hint: 'What can we help you with?',
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please enter a subject';
+                                }
+
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            _NaimTextField(
+                              controller: _messageController,
+                              label: 'MESSAGE',
+                              hint: 'Write your message here...',
+                              maxLines: 6,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please write a message';
+                                }
+
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: () {
+                                setState(() {
+                                  _marketingConsent = !_marketingConsent;
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6,
                                 ),
-                                Expanded(
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(
-                                      top: 10,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Checkbox(
+                                      value: _marketingConsent,
+                                      activeColor: const Color(0xFF2D160E),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _marketingConsent = value ?? false;
+                                        });
+                                      },
                                     ),
-                                    child: Text(
-                                      'Keep me updated with Naim drops, '
-                                      'new flavours and little surprises.',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        height: 1.4,
-                                        color:
-                                            Colors.grey.shade700,
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          'Keep me updated with Naim drops, '
+                                          'new flavours and little surprises.',
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            height: 1.4,
+                                            color: Colors.grey.shade700,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        SizedBox(
-                          width: double.infinity,
-                          height: 58,
-                          child: ElevatedButton(
-                            onPressed:
-                                _isSending ? null : _sendMessage,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white,
-                              disabledBackgroundColor:
-                                  Colors.black54,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(18),
                               ),
                             ),
-                            child: _isSending
-                                ? const SizedBox(
-                                    width: 22,
-                                    height: 22,
-                                    child:
-                                        CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Text(
-                                    'SEND MESSAGE',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight:
-                                          FontWeight.w900,
-                                      letterSpacing: 1,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
 
-            const NaimFooter(),
-          ],
+                            const SizedBox(height: 20),
+
+                            SizedBox(
+                              width: double.infinity,
+                              height: 58,
+                              child: ElevatedButton(
+                                onPressed: _isSending ? null : _sendMessage,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  foregroundColor: Colors.white,
+                                  disabledBackgroundColor: Colors.black54,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
+                                ),
+                                child: _isSending
+                                    ? const SizedBox(
+                                        width: 22,
+                                        height: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Text(
+                                        'SEND MESSAGE',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const NaimFooter(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -430,10 +405,7 @@ class _NaimTextField extends StatelessWidget {
           keyboardType: keyboardType,
           maxLines: maxLines,
           validator: validator,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
@@ -463,9 +435,7 @@ class _NaimTextField extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(18),
-              borderSide: const BorderSide(
-                color: Colors.redAccent,
-              ),
+              borderSide: const BorderSide(color: Colors.redAccent),
             ),
           ),
         ),
@@ -503,19 +473,14 @@ class _ContactCard extends StatelessWidget {
               color: Color(0xFFF7F4F1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              size: 21,
-              color: const Color(0xFF2D160E),
-            ),
+            child: Icon(icon, size: 21, color: const Color(0xFF2D160E)),
           ),
 
           const SizedBox(width: 14),
 
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,

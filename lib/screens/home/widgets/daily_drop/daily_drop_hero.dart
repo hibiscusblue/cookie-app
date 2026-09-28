@@ -546,23 +546,6 @@ class _DropPurchaseControlsState extends State<_DropPurchaseControls> {
           ],
         ),
 
-        if (alreadyInCart > 0) ...[
-          const SizedBox(height: 8),
-
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              '$alreadyInCart already in your cart • '
-              '$availableToAdd more available',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade600,
-              ),
-            ),
-          ),
-        ],
-
         const SizedBox(height: 14),
 
         SizedBox(

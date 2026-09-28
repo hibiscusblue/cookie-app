@@ -58,142 +58,150 @@ class AccountScreen extends StatelessWidget {
                     data?['email']?.toString().trim() ?? authUser.email ?? '';
 
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // =================================================
-                      // USER CARD
-                      // =================================================
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(22),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(28),
-                        ),
-                        child: Row(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 700),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: const Color(0xFFF2EEE9),
-                              child: Text(
-                                _initialFor(name),
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w900,
-                                  color: Color(0xFF2D160E),
-                                ),
+                            // =================================================
+                            // USER CARD
+                            // =================================================
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(22),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(28),
                               ),
-                            ),
-
-                            const SizedBox(width: 16),
-
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
                                 children: [
-                                  Text(
-                                    name.isNotEmpty
-                                        ? 'Welcome, $name'
-                                        : 'Welcome to Naim',
-                                    style: const TextStyle(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.w900,
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: const Color(0xFFF2EEE9),
+                                    child: Text(
+                                      _initialFor(name),
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w900,
+                                        color: Color(0xFF2D160E),
+                                      ),
                                     ),
                                   ),
 
-                                  const SizedBox(height: 4),
+                                  const SizedBox(width: 16),
 
-                                  Text(
-                                    email.isNotEmpty
-                                        ? email
-                                        : 'Your Naim account',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey.shade600,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          name.isNotEmpty
+                                              ? 'Welcome, $name'
+                                              : 'Welcome to Naim',
+                                          style: const TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 4),
+
+                                        Text(
+                                          email.isNotEmpty
+                                              ? email
+                                              : 'Your Naim account',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+
+                            const SizedBox(height: 30),
+
+                            // =================================================
+                            // ACCOUNT OPTIONS
+                            // =================================================
+                            _AccountTile(
+                              icon: Icons.receipt_long_outlined,
+                              title: 'My Orders',
+                              subtitle: 'View your previous orders',
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const OrdersScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                            _AccountTile(
+                              icon: Icons.favorite_border,
+                              title: 'Favorites',
+                              subtitle: 'Your saved cookies',
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const FavoritesScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+
+                            _AccountTile(
+                              icon: Icons.location_on_outlined,
+                              title: 'Addresses',
+                              subtitle: 'Delivery and billing addresses',
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const AddressesScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+
+                            _AccountTile(
+                              icon: Icons.person_outline,
+                              title: 'Personal Details',
+                              subtitle: 'Name, email and account information',
+                              onTap: () async {
+                                await _showPersonalDetails(
+                                  context,
+                                  userId: authUser.uid,
+                                  name: name,
+                                  email: email,
+                                );
+                              },
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            // =================================================
+                            // LOG OUT
+                            // =================================================
+                            _AccountTile(
+                              icon: Icons.logout,
+                              title: 'Log out',
+                              subtitle: 'Sign out of your Naim account',
+                              onTap: () {
+                                _logOut(context);
+                              },
+                            ),
                           ],
                         ),
                       ),
-
-                      const SizedBox(height: 30),
-
-                      // =================================================
-                      // ACCOUNT OPTIONS
-                      // =================================================
-                      _AccountTile(
-                        icon: Icons.receipt_long_outlined,
-                        title: 'My Orders',
-                        subtitle: 'View your previous orders',
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const OrdersScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      _AccountTile(
-                        icon: Icons.favorite_border,
-                        title: 'Favorites',
-                        subtitle: 'Your saved cookies',
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const FavoritesScreen(),
-                            ),
-                          );
-                        },
-                      ),
-
-                      _AccountTile(
-                        icon: Icons.location_on_outlined,
-                        title: 'Addresses',
-                        subtitle: 'Delivery and billing addresses',
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const AddressesScreen(),
-                            ),
-                          );
-                        },
-                      ),
-
-                      _AccountTile(
-                        icon: Icons.person_outline,
-                        title: 'Personal Details',
-                        subtitle: 'Name, email and account information',
-                        onTap: () async {
-                          await _showPersonalDetails(
-                            context,
-                            userId: authUser.uid,
-                            name: name,
-                            email: email,
-                          );
-                        },
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // =================================================
-                      // LOG OUT
-                      // =================================================
-                      _AccountTile(
-                        icon: Icons.logout,
-                        title: 'Log out',
-                        subtitle: 'Sign out of your Naim account',
-                        onTap: () {
-                          _logOut(context);
-                        },
-                      ),
-                    ],
+                    ),
                   ),
                 );
               },
@@ -230,11 +238,7 @@ class AccountScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (sheetContext) {
-        return _PersonalDetailsSheet(
-          userId: userId,
-          name: name,
-          email: email,
-        );
+        return _PersonalDetailsSheet(userId: userId, name: name, email: email);
       },
     );
   }
@@ -304,7 +308,6 @@ class AccountScreen extends StatelessWidget {
   }
 }
 
-
 class _PersonalDetailsSheet extends StatefulWidget {
   const _PersonalDetailsSheet({
     required this.userId,
@@ -317,8 +320,7 @@ class _PersonalDetailsSheet extends StatefulWidget {
   final String email;
 
   @override
-  State<_PersonalDetailsSheet> createState() =>
-      _PersonalDetailsSheetState();
+  State<_PersonalDetailsSheet> createState() => _PersonalDetailsSheetState();
 }
 
 class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
@@ -341,9 +343,7 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
     );
 
     _lastNameController = TextEditingController(
-      text: nameParts.length > 1
-          ? nameParts.sublist(1).join(' ')
-          : '',
+      text: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
     );
   }
 
@@ -362,9 +362,7 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
 
     if (firstName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter your first name.'),
-        ),
+        const SnackBar(content: Text('Please enter your first name.')),
       );
       return;
     }
@@ -382,15 +380,12 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(widget.userId)
-          .set(
-        {
-          'firstName': firstName,
-          'lastName': lastName,
-          'name': fullName,
-          'updatedAt': FieldValue.serverTimestamp(),
-        },
-        SetOptions(merge: true),
-      );
+          .set({
+            'firstName': firstName,
+            'lastName': lastName,
+            'name': fullName,
+            'updatedAt': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
 
       final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -406,9 +401,7 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
       ScaffoldMessenger.of(
         Navigator.of(context, rootNavigator: true).context,
       ).showSnackBar(
-        const SnackBar(
-          content: Text('Personal details updated ♡'),
-        ),
+        const SnackBar(content: Text('Personal details updated ♡')),
       );
     } catch (e) {
       if (!mounted) return;
@@ -417,11 +410,9 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
         _isSaving = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Could not update details: $e'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not update details: $e')));
     }
   }
 
@@ -435,9 +426,7 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
         padding: const EdgeInsets.fromLTRB(24, 12, 24, 34),
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(32),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
         ),
         child: SafeArea(
           top: false,
@@ -461,20 +450,14 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
 
                 const Text(
                   'PERSONAL DETAILS',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
                 ),
 
                 const SizedBox(height: 6),
 
                 Text(
                   'Update your Naim account information.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
 
                 const SizedBox(height: 28),
@@ -508,9 +491,7 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Colors.black,
-                      ),
+                      borderSide: const BorderSide(color: Colors.black),
                     ),
                   ),
                 ),
@@ -546,9 +527,7 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Colors.black,
-                      ),
+                      borderSide: const BorderSide(color: Colors.black),
                     ),
                   ),
                 ),
@@ -590,10 +569,7 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
 
                 Text(
                   'Email editing will be available separately.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade500,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                 ),
 
                 const SizedBox(height: 28),
@@ -648,9 +624,7 @@ class _PersonalDetailsSheetState extends State<_PersonalDetailsSheet> {
                     ),
                     child: const Text(
                       'CANCEL',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w900),
                     ),
                   ),
                 ),

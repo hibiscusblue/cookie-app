@@ -17,9 +17,7 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => GetCookieBloc(
-        FirebaseCookieRepo(),
-      )..add(GetCookie()),
+      create: (_) => GetCookieBloc(FirebaseCookieRepo())..add(GetCookie()),
       child: const _FavoritesView(),
     );
   }
@@ -35,8 +33,7 @@ class _FavoritesView extends StatelessWidget {
       appBar: const NaimAppBar(),
       endDrawer: const NaimDrawer(),
 
-      body: StreamBuilder<
-          DocumentSnapshot<Map<String, dynamic>>>(
+      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance
             .collection('appSettings')
             .doc('shop')
@@ -53,30 +50,23 @@ class _FavoritesView extends StatelessWidget {
                 return Center(
                   child: Text(
                     state.message,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 );
               }
 
               if (state is! GetCookieSuccess) {
                 return const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
-                  ),
+                  child: CircularProgressIndicator(color: Colors.black),
                 );
               }
 
               return FutureBuilder<void>(
                 future: Favorites.load(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.black,
-                      ),
+                      child: CircularProgressIndicator(color: Colors.black),
                     );
                   }
 
@@ -84,110 +74,105 @@ class _FavoritesView extends StatelessWidget {
                     valueListenable: Favorites.changes,
                     builder: (context, _, _) {
                       final favoriteCookies = state.cookies
-                          .where(
-                            (cookie) =>
-                                Favorites.contains(cookie),
-                          )
+                          .where((cookie) => Favorites.contains(cookie))
                           .toList();
 
-                      return CustomScrollView(
-                        slivers: [
-                          // PAGE PADDING + TITLE
-                          SliverPadding(
-                            padding:
-                                const EdgeInsets.fromLTRB(
-                              16,
-                              16,
-                              16,
-                              0,
-                            ),
-                            sliver: SliverList(
-                              delegate:
-                                  SliverChildListDelegate(
-                                [
-                                  const Text(
-                                    'FAVORITES',
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight:
-                                          FontWeight.w900,
-                                      letterSpacing: 0.5,
+                      return Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 700),
+                          child: CustomScrollView(
+                            slivers: [
+                              // PAGE PADDING + TITLE
+                              SliverPadding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  16,
+                                  16,
+                                  0,
+                                ),
+                                sliver: SliverList(
+                                  delegate: SliverChildListDelegate([
+                                    const Text(
+                                      'FAVORITES',
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: 0.5,
+                                      ),
                                     ),
-                                  ),
 
-                                  const SizedBox(height: 4),
+                                    const SizedBox(height: 4),
 
-                                  Text(
-                                    'The ones you couldn\'t forget',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color:
-                                          Colors.grey.shade600,
+                                    Text(
+                                      'The ones you couldn\'t forget',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey.shade600,
+                                      ),
                                     ),
-                                  ),
 
-                                  const SizedBox(height: 18),
-                                ],
+                                    const SizedBox(height: 18),
+                                  ]),
+                                ),
                               ),
-                            ),
+
+                              // EMPTY FAVORITES
+                              if (favoriteCookies.isEmpty)
+                                const SliverFillRemaining(
+                                  hasScrollBody: false,
+                                  child: _EmptyFavorites(),
+                                ),
+
+                              // FAVORITES GRID
+                              if (favoriteCookies.isNotEmpty)
+                                SliverPadding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  sliver: SliverGrid(
+                                    delegate: SliverChildBuilderDelegate((
+                                      context,
+                                      index,
+                                    ) {
+                                      return CookieCard(
+                                        cookie: favoriteCookies[index],
+                                        purchasingEnabled: purchasingEnabled,
+                                      );
+                                    }, childCount: favoriteCookies.length),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount:
+                                              MediaQuery.sizeOf(
+                                                    context,
+                                                  ).width >=
+                                                  600
+                                              ? 3
+                                              : 2,
+                                          crossAxisSpacing: 16,
+                                          mainAxisSpacing: 16,
+                                          childAspectRatio: 0.68,
+                                        ),
+                                  ),
+                                ),
+
+                              // SPACE BEFORE FOOTER
+                              if (favoriteCookies.isNotEmpty)
+                                const SliverToBoxAdapter(
+                                  child: SizedBox(height: 28),
+                                ),
+
+                              // FOOTER
+                              if (favoriteCookies.isNotEmpty)
+                                const SliverToBoxAdapter(child: NaimFooter()),
+
+                              // SMALL SPACE UNDER FOOTER
+                              if (favoriteCookies.isNotEmpty)
+                                const SliverToBoxAdapter(
+                                  child: SizedBox(height: 8),
+                                ),
+                            ],
                           ),
-
-                          // EMPTY FAVORITES
-                          if (favoriteCookies.isEmpty)
-                            const SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: _EmptyFavorites(),
-                            ),
-
-                          // FAVORITES GRID
-                          if (favoriteCookies.isNotEmpty)
-                            SliverPadding(
-                              padding:
-                                  const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              sliver: SliverGrid(
-                                delegate:
-                                    SliverChildBuilderDelegate(
-                                  (context, index) {
-                                    return CookieCard(
-                                      cookie:
-                                          favoriteCookies[index],
-                                      purchasingEnabled:
-                                          purchasingEnabled,
-                                    );
-                                  },
-                                  childCount:
-                                      favoriteCookies.length,
-                                ),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  childAspectRatio: 0.68,
-                                ),
-                              ),
-                            ),
-
-                          // SPACE BEFORE FOOTER
-                          if (favoriteCookies.isNotEmpty)
-                            const SliverToBoxAdapter(
-                              child: SizedBox(height: 28),
-                            ),
-
-                          // FOOTER
-                          if (favoriteCookies.isNotEmpty)
-                            const SliverToBoxAdapter(
-                              child: NaimFooter(),
-                            ),
-
-                          // SMALL SPACE UNDER FOOTER
-                          if (favoriteCookies.isNotEmpty)
-                            const SliverToBoxAdapter(
-                              child: SizedBox(height: 8),
-                            ),
-                        ],
+                        ),
                       );
                     },
                   );
@@ -208,28 +193,17 @@ class _EmptyFavorites extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.only(
-          left: 24,
-          right: 24,
-          bottom: 80,
-        ),
+        padding: const EdgeInsets.only(left: 24, right: 24, bottom: 80),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              CupertinoIcons.heart,
-              size: 46,
-              color: Colors.grey.shade400,
-            ),
+            Icon(CupertinoIcons.heart, size: 46, color: Colors.grey.shade400),
 
             const SizedBox(height: 18),
 
             const Text(
               'Nothing saved yet.',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
             ),
 
             const SizedBox(height: 8),

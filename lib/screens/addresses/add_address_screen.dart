@@ -118,124 +118,134 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Where should we deliver your Naim?',
-                style: TextStyle(fontSize: 15, color: Colors.grey.shade600),
-              ),
-
-              const SizedBox(height: 28),
-
-              _AddressField(
-                controller: _fullNameController,
-                label: 'FULL NAME',
-                hint: 'Your name',
-              ),
-
-              const SizedBox(height: 18),
-
-              _AddressField(
-                controller: _streetController,
-                label: 'STREET',
-                hint: 'Street name',
-              ),
-
-              const SizedBox(height: 18),
-
-              _AddressField(
-                controller: _houseNumberController,
-                label: 'HOUSE NUMBER',
-                hint: 'House number',
-              ),
-
-              const SizedBox(height: 18),
-
-              _AddressField(
-                controller: _postalCodeController,
-                label: 'POSTAL CODE',
-                hint: 'Postal code',
-              ),
-
-              const SizedBox(height: 18),
-
-              _AddressField(
-                controller: _cityController,
-                label: 'CITY',
-                hint: 'City',
-              ),
-
-              const SizedBox(height: 18),
-
-              _AddressField(
-                controller: _countryController,
-                label: 'COUNTRY',
-                hint: 'Country',
-              ),
-
-              const SizedBox(height: 24),
-
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text(
-                    'Default address',
-                    style: TextStyle(fontWeight: FontWeight.w800),
-                  ),
-                  subtitle: Text(
-                    'Use this address automatically at checkout',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                  value: _isDefaultAddress,
-                  activeThumbColor: Colors.black,
-                  onChanged: (value) {
-                    setState(() {
-                      _isDefaultAddress = value;
-                    });
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: _isSaving ? null : _saveAddress,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 17),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Where should we deliver your Naim?',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.shade600,
+                      ),
                     ),
-                  ),
-                  child: _isSaving
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Text(
-                          'SAVE ADDRESS',
-                          style: TextStyle(fontWeight: FontWeight.w900),
+
+                    const SizedBox(height: 28),
+
+                    _AddressField(
+                      controller: _fullNameController,
+                      label: 'FULL NAME',
+                      hint: 'Your name',
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    _AddressField(
+                      controller: _streetController,
+                      label: 'STREET',
+                      hint: 'Street name',
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    _AddressField(
+                      controller: _houseNumberController,
+                      label: 'HOUSE NUMBER',
+                      hint: 'House number',
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    _AddressField(
+                      controller: _postalCodeController,
+                      label: 'POSTAL CODE',
+                      hint: 'Postal code',
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    _AddressField(
+                      controller: _cityController,
+                      label: 'CITY',
+                      hint: 'City',
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    _AddressField(
+                      controller: _countryController,
+                      label: 'COUNTRY',
+                      hint: 'Country',
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text(
+                          'Default address',
+                          style: TextStyle(fontWeight: FontWeight.w800),
                         ),
+                        subtitle: Text(
+                          'Use this address automatically at checkout',
+                          style: TextStyle(color: Colors.grey.shade600),
+                        ),
+                        value: _isDefaultAddress,
+                        activeThumbColor: Colors.black,
+                        onChanged: (value) {
+                          setState(() {
+                            _isDefaultAddress = value;
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: _isSaving ? null : _saveAddress,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 17),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: _isSaving
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'SAVE ADDRESS',
+                                style: TextStyle(fontWeight: FontWeight.w900),
+                              ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),

@@ -60,47 +60,52 @@ class OrdersScreen extends StatelessWidget {
                   return bTime.compareTo(aTime);
                 });
 
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'MY ORDERS',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.5,
-                        ),
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 700),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'MY ORDERS',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+
+                          const SizedBox(height: 6),
+
+                          Text(
+                            'Your Naim moments.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+
+                          const SizedBox(height: 26),
+
+                          Expanded(
+                            child: orders.isEmpty
+                                ? const _EmptyOrders()
+                                : ListView.separated(
+                                    itemCount: orders.length,
+                                    separatorBuilder: (_, _) =>
+                                        const SizedBox(height: 14),
+                                    itemBuilder: (context, index) {
+                                      final order = orders[index].data();
+
+                                      return _OrderCard(order: order);
+                                    },
+                                  ),
+                          ),
+                        ],
                       ),
-
-                      const SizedBox(height: 6),
-
-                      Text(
-                        'Your Naim moments.',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-
-                      const SizedBox(height: 26),
-
-                      Expanded(
-                        child: orders.isEmpty
-                            ? const _EmptyOrders()
-                            : ListView.separated(
-                                itemCount: orders.length,
-                                separatorBuilder: (_, _) =>
-                                    const SizedBox(height: 14),
-                                itemBuilder: (context, index) {
-                                  final order = orders[index].data();
-
-                                  return _OrderCard(order: order);
-                                },
-                              ),
-                      ),
-                    ],
+                    ),
                   ),
                 );
               },
